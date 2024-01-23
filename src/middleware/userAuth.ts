@@ -1,14 +1,12 @@
 import { body, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
 
-console.log("hello");
-
 
 export const userRegistrationValidation = [
-  body("Email").isEmail().normalizeEmail(),
-  body("UserName").isString().trim().escape(),
-  body("Password").isLength({ min: 6 }).trim(),
-  body("Phone").isMobilePhone("any", { strictMode: false }).trim(),
+  body("Email").isEmail().normalizeEmail().withMessage("Email is invalid"),
+  body("UserName").isString().trim().escape().withMessage("Invalid User name"),
+  body("Password").isLength({ min: 6 }).trim().withMessage("password must be 6 digits"),
+  body("Phone").isMobilePhone("any", { strictMode: false }).trim().withMessage("Invalid phone"),
 ];
 
 export const validateUserRegistration = (

@@ -17,7 +17,7 @@ export function userRegister(req: Request, res: Response) {
   try {
     const {Email,UserName,Password,Phone} : UserRequestBody = req.body
     console.log(Email , UserName, Password , Phone);
-    
+    res.send("Hurray")
     
   } catch (error: any) {
     console.log(error);
