@@ -1,14 +1,22 @@
 import "dotenv/config";
 import express, { Application, NextFunction, Request, Response } from "express";
 import connectionDB from "./config/connetDb";
+import userRoute from "./router/userRouter"
+import path from "path";
 
 const app: Application = express();
 app.use(express.json())
+//view engine setup
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(__dirname+"/assets"))
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(error.stack);
   res.status(500).send("Internal Server Error"); 
 });
+//Routs
+app.use("/",userRoute)
 
 connectionDB(); //connecting to database
 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NICH</title>
+    <link rel="stylesheet" href="/css/userLogin.css">
+    <link rel="stylesheet" href="/css/userLogintwo.css">
+    <link rel="icon" href="img/favicon.ico">
+    <script src="https://unpkg.com/split-type"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-800 font-sans">
+    <div class="fixed right-10 top-8 cursor-pointer">
+        <i class="moon fa-solid fa-moon fa-lg dark:text-white"></i>
+        <i class="sun fa-solid fa-sun fa-lg dark:text-white"></i>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2">
+        <div class="flex flex-col justify-center md:min-h-screen relative">
+            <div class="text-center ">
+                <img class="invert-0 dark:invert object-cover" src="img/logo.png" alt="Logo">
+                <h1 class="sm:text-5xl md:text-3xl font-semibold  dark:text-white" style="clip-path: polygon(0 0, 100% 1%, 100% 100%, 0% 100%);">Welcome to <br> <span
+                        class="logoText font-bold sm:text-6xl text-4xl uppercase">NICHE</span></h1>
+                <h4 class="text-1xl dark:text-white mt-1">- Where Ideas Take Shape and Conversations Soar -</h4>
+            </div>
+        </div>
+        <div class="flex flex-col justify-center mt-14 md:mt-10">
+            <div id="signin-section"
+                class="md:p-16 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500  rounded md:shadow-2xl mx-auto">
+                <h1 class="text-5xl font-medium dark:text-white">Sign In </h1>
+                <div class="flex justify-center">
+                    <div class="flex-col flex gap-4 my-10">
+                        <input type="text"
+                            class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="User Name">
+                        <input type="password"
+                            class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="Password">
+                        <p class="dark:text-white cursor-pointer mt-5">Forgot Password ?</p>
+                        <button
+                            class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"><a
+                                href="./home.html">Login</a> </button>
+                        <a href="" class="mt-3"><i class="fa-brands fa-google fa-xl dark:text-white"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="dark:text-white sm:mt-7" id="signinId-section">
+                <p class="flex justify-center">New to Brainstormr ? <span class="text-blue-400 cursor-pointer ms-2"
+                        onclick="showSignup()">
+                        Join now</span></p>
+            </div>
+            <!-- signup -->
+            <div id="signup-section"
+                class="md:px-20 md:py-10 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500  rounded md:shadow-2xl mx-auto hidden">
+                <h1 class="text-5xl font-medium dark:text-white">Sign Up</h1>
+                <div class="flex justify-center">
+                    <div class="flex-col flex gap-4 my-10">
+                        <input type="text"
+                            class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="User Name">
+                        <input type="email"
+                            class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="Email address">
+                        <input type="password"
+                            class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="Password">
+                        <input type="password"
+                            class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="Re-enter Password">
+                        <button
+                            class="mt-5 bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full">Create
+                            account</button>
+                        <a href="" class="mt-3"><i class="fa-brands fa-google fa-xl dark:text-white"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="dark:text-white sm:mt-7 hidden" id="signupId-section">
+                <p class="flex justify-center">Have an account ? <span class="text-blue-400 cursor-pointer ms-2"
+                        onclick="showSignin()">
+                        Log in</span></p>
+            </div>
+        </div>
+    </div>
+    <script src="/js/script.js"></script>
+</body>
+
+</html>
