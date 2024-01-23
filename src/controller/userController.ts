@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
+import { UserRequestBody } from "../interface/userInterface";
 
+
+// Send the userLogin page
 export function getLogin(req:Request ,res:Response){
   try {
     res.render("user/userLogin");
@@ -10,9 +13,11 @@ export function getLogin(req:Request ,res:Response){
 
 
 //UserSignup
-export function userSignup(req: Request, res: Response) {
+export function userRegister(req: Request, res: Response) {
   try {
-    console.log("hi");
+    const {Email,UserName,Password,Phone} : UserRequestBody = req.body
+    console.log(Email , UserName, Password , Phone);
+    
     
   } catch (error: any) {
     console.log(error);
