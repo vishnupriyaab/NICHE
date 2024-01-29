@@ -17,26 +17,27 @@ export async function userRegister(req: Request, res: Response) {
     console.log(req.body);
 
     const { Email, UserName, Password, Phone }: UserRequestBody = req.body;
-    const newUser = new userDb({ username:UserName, email:Email, password:Password });
+    const newUser = new userDb({
+      username: UserName,
+      email: Email,
+      password: Password,
+    });
 
-        // Save the user to the database
-        await newUser.save();
-    // const hashedpassword = await bcrypt.hash(Password, 10)
-    // console.log(hashedpassword);
-    
-    // console.log(Email , UserName, Password , Phone);
-    if (!UserName) {
-      res.status(401).json({ message: "Enter user name" });
-    }
-    if (!Email) {
-      res.status(401).json({ message: "enter Email" });
-    }
-    if (!Password) {
-      res.status(401).json({ message: "enter Password" });
-    }
-    if (!Phone) {
-      res.status(401).json({ message: "enter Phone" });
-    }
+    await newUser.save();
+
+    console.log(Email , UserName, Password , Phone);
+    // if (!UserName) {
+    //   res.status(401).json({ message: "Enter user name" });
+    // }
+    // if (!Email) {
+    //   res.status(401).json({ message: "enter Email" });
+    // }
+    // if (!Password) {
+    //   res.status(401).json({ message: "enter Password" });
+    // }
+    // if (!Phone) {
+    //   res.status(401).json({ message: "enter Phone" });
+    // }
     res.send("Registered Successfully");
   } catch (error: any) {
     console.log(error);

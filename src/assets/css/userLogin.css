@@ -265,9 +265,17 @@ Correct the cursor style of increment and decrement buttons in Safari.
 
 ::-webkit-inner-spin-button,
 ::-webkit-outer-spin-button {
-  height: auto;
+  height: none;
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  display: none;
+}
+
+input[type="number"]::-moz-appearance {
+  appearance: textfield;
+}
 /*
 1. Correct the odd appearance in Chrome and Safari.
 2. Correct the outline style in Safari.
@@ -294,7 +302,7 @@ Remove the inner padding in Chrome and Safari on macOS.
 */
 
 ::-webkit-file-upload-button {
-  -webkit-appearance: button;
+  -webkit-appearance: none;
   /* 1 */
   font: inherit;
   /* 2 */
@@ -1458,7 +1466,7 @@ video {
 }
 
 .gap-4 {
-  gap: 1rem;
+  gap: 11px;
 }
 
 .gap-5 {
