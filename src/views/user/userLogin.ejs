@@ -1,250 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NICH</title>
+    <title>NICHE</title>
     <link rel="stylesheet" href="/css/userLogin.css" />
     <link rel="stylesheet" href="/css/userLogintwo.css" />
     <link rel="icon" href="img/favicon.ico" />
     <script src="https://unpkg.com/split-type"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-  </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
 
-  <body class="bg-slate-50 dark:bg-slate-800 font-sans">
+<body class="bg-slate-50 dark:bg-slate-800 font-sans">
     <div class="grid grid-cols-1 sm:grid-cols-2">
-      <div class="flex flex-col justify-center md:min-h-screen relative">
-        <div class="text-center">
-          <!-- <img class="invert-0 dark:invert object-cover" src="img/logo.png" alt="Logo"> -->
-          <h1
-            class="sm:text-9xl md:text-3xl font-semibold dark:text-white"
-            style="clip-path: polygon(0 0, 100% 1%, 100% 100%, 0% 100%)"
-          >
-            Welcome to <br />
-            <span class="logoText font-bold sm:text-6xl text-4xl uppercase"
-              >NICHE</span
-            >
-          </h1>
-          <h4 class="text-1xl dark:text-white mt-1">
-            - Where Ideas Take Shape and Conversations Soar -
-          </h4>
-        </div>
-      </div>
-      <div class="flex flex-col justify-center mt-14 md:mt-10">
-        <div
-          id="signin-section"
-          class="md:p-16 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto"
-        >
-          <h1 class="text-5xl font-medium dark:text-white">Login In</h1>
-          <div class="flex justify-center">
-            <div class="flex-col flex gap-4 my-10">
-              <input
-                type="text"
-                class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Email"
-              />
-              <input
-                type="password"
-                class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Password"
-              />
-              <p class="dark:text-white cursor-pointer mt-5">
-                Forgot Password ?
-              </p>
-              <button
-                class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
-              >
-                <a href="./home.html">Login</a>
-              </button>
-              <p>g</p>
+        <div class="flex flex-col justify-center md:min-h-screen relative">
+            <div class="text-center">
+                <!-- <img class="invert-0 dark:invert object-cover" src="img/logo.png" alt="Logo"> -->
+                <h1 class="sm:text-9xl md:text-3xl font-semibold dark:text-white"
+                    style="clip-path: polygon(0 0, 100% 1%, 100% 100%, 0% 100%)">
+                    Welcome to <br />
+                    <span class="logoText font-bold sm:text-6xl text-4xl uppercase">NICHE</span>
+                </h1>
+                <h4 class="text-1xl dark:text-white mt-1">
+                    - Give Wings To Your Dreams -
+                </h4>
             </div>
-          </div>
         </div>
-        <div class="dark:text-white sm:mt-7" id="signinId-section">
-          <p class="flex justify-center">
-            New to NICHE ?
-            <span
-              class="text-blue-400 cursor-pointer ms-2"
-              onclick="showSignup()"
-            >
-              Join now</span
-            >
-          </p>
-        </div>
-        <!-- signup -->
-        <div
-          id="signup-section"
-          class="md:px-20 md:py-10 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto hidden"
-        >
-          <h1 class="text-5xl font-medium dark:text-white">Register</h1>
-          <div class="flex justify-center">
-            <div class="flex-col flex gap-4 my-10">
-              <input
-                type="text"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="User Name"
-                id="userName"
-              />
-              <input
-                type="email"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Email address"
-                name="emailAdd"
-                id="emailAddress"
-                value=""
-              />
-              <input
-                type="password"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Password"
-                id="passWord"
-              />
-              <input
-                type="number"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Phone"
-                id="phoneNumber"
-              />
-              <button
-                class="mt-5 bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
-                onclick="HandleRegister()"
-              >
-                Create account
-              </button>
-              <p>error</p>
+        <div class="flex flex-col justify-center mt-14 md:mt-10">
+            <div id="signin-section"
+                class="md:p-16 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto">
+                <h1 class="text-5xl font-medium dark:text-white">Login In</h1>
+                <div class="flex justify-center">
+                    <div class="flex-col flex gap-4 my-10">
+                        <input type="text"
+                            class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="Email" />
+                        <input type="password"
+                            class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="Password" />
+                        <p class="dark:text-white cursor-pointer mt-5">
+                            Forgot Password ?
+                        </p>
+                        <button
+                            class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full">
+                            <a href="./home.html">Login</a>
+                        </button>
+                        <p>g</p>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="dark:text-white sm:mt-7" id="signinId-section">
+                <p class="flex justify-center">
+                    New to NICHE ?
+                    <span class="text-blue-400 cursor-pointer ms-2" onclick="showSignup()">
+                        Join now</span>
+                </p>
+            </div>
+            <!-- signup -->
+            <div id="signup-section"
+                class="md:px-20 md:py-10 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto hidden">
+                <h1 class="text-5xl font-medium dark:text-white">Register</h1>
+                <div class="flex justify-center">
+                    <div class="flex-col flex gap-4 my-10">
+                        <p id="userErr" class="text-red-500 hidden"></p>
+                        <p id="userM" class="text-left text-red-600"></p>
+                        <input type="text"
+                            class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="User Name" id="userName" />
+                            <p  id="emailM" class="text-left text-red-600"></p> 
+                        <input type="email"
+                            class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="Email address" name="emailAdd" id="emailAddress" value="" />
+                            <p id="passwordM" class="text-left text-red-600"></p>
+                        <input type="password"
+                            class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="Password" id="passWord" />
+                            <p id="numberM" class="text-left text-red-600"></p>
+                        <input type="number"
+                            class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                            placeholder="Phone" id="phoneNumber" />
+                        <button
+                            class="mt-5 bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
+                            onclick="HandleRegister()">
+                            Create account
+                        </button>
+                        <!-- <p id="errorMsg" class="text-red-500"></p> -->
+        
+                    </div>
+                </div>
+            </div>
+            <div class="dark:text-white sm:mt-7 hidden" id="signupId-section">
+                <p class="flex justify-center">
+                    Have an account ?
+                    <span class="text-blue-400 cursor-pointer ms-2" onclick="showSignin()">
+                        Log in</span>
+                </p>
+            </div>
         </div>
-        <div class="dark:text-white sm:mt-7 hidden" id="signupId-section">
-          <p class="flex justify-center">
-            Have an account ?
-            <span
-              class="text-blue-400 cursor-pointer ms-2"
-              onclick="showSignin()"
-            >
-              Log in</span
-            >
-          </p>
-        </div>
-      </div>
     </div>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
-      integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
+        integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-      const Email = document.querySelector("#emailAddress");
-      const UserName = document.querySelector("#userName");
-      const Password = document.querySelector("#passWord");
-      const Phone = document.querySelector("#phoneNumber");
-      function HandleRegister() {
-        axios
-          .post("registerValue", {
-            Email: Email.value,
-            UserName: UserName.value,
-            Password: Password.value,
-            Phone: Phone.value,
-          })
-          .then((data) => {
-            console.log(data);
-          })
-          .catch((err) => {
-            console.log(err.response.data);
-          });
-      }
+        const Email = document.querySelector("#emailAddress");
+        const UserName = document.querySelector("#userName");
+        const Password = document.querySelector("#passWord");
+        const Phone = document.querySelector("#phoneNumber");
+        // const errMsg = document.getElementById('errorMsg')
+        const userErr = document.getElementById('userErr')
+        const userM = document.getElementById('userM')
+        const emailM = document.getElementById('emailM')
+        const passwordM = document.getElementById('passwordM')
+        const numberM = document.getElementById('numberM')
+       
 
-      const showSignup = () => {
-        const signupSection = document.getElementById("signup-section");
-        const signinSection = document.getElementById("signin-section");
-        const signinIdSection = document.getElementById("signinId-section");
-        const signupIdSection = document.getElementById("signupId-section");
+        function HandleRegister() {
+            axios
+                .post("/registerValue", {
+                    Email: Email.value,
+                    UserName: UserName.value,
+                    Password: Password.value,
+                    Phone: Phone.value,
+                })
+                .then((data) => {
+                    console.log(data);
+                    userErr.innerText = data.data.message;
+                    userErr.classList.remove('hidden')
+                    if(data.data == "Registered Successfully"){
+                        userErr.classList.add('hidden')
+                    }
 
-        signupSection.classList.remove("hidden");
-        signupIdSection.classList.remove("hidden");
-        signupSection.classList.add("animate__animated", "animate__flipInY");
-
-        signinSection.classList.add("hidden");
-        signinIdSection.classList.add("hidden");
-      };
-
-      const showSignin = () => {
-        const signupSection = document.getElementById("signup-section");
-        const signinSection = document.getElementById("signin-section");
-        const signinIdSection = document.getElementById("signinId-section");
-        const signupIdSection = document.getElementById("signupId-section");
-
-        signinSection.classList.remove("hidden");
-        signinIdSection.classList.remove("hidden");
-        signinSection.classList.add("animate__animated", "animate__flipInY");
-
-        signupSection.classList.add("hidden");
-        signupIdSection.classList.add("hidden");
-      };
-
-      const logoText = document.querySelector(".logoText");
-      let text = new SplitType(logoText);
-      let characters = document.querySelectorAll(".char");
-      for (let i = 0; i < characters.length; i++) {
-        characters[i].classList.add("translate-y-full");
-      }
-      gsap.to(".char", {
-        y: 0,
-        stagger: 0.05,
-        delay: 0.02,
-        duration: 0.5,
-      });
-
-      // Function to disable scroll
-      function disableScroll() {
-        var scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
-        var scrollLeft =
-          window.pageXOffset || document.documentElement.scrollLeft;
-
-        document.body.style.overflow = "hidden";
-        document.body.style.top = `-${scrollTop}px`;
-        document.body.style.left = `-${scrollLeft}px`;
-      }
-
-      // JavaScript function to enable scroll
-      function enableScroll() {
-        var scrollTop = parseInt(document.body.style.top, 10);
-        var scrollLeft = parseInt(document.body.style.left, 10);
-
-        document.body.style.overflow = "";
-        document.body.style.top = "";
-        document.body.style.left = "";
-
-        window.scrollTo(-scrollLeft, -scrollTop);
-      }
-
-      // Function to check the screen width and call appropriate function
-      function handleScrollBasedOnScreenWidth() {
-        if (window.innerWidth > 640) {
-          disableScroll();
-        } else {
-          enableScroll();
+                })
+                .catch((error) => {
+                    console.log(error);  
+                    userErr.innerText = error.response.data.message; 
+                    userErr.classList.remove('hidden') 
+                    if(error.response.data == "Registered Successfully"){
+                        userErr.classList.add('hidden')
+                    }       
+                });
         }
-      }
 
-      // Call the function initially to set the scroll behavior based on the initial screen size
-      handleScrollBasedOnScreenWidth();
+        const showSignup = () => {
+            const signupSection = document.getElementById("signup-section");
+            const signinSection = document.getElementById("signin-section");
+            const signinIdSection = document.getElementById("signinId-section");
+            const signupIdSection = document.getElementById("signupId-section");
 
-      // Attach the function to the window.onresize event to handle changes in screen size
-      window.onresize = handleScrollBasedOnScreenWidth;
+            signupSection.classList.remove("hidden");
+            signupIdSection.classList.remove("hidden");
+            signupSection.classList.add("animate__animated", "animate__flipInY");
+
+            signinSection.classList.add("hidden");
+            signinIdSection.classList.add("hidden");
+        };
+
+        const showSignin = () => {
+            const signupSection = document.getElementById("signup-section");
+            const signinSection = document.getElementById("signin-section");
+            const signinIdSection = document.getElementById("signinId-section");
+            const signupIdSection = document.getElementById("signupId-section");
+
+            signinSection.classList.remove("hidden");
+            signinIdSection.classList.remove("hidden");
+            signinSection.classList.add("animate__animated", "animate__flipInY");
+
+            signupSection.classList.add("hidden");
+            signupIdSection.classList.add("hidden");
+        };
+
+        const logoText = document.querySelector(".logoText");
+        let text = new SplitType(logoText);
+        let characters = document.querySelectorAll(".char");
+        for (let i = 0; i < characters.length; i++) {
+            characters[i].classList.add("translate-y-full");
+        }
+        gsap.to(".char", {
+            y: 0,
+            stagger: 0.05,
+            delay: 0.02,
+            duration: 0.5,
+        });
+
+        // Function to disable scroll
+        function disableScroll() {
+            var scrollTop =
+                window.pageYOffset || document.documentElement.scrollTop;
+            var scrollLeft =
+                window.pageXOffset || document.documentElement.scrollLeft;
+
+            document.body.style.overflow = "hidden";
+            document.body.style.top = `-${scrollTop}px`;
+            document.body.style.left = `-${scrollLeft}px`;
+        }
+
+        // JavaScript function to enable scroll
+        function enableScroll() {
+            var scrollTop = parseInt(document.body.style.top, 10);
+            var scrollLeft = parseInt(document.body.style.left, 10);
+
+            document.body.style.overflow = "";
+            document.body.style.top = "";
+            document.body.style.left = "";
+
+            window.scrollTo(-scrollLeft, -scrollTop);
+        }
+
+        // Function to check the screen width and call appropriate function
+        function handleScrollBasedOnScreenWidth() {
+            if (window.innerWidth > 640) {
+                disableScroll();
+            } else {
+                enableScroll();
+            }
+        }
+
+        // Call the function initially to set the scroll behavior based on the initial screen size
+        handleScrollBasedOnScreenWidth();
+
+        // Attach the function to the window.onresize event to handle changes in screen size
+        window.onresize = handleScrollBasedOnScreenWidth;
     </script>
-  </body>
+</body>
+
 </html>
