@@ -124,17 +124,20 @@
               />
               <p class="text-left text-red-600" id="confirmpasswordErr"></p>
               <input
-                type="password" 
+                type="password"
                 class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
                 placeholder="Confirm password"
                 id="confirmPassWord"
               />
               <button
                 class="mt-5 bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
-                onclick="HandleRegister()"
+                onclick="openModal()"
               >
                 Create account
               </button>
+
+              <!-- OTP MODAL -->
+
               <!-- <p id="errorMsg" class="text-red-500"></p> -->
             </div>
           </div>
@@ -168,8 +171,19 @@
       const cpErr = document.querySelector("#confirmpasswordErr");
       // const errMsg = document.getElementById('errorMsg')
 
+      const openModal = () => {
+        axios
+          .post("/otpSend", { email: Email.value })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      };
+
       function HandleRegister() {
-        console.log(ConfirmpassWord.value , Password.value);
+        console.log(ConfirmpassWord.value, Password.value);
         if (ConfirmpassWord.value === Password.value) {
           axios
             .post("/registerValue", {
@@ -180,12 +194,10 @@
               ConfirmpassWord: Password.value,
             })
             .then((data) => {
-              console.log(data, "asdfgh");
               if (data.data == "Registered Successfully") {
-                userErr.classList.add("hidden");
                 Swal.fire({
-                  title: "Good job!",
-                  text: "You clicked the button!",
+                  title: "Registration Successfull",
+                  text: "You clicked the button",
                   icon: "success",
                 });
               }
@@ -195,16 +207,10 @@
               if (error) {
                 userErr.innerText = error.response.data.errors[0].msg;
               }
-
-              // if (error.response.data == "Registered Successfully") {
-              //   userErr.classList.add("hidden");
-
-              // }
             });
-        }else{
-            console.log("Password test");
-            cpErr.innerText = "Password does not match"
-
+          cpErr.innerHTML = " ";
+        } else {
+          cpErr.innerText = "Password does not match";
         }
       }
 

@@ -3,9 +3,11 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import connectionDB from "./config/connetDb";
 import userRoute from "./router/userRouter"
 import path from "path";
+import morgan from 'morgan'
 
 const app: Application = express();
 app.use(express.json())
+app.use(morgan("dev"))
 //view engine setup
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
