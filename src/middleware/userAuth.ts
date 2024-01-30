@@ -7,7 +7,7 @@ export const userRegistrationValidation = [
   body("Email").isEmail().normalizeEmail().withMessage("Email is required"),
   body("Phone").isLength({min:10,max:10}).isMobilePhone("any", { strictMode: false }).trim().withMessage("Invalid phone"),
   body("Password").isLength({ min: 6 }).trim().withMessage("password must be 6 digits"),
-];
+];  
 
 export const validateUserRegistration = (
   req: Request,
@@ -21,3 +21,4 @@ export const validateUserRegistration = (
   }
   next();
 };
+

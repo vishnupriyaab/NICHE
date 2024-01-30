@@ -88,57 +88,66 @@
           id="signup-section"
           class="md:px-20 md:py-10 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto hidden"
         >
-          <h1 class="text-5xl font-medium dark:text-white">Register</h1>
-          <div class="flex justify-center">
-            <div class="flex-col flex gap-4 my-10">
-              <p id="userErr" class="text-red-500 hidden"></p>
-              <p id="userM" class="text-left text-red-600"></p>
-              <input
-                type="text"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="User Name"
-                id="userName"
-              />
-              <p class="text-left text-red-600"></p>
-              <input
-                type="email"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Email address"
-                name="emailAdd"
-                id="emailAddress"
-                value=""
-              />
-              <p class="text-left text-red-600"></p>
-              <input
-                type="number"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Phone"
-                id="phoneNumber"
-              />
-              <p class="text-left text-red-600"></p>
-              <input
-                type="password"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Password"
-                id="passWord"
-              />
-              <p class="text-left text-red-600" id="confirmpasswordErr"></p>
-              <input
-                type="password"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Confirm password"
-                id="confirmPassWord"
-              />
-              <button
-                class="mt-5 bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
-                onclick="openModal()"
-              >
-                Create account
-              </button>
+          <div class="" id="RegisterDiv">
+            <h1 class="text-5xl font-medium">Register</h1>
+            <div class="flex justify-center">
+              <div class="flex-col flex gap-4 my-10">
+                <p id="userErr" class="text-red-500"></p>
+                <p id="userM" class="text-left text-red-600"></p>
+                <input
+                  type="text"
+                  class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                  placeholder="User Name"
+                  id="userName"
+                />
+                <p class="text-left text-red-600"></p>
+                <input
+                  type="email"
+                  class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                  placeholder="Email address"
+                  name="emailAdd"
+                  id="emailAddress"
+                  value=""
+                />
+                <p class="text-left text-red-600"></p>
+                <input
+                  type="number"
+                  class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                  placeholder="Phone"
+                  id="phoneNumber"
+                />
+                <p class="text-left text-red-600"></p>
+                <input
+                  type="password"
+                  class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                  placeholder="Password"
+                  id="passWord"
+                />
+                <p class="text-left text-red-600" id="confirmpasswordErr"></p>
+                <input
+                  type="password"
+                  class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                  placeholder="Confirm password"
+                  id="confirmPassWord"
+                />
+                <button
+                  class="mt-5 bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
+                  onclick="openModal()"
+                >
+                  Create account
+                </button>
 
-              <!-- OTP MODAL -->
+                <!-- OTP MODAL -->
 
-              <!-- <p id="errorMsg" class="text-red-500"></p> -->
+                <!-- <p id="errorMsg" class="text-red-500"></p> -->
+              </div>
+            </div>
+          </div>
+          <div id="otpDiv" class="hidden">
+            <h1 class="text-3xl font-medium">Otp Verification</h1>
+            <div>
+              <input type="text" placeholder="otpinpput" id="otp" />
+              <button onclick="HandleRegister()">Submit</button>
             </div>
           </div>
         </div>
@@ -167,18 +176,32 @@
       const UserName = document.querySelector("#userName");
       const Password = document.querySelector("#passWord");
       const Phone = document.querySelector("#phoneNumber");
+      const otp = document.querySelector("#otp");
       const ConfirmpassWord = document.querySelector("#confirmPassWord");
       const cpErr = document.querySelector("#confirmpasswordErr");
+      const RegisterDiv = document.querySelector("#RegisterDiv");
+      const otpDiv = document.querySelector("#otpDiv");
+      const userErr = document.getElementById("userErr");
       // const errMsg = document.getElementById('errorMsg')
 
       const openModal = () => {
         axios
-          .post("/otpSend", { email: Email.value })
-          .then((res) => {
-            console.log(res.data);
+          .post("/otpSend", {
+            Email: Email.value,
+            UserName: UserName.value,
+            Password: Password.value,
+            Phone: Phone.value,
+            ConfirmpassWord: Password.value,
           })
-          .catch((err) => {
-            console.log(err);
+          .then((res) => {
+            RegisterDiv.classList.add("hidden");
+            otpDiv.classList.remove("hidden");
+          })
+          .catch((error) => {
+            console.log(error.response.data.errors);
+            if (error) {
+              userErr.innerText = error.response.data.errors[0].msg;
+            }
           });
       };
 
@@ -191,7 +214,7 @@
               UserName: UserName.value,
               Password: Password.value,
               Phone: Phone.value,
-              ConfirmpassWord: Password.value,
+              otp: otp.value,
             })
             .then((data) => {
               if (data.data == "Registered Successfully") {
@@ -204,9 +227,6 @@
             })
             .catch((error) => {
               console.log(error, "error");
-              if (error) {
-                userErr.innerText = error.response.data.errors[0].msg;
-              }
             });
           cpErr.innerHTML = " ";
         } else {

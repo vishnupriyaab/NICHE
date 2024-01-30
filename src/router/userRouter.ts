@@ -6,7 +6,7 @@ const userRoute: Router = Router();
 
 userRoute.get("/userLogin", getLogin);
 
-userRoute.post("/registerValue", userRegistrationValidation,validateUserRegistration , userRegister);
-userRoute.post("/otpSend" , otpSnd)
+userRoute.post("/registerValue", userRegister);
+userRoute.post("/otpSend", userRegistrationValidation,validateUserRegistration , otpSnd)
 
 export default userRoute;

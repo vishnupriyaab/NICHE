@@ -3,6 +3,8 @@ import * as nodemailer from 'nodemailer';
 import  Mailgen  from 'mailgen';
 
 // Function to generate a 4-digit OTP
+let otp:string = "0"
+
 export function generateOTP(): string {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
@@ -10,7 +12,7 @@ export function generateOTP(): string {
 // Function to send an email with OTP
 export async function sendEmailWithOTP(email: string): Promise<string> {
   // Create an OTP
-  const otp: string = generateOTP();  
+   otp = generateOTP();  
 
   // Create a Nodemailer transporter
   const transporter = nodemailer.createTransport({
@@ -55,7 +57,7 @@ export async function sendEmailWithOTP(email: string): Promise<string> {
   try {
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent: ', otp);
-
+    
     return otp;
   } catch (error) {
     console.error('Error sending email: ', (error as Error).message);
@@ -82,4 +84,11 @@ export function otpSnd(req: Request, res: Response): void {
     console.log(error);
     res.status(500).send('Internal Server Error');
   }
+}
+
+export  function verifyOtp(val : string){
+  console.log(typeof val);
+  console.log(typeof otp);
+  
+  return parseInt(val) === parseInt(otp)
 }

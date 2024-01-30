@@ -3,4 +3,5 @@ export interface UserRequestBody {
   UserName: string;
   Password: string;
   Phone: string;
+  otp:string
 }
