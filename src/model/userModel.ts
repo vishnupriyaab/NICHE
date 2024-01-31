@@ -48,6 +48,6 @@ userSchema.pre('save', async function (next) {
     }
 });
 
-const userDb = mongoose.model('userdb', userSchema);
+const userDb = mongoose.model<User>('userdb', userSchema);
 
 export default userDb;

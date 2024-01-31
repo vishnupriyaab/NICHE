@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
-import * as nodemailer from 'nodemailer';
-import  Mailgen  from 'mailgen';
+import { Request, Response } from "express";
+import * as nodemailer from "nodemailer";
+import Mailgen from "mailgen";
 
 // Function to generate a 4-digit OTP
-let otp:string = "0"
+let otp: string = "0";
 
 export function generateOTP(): string {
   return Math.floor(1000 + Math.random() * 9000).toString();
@@ -12,23 +12,23 @@ export function generateOTP(): string {
 // Function to send an email with OTP
 export async function sendEmailWithOTP(email: string): Promise<string> {
   // Create an OTP
-   otp = generateOTP();  
+  otp = generateOTP();
 
   // Create a Nodemailer transporter
   const transporter = nodemailer.createTransport({
-    service: 'gmail', // e.g., 'gmail'
+    service: "gmail", // e.g., 'gmail'
     auth: {
-      user: 'vishnupriyaotp2002@gmail.com',
-      pass: 'deuw ojyo qddm sdwr',
+      user: "vishnupriyaotp2002@gmail.com",
+      pass: "deuw ojyo qddm sdwr",
     },
   });
 
   // Create a Mailgen instance
   const mailGenerator = new Mailgen({
-    theme: 'default',
+    theme: "default",
     product: {
-      name: 'NICHE',
-      link: 'https://yourapp.com',
+      name: "NICHE",
+      link: "https://yourapp.com",
     },
   });
 
@@ -36,7 +36,7 @@ export async function sendEmailWithOTP(email: string): Promise<string> {
   const emailBody = {
     body: {
       intro: `Your OTP is:${otp}`,
-     
+
       outro: "Don't share this OTP with anyone.",
     },
   };
@@ -47,20 +47,20 @@ export async function sendEmailWithOTP(email: string): Promise<string> {
 
   // Send the email
   const mailOptions: nodemailer.SendMailOptions = {
-    from: 'vishnupriyaotp2002@gmail.com',
+    from: "vishnupriyaotp2002@gmail.com",
     to: email,
-    subject: 'Your OTP for Your App',
+    subject: "Your OTP for Your App",
     text: emailText,
     html: emailTemplate,
   };
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent: ', otp);
-    
+    console.log("Email sent: ", otp);
+
     return otp;
   } catch (error) {
-    console.error('Error sending email: ', (error as Error).message);
+    console.error("Error sending email: ", (error as Error).message);
     throw error;
   }
 }
@@ -73,22 +73,19 @@ export function otpSnd(req: Request, res: Response): void {
     // Call the function to send email with OTP
     sendEmailWithOTP(userEmail)
       .then((otp) => {
-        console.log('OTP sent successfully:', otp);
-        res.send('OTP Sent Successfully');
+        console.log("OTP sent successfully:", otp);
+        res.send("OTP Sent Successfully");
       })
       .catch((error) => {
-        console.error('Failed to send OTP:', (error as Error));
-        res.status(500).send('Failed to send OTP');
+        console.error("Failed to send OTP:", error as Error);
+        res.status(500).send("Failed to send OTP");
       });
   } catch (error) {
     console.log(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send("Internal Server Error");
   }
 }
 
-export  function verifyOtp(val : string){
-  console.log(typeof val);
-  console.log(typeof otp);
-  
-  return parseInt(val) === parseInt(otp)
+export function verifyOtp(val: string) {
+  return parseInt(val) === parseInt(otp);
 }

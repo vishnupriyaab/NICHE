@@ -2,12 +2,27 @@ import { Request, Response } from "express";
 import { UserRequestBody } from "../interface/userInterface";
 import userDb from "../model/userModel";
 import { sendEmailWithOTP, verifyOtp } from "../config/nodeMailer";
+import bcrypt from "bcrypt";
+
+declare module "express" {
+  interface Response {
+    session?: {
+      Notpass: string;
+    };
+  }
+}
+interface body {
+  email: string;
+  password: string;
+}
+let loginError: string | null = null;
 
 // Send the userLogin page
-export function getLogin(req: Request, res: Response) {
+export async function getLogin(req: Request<{}, {}, body>, res: Response) {
   try {
-    res.render("user/userLogin");
-  } catch (error) {
+    res.render("user/userLogin", { loginError: loginError });
+    loginError = null;
+  } catch (error: any) {
     console.error(error);
   }
 }
@@ -19,7 +34,6 @@ export async function userRegister(req: Request, res: Response) {
 
     const isVerified = verifyOtp(otp);
     console.log(isVerified);
-    
 
     if (isVerified) {
       const newUser = new userDb({
@@ -48,5 +62,29 @@ export async function otpSnd(req: Request, res: Response) {
     if (status) res.send("Otp sended");
   } catch (error) {
     console.log(error);
+  }
+}
+
+// post the userLogin
+export async function postLogin(req: Request<{}, {}, body>, res: Response) {
+  try {
+    const user = await userDb.findOne({ email: req.body.email });
+    if (user) {
+      const match = await bcrypt.compare(req.body.password, user.password);
+      if (match) {
+        res.redirect("/home");
+        loginError = null;
+      } else {
+        loginError = "Invalid password";
+        res.redirect("/userLogin");
+      }
+    } else {
+      loginError = "User not found";
+      res.redirect("/userLogin");
+    }
+  } catch (error: any) {
+    loginError = "Internal server error";
+    res.redirect("/userLogin");
+    console.error(error);
   }
 }

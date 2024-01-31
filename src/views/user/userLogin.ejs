@@ -1,190 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NICHE</title>
-    <link rel="stylesheet" href="/css/userLogin.css" />
-    <link rel="stylesheet" href="/css/userLogintwo.css" />
-    <link rel="icon" href="img/favicon.ico" />
-    <script src="https://unpkg.com/split-type"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-  </head>
 
-  <body class="bg-slate-50 dark:bg-slate-800 font-sans">
-    <div class="grid grid-cols-1 sm:grid-cols-2">
-      <div class="flex flex-col justify-center md:min-h-screen relative">
-        <div class="text-center">
-          <!-- <img class="invert-0 dark:invert object-cover" src="img/logo.png" alt="Logo"> -->
-          <h1
-            class="sm:text-9xl md:text-3xl font-semibold dark:text-white"
-            style="clip-path: polygon(0 0, 100% 1%, 100% 100%, 0% 100%)"
-          >
-            Welcome to <br />
-            <span class="logoText font-bold sm:text-6xl text-4xl uppercase"
-              >NICHE</span
-            >
-          </h1>
-          <h4 class="text-1xl dark:text-white mt-1">
-            - Give Wings To Your Dreams -
-          </h4>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NICHE</title>
+  <link rel="stylesheet" href="/css/userLogin.css" />
+  <link rel="stylesheet" href="/css/userLogintwo.css" />
+  <link rel="icon" href="img/favicon.ico" />
+  <script src="https://unpkg.com/split-type"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-800 font-sans">
+  <div class="grid grid-cols-1 sm:grid-cols-2">
+    <div class="flex flex-col justify-center md:min-h-screen relative">
+      <div class="text-center">
+        <!-- <img class="invert-0 dark:invert object-cover" src="img/logo.png" alt="Logo"> -->
+        <h1 class="sm:text-11xl md:text-3xl font-semibold dark:text-white"
+          style="clip-path: polygon(0 0, 100% 1%, 100% 100%, 0% 100%)">
+          Welcome to <br />
+          <span class="logoText font-bold sm:text-6xl text-4xl uppercase">NICHE</span>
+        </h1>
+        <h4 class="text-2xl dark:text-white mt-1">
+          - Give Wings To Your Dreams -
+        </h4>
       </div>
-      <div class="flex flex-col justify-center mt-14 md:mt-10">
-        <div
-          id="signin-section"
-          class="md:p-16 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto"
-        >
-          <h1 class="text-5xl font-medium dark:text-white">Login In</h1>
+    </div>
+
+    <!-------------------- login --------------------->
+    <div class="flex flex-col justify-center mt-14 md:mt-10">
+      <div id="signin-section"
+        class="md:p-16 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto">
+        <h1 class="text-5xl font-medium dark:text-white">Login In</h1>
+        <form method="post" action="/userLogin">
           <div class="flex justify-center">
-            <div class="flex-col flex gap-4 my-10">
-              <input
-                type="text"
-                class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Email"
-              />
-              <input
-                type="password"
-                class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                placeholder="Password"
-                id="userLoginPass"
-              />
+            <p class="text-red-500"><%= loginError %></p>
+            <div class="flex-col flex gap-2 my-10">
+              <p class="text-left">Email</p>
+              <input type="email" name="email" required id="email"
+                class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"/>
+                <p class="text-left">Password</p>
+              <input type="password" name="password" type="password" required
+                class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"/>
               <p class="dark:text-white cursor-pointer mt-5">
                 Forgot Password ?
               </p>
-              <button
-                class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
-              >
-                <a href="./home.html">Login</a>
+              <button type="submit"
+                class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full">
+                Login
               </button>
-              <p>g</p>
+      
             </div>
           </div>
-        </div>
-        <div class="dark:text-white sm:mt-7" id="signinId-section">
-          <p class="flex justify-center">
-            New to NICHE ?
-            <span
-              class="text-blue-400 cursor-pointer ms-2"
-              onclick="showSignup()"
-            >
-              Join now</span
-            >
-          </p>
-        </div>
-        <!-- signup -->
-        <div
-          id="signup-section"
-          class="md:px-20 md:py-10 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto hidden"
-        >
-          <div class="" id="RegisterDiv">
-            <h1 class="text-5xl font-medium">Register</h1>
-            <div class="flex justify-center">
-              <div class="flex-col flex gap-4 my-10">
-                <p id="userErr" class="text-red-500"></p>
-                <p id="userM" class="text-left text-red-600"></p>
-                <input
-                  type="text"
-                  class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                  placeholder="User Name"
-                  id="userName"
-                />
-                <p class="text-left text-red-600"></p>
-                <input
-                  type="email"
-                  class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                  placeholder="Email address"
-                  name="emailAdd"
-                  id="emailAddress"
-                  value=""
-                />
-                <p class="text-left text-red-600"></p>
-                <input
-                  type="number"
-                  class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                  placeholder="Phone"
-                  id="phoneNumber"
-                />
-                <p class="text-left text-red-600"></p>
-                <input
-                  type="password"
-                  class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                  placeholder="Password"
-                  id="passWord"
-                />
-                <p class="text-left text-red-600" id="confirmpasswordErr"></p>
-                <input
-                  type="password"
-                  class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                  placeholder="Confirm password"
-                  id="confirmPassWord"
-                />
-                <button
-                  class="mt-5 bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
-                  onclick="openModal()"
-                >
-                  Create account
-                </button>
+          <div class="dark:text-white sm:mt-7" id="signinId-section">
+            <p class="flex justify-center">
+              New to NICHE ?
+              <span class="text-blue-400 cursor-pointer ms-2" onclick="showSignup()">
+                Join now</span>
+            </p>
+          </div>
+        </form>
+      </div>
+      <!-- <div class="dark:text-white sm:mt-7" id="signinId-section">
+        <p class="flex justify-center">
+          New to NICHE ?
+          <span class="text-blue-400 cursor-pointer ms-2" onclick="showSignup()">
+            Join now</span>
+        </p>
+      </div> -->
 
-                <!-- OTP MODAL -->
 
-                <!-- <p id="errorMsg" class="text-red-500"></p> -->
-              </div>
+      <!-- signup -->
+      <div id="signup-section"
+        class="md:px-20 md:py-10 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto hidden">
+        <div class="" id="RegisterDiv">
+          <h1 class="text-3xl font-medium">Register</h1>
+          <div class="flex justify-center">
+            <div class="flex-col flex gap-2 my-8">
+              <p id="userErr" class="text-red-500"></p>
+              <p id="userM" class="text-left text-red-600"></p>
+              <p class="text-left">User Name</p>
+              <input type="text"
+                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                id="userName" />
+              <p class="text-left text-red-600"></p>
+              <p class="text-left">Email</p>
+              <input type="email"
+                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                name="emailAdd" id="emailAddress" value="" />
+              <p class="text-left text-red-600"></p>
+              <p class="text-left">Phone Number</p>
+              <input type="number"
+                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                id="phoneNumber" />
+
+              <p class="text-left text-red-600"></p>
+              <p class="text-left">Password</p>
+              <input type="password"
+                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                id="passWord" />
+              <p class="text-left text-red-600" id="confirmpasswordErr"></p>
+              <p class="text-left">Confirm password</p>
+              <input type="password"
+                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                id="confirmPassWord" />
+              <button
+                class="mt-5 bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
+                onclick="openModal()">
+                Create account
+              </button>
             </div>
           </div>
-          <div id="otpDiv" class="hidden">
-            <h1 class="text-3xl font-medium">Otp Verification</h1>
+          <div class="dark:text-white sm:mt-7 hidden" id="signupId-section">
+            <p class="flex justify-center">
+              Have an account ?
+              <span class="text-blue-400 cursor-pointer ms-2" onclick="showSignin()">
+                Log in</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- OTP MODAL -->
+        <div id="otpDiv" class="hidden">
+          <div class="flex-col flex gap-6 my-8">
+            <h1 class="text-3xl font-medium">Enter OTP Code</h1>
             <div>
-              <input type="text" placeholder="otpinpput" id="otp" />
-              <button onclick="HandleRegister()">Submit</button>
+              <input type="text"
+                class="shadow appearance-none border rounded py-2 px-4 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                placeholder="otp input" id="otp" />
             </div>
+
+            <button onclick="HandleRegister()"
+              class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full">Verify
+              OTP</button>
           </div>
-        </div>
-        <div class="dark:text-white sm:mt-7 hidden" id="signupId-section">
-          <p class="flex justify-center">
-            Have an account ?
-            <span
-              class="text-blue-400 cursor-pointer ms-2"
-              onclick="showSignin()"
-            >
-              Log in</span
-            >
-          </p>
         </div>
       </div>
     </div>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
-      integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-      const Email = document.querySelector("#emailAddress");
-      const UserName = document.querySelector("#userName");
-      const Password = document.querySelector("#passWord");
-      const Phone = document.querySelector("#phoneNumber");
-      const otp = document.querySelector("#otp");
-      const ConfirmpassWord = document.querySelector("#confirmPassWord");
-      const cpErr = document.querySelector("#confirmpasswordErr");
-      const RegisterDiv = document.querySelector("#RegisterDiv");
-      const otpDiv = document.querySelector("#otpDiv");
-      const userErr = document.getElementById("userErr");
-      // const errMsg = document.getElementById('errorMsg')
 
-      const openModal = () => {
+    <!-- <div class="dark:text-white sm:mt-7 hidden" id="signupId-section">
+      <p class="flex justify-center">
+        Have an account ?
+        <span class="text-blue-400 cursor-pointer ms-2" onclick="showSignin()">
+          Log in</span>
+      </p>
+    </div> -->
+  </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
+    integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    const Email = document.querySelector("#emailAddress");
+    const UserName = document.querySelector("#userName");
+    const Password = document.querySelector("#passWord");
+    const Phone = document.querySelector("#phoneNumber");
+    const otp = document.querySelector("#otp");
+    const ConfirmpassWord = document.querySelector("#confirmPassWord");
+    const cpErr = document.querySelector("#confirmpasswordErr");
+    const RegisterDiv = document.querySelector("#RegisterDiv");
+    const otpDiv = document.querySelector("#otpDiv");
+    const userErr = document.getElementById("userErr");
+    // var passwordToggler = document.getElementById('passwordToggler');
+
+
+    const openModal = () => {
+      if (ConfirmpassWord.value === Password.value) {
         axios
           .post("/otpSend", {
             Email: Email.value,
@@ -203,116 +190,119 @@
               userErr.innerText = error.response.data.errors[0].msg;
             }
           });
-      };
+      } else {
+        cpErr.innerText = "Password does not match";
+      }
+    };
 
-      function HandleRegister() {
-        console.log(ConfirmpassWord.value, Password.value);
-        if (ConfirmpassWord.value === Password.value) {
-          axios
-            .post("/registerValue", {
-              Email: Email.value,
-              UserName: UserName.value,
-              Password: Password.value,
-              Phone: Phone.value,
-              otp: otp.value,
-            })
-            .then((data) => {
-              if (data.data == "Registered Successfully") {
-                Swal.fire({
-                  title: "Registration Successfull",
-                  text: "You clicked the button",
-                  icon: "success",
-                });
-              }
-            })
-            .catch((error) => {
-              console.log(error, "error");
+    function HandleRegister() {
+      console.log(ConfirmpassWord.value, Password.value);
+
+      axios
+        .post("/registerValue", {
+          Email: Email.value,
+          UserName: UserName.value,
+          Password: Password.value,
+          Phone: Phone.value,
+          otp: otp.value,
+
+        })
+        .then((data) => {
+          if (data.data == "Registered Successfully") {
+            Swal.fire({
+              title: "Verification successful",
+              // text: "You clicked the button",
+              icon: "Ok!",
+              
             });
-          cpErr.innerHTML = " ";
-        } else {
-          cpErr.innerText = "Password does not match";
-        }
+          }
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+      cpErr.innerHTML = " ";
+    }
+
+    const showSignup = () => {
+      const signupSection = document.getElementById("signup-section");
+      const signinSection = document.getElementById("signin-section");
+      const signinIdSection = document.getElementById("signinId-section");
+      const signupIdSection = document.getElementById("signupId-section");
+
+      signupSection.classList.remove("hidden");
+      signupIdSection.classList.remove("hidden");
+      signupSection.classList.add("animate__animated", "animate__flipInY");
+
+      signinSection.classList.add("hidden");
+      signinIdSection.classList.add("hidden");
+    };
+
+    const showSignin = () => {
+      const signupSection = document.getElementById("signup-section");
+      const signinSection = document.getElementById("signin-section");
+      const signinIdSection = document.getElementById("signinId-section");
+      const signupIdSection = document.getElementById("signupId-section");
+
+      signinSection.classList.remove("hidden");
+      signinIdSection.classList.remove("hidden");
+      signinSection.classList.add("animate__animated", "animate__flipInY");
+
+      signupSection.classList.add("hidden");
+      signupIdSection.classList.add("hidden");
+    };
+
+    const logoText = document.querySelector(".logoText");
+    let text = new SplitType(logoText);
+    let characters = document.querySelectorAll(".char");
+    for (let i = 0; i < characters.length; i++) {
+      characters[i].classList.add("translate-y-full");
+    }
+    gsap.to(".char", {
+      y: 0,
+      stagger: 0.05,
+      delay: 0.02,
+      duration: 0.5,
+    });
+
+    // Function to disable scroll
+    function disableScroll() {
+      var scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      var scrollLeft =
+        window.pageXOffset || document.documentElement.scrollLeft;
+
+      document.body.style.overflow = "hidden";
+      document.body.style.top = `-${scrollTop}px`;
+      document.body.style.left = `-${scrollLeft}px`;
+    }
+
+    // JavaScript function to enable scroll
+    function enableScroll() {
+      var scrollTop = parseInt(document.body.style.top, 10);
+      var scrollLeft = parseInt(document.body.style.left, 10);
+
+      document.body.style.overflow = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+
+      window.scrollTo(-scrollLeft, -scrollTop);
+    }
+
+    // Function to check the screen width and call appropriate function
+    function handleScrollBasedOnScreenWidth() {
+      if (window.innerWidth > 640) {
+        disableScroll();
+      } else {
+        enableScroll();
       }
+    }
 
-      const showSignup = () => {
-        const signupSection = document.getElementById("signup-section");
-        const signinSection = document.getElementById("signin-section");
-        const signinIdSection = document.getElementById("signinId-section");
-        const signupIdSection = document.getElementById("signupId-section");
+    // Call the function initially to set the scroll behavior based on the initial screen size
+    handleScrollBasedOnScreenWidth();
 
-        signupSection.classList.remove("hidden");
-        signupIdSection.classList.remove("hidden");
-        signupSection.classList.add("animate__animated", "animate__flipInY");
+    // Attach the function to the window.onresize event to handle changes in screen size
+    window.onresize = handleScrollBasedOnScreenWidth;
+  </script>
+</body>
 
-        signinSection.classList.add("hidden");
-        signinIdSection.classList.add("hidden");
-      };
-
-      const showSignin = () => {
-        const signupSection = document.getElementById("signup-section");
-        const signinSection = document.getElementById("signin-section");
-        const signinIdSection = document.getElementById("signinId-section");
-        const signupIdSection = document.getElementById("signupId-section");
-
-        signinSection.classList.remove("hidden");
-        signinIdSection.classList.remove("hidden");
-        signinSection.classList.add("animate__animated", "animate__flipInY");
-
-        signupSection.classList.add("hidden");
-        signupIdSection.classList.add("hidden");
-      };
-
-      const logoText = document.querySelector(".logoText");
-      let text = new SplitType(logoText);
-      let characters = document.querySelectorAll(".char");
-      for (let i = 0; i < characters.length; i++) {
-        characters[i].classList.add("translate-y-full");
-      }
-      gsap.to(".char", {
-        y: 0,
-        stagger: 0.05,
-        delay: 0.02,
-        duration: 0.5,
-      });
-
-      // Function to disable scroll
-      function disableScroll() {
-        var scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
-        var scrollLeft =
-          window.pageXOffset || document.documentElement.scrollLeft;
-
-        document.body.style.overflow = "hidden";
-        document.body.style.top = `-${scrollTop}px`;
-        document.body.style.left = `-${scrollLeft}px`;
-      }
-
-      // JavaScript function to enable scroll
-      function enableScroll() {
-        var scrollTop = parseInt(document.body.style.top, 10);
-        var scrollLeft = parseInt(document.body.style.left, 10);
-
-        document.body.style.overflow = "";
-        document.body.style.top = "";
-        document.body.style.left = "";
-
-        window.scrollTo(-scrollLeft, -scrollTop);
-      }
-
-      // Function to check the screen width and call appropriate function
-      function handleScrollBasedOnScreenWidth() {
-        if (window.innerWidth > 640) {
-          disableScroll();
-        } else {
-          enableScroll();
-        }
-      }
-
-      // Call the function initially to set the scroll behavior based on the initial screen size
-      handleScrollBasedOnScreenWidth();
-
-      // Attach the function to the window.onresize event to handle changes in screen size
-      window.onresize = handleScrollBasedOnScreenWidth;
-    </script>
-  </body>
 </html>
