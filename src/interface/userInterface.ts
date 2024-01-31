@@ -5,3 +5,10 @@ export interface UserRequestBody {
   Phone: string;
   otp:string
 }
+
+// global express-session = add custom values
+declare module "express-session" {
+  interface SessionData {
+    userId: string;
+  }
+}
