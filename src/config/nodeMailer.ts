@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import * as nodemailer from "nodemailer";
 import Mailgen from "mailgen";
 
+
 // Function to generate a 4-digit OTP
 let otp: string = "0";
 
@@ -16,10 +17,10 @@ export async function sendEmailWithOTP(email: string): Promise<string> {
 
   // Create a Nodemailer transporter
   const transporter = nodemailer.createTransport({
-    service: "gmail", // e.g., 'gmail'
+    service: "gmail",
     auth: {
-      user: "vishnupriyaotp2002@gmail.com",
-      pass: "deuw ojyo qddm sdwr",
+      user: process.env.AUTH_MAIL,
+      pass: process.env.AUTH_PASS,
     },
   });
 

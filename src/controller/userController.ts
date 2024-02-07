@@ -3,7 +3,6 @@ import { UserRequestBody } from "../interface/userInterface";
 import userDb from "../model/userModel";
 import { sendEmailWithOTP, verifyOtp } from "../config/nodeMailer";
 import bcrypt from "bcrypt";
-import { Session } from "express-session";
 
 interface body {
   email: string;

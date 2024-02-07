@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 interface User {
     username: string;
     email: string;
+    phone: number;
     password: string;
 }
 
@@ -21,6 +22,10 @@ const userSchema = new Schema<User>({
         type: String,
         required: true,
     },
+    phone: {
+        type: Number,
+        required: true,
+    }
 });
 
 // Use a pre-save hook to hash the password before saving
