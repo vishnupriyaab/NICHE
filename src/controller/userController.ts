@@ -5,9 +5,6 @@ import { sendEmailWithOTP, verifyOtp } from "../config/nodeMailer";
 import bcrypt from "bcrypt";
 import { Session } from "express-session";
 
-
-
-
 interface body {
   email: string;
   password: string;
@@ -15,19 +12,75 @@ interface body {
 let loginError: string | null = null;
 
 // Send the userLogin page
-export async function getLogin(req: Request<{}, {}, body>, res: Response):Promise<void> {
+export async function getLogin(
+  req: Request<{}, {}, body>,
+  res: Response
+): Promise<void> {
   try {
     res.render("user/userLogin", { loginError: loginError });
     loginError = null;
-    return
+    return;
   } catch (error: any) {
     console.error(error);
   }
 }
-export async function getHome(req: Request<{}, {}, body>, res: Response):Promise<void> {
+export async function getHome(
+  req: Request<{}, {}, body>,
+  res: Response
+): Promise<void> {
   try {
     res.render("user/home", { loginError: loginError });
     loginError = null;
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+
+export async function getShop(req: Request, res: Response) {
+  try {
+    res.render("user/shop");
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+export async function shopDetails(req: Request, res: Response) {
+  try {
+    res.render("user/shopDetails");
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+export async function cart(req: Request, res: Response) {
+  try {
+    res.render("user/cart");
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+export async function checkout(req: Request, res: Response) {
+  try {
+    res.render("user/checkout");
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+export async function testimonial(req: Request, res: Response) {
+  try {
+    res.render("user/testimonial");
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+export async function _404page(req: Request, res: Response) {
+  try {
+    res.render("user/include/_404page");
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+export async function contact(req: Request, res: Response) {
+  try {
+    res.render("user/contact");
   } catch (error: any) {
     console.error(error);
   }
@@ -60,7 +113,7 @@ export async function userRegister(req: Request, res: Response) {
 }
 
 // 2.1 - 3.1 ms SPEED otp sending
-export async function otpSnd(req: Request, res: Response):Promise<void> {
+export async function otpSnd(req: Request, res: Response): Promise<void> {
   try {
     console.log(req.body);
 
@@ -73,9 +126,10 @@ export async function otpSnd(req: Request, res: Response):Promise<void> {
 
 // post the userLogin
 
-
-
-export async function postLogin(req: Request<{}, {}, body>, res: Response):Promise<void> {
+export async function postLogin(
+  req: Request<{}, {}, body>,
+  res: Response
+): Promise<void> {
   try {
     const user = await userDb.findOne({ email: req.body.email });
     if (user) {
@@ -84,19 +138,16 @@ export async function postLogin(req: Request<{}, {}, body>, res: Response):Promi
         req.session.userId = user.id;
         loginError = null;
         // logout
-        // delete req.session.userId 
+        // delete req.session.userId
         // res.redirect("/userLogin");
         res.redirect("/home");
-      
       } else {
         loginError = "Invalid password";
         res.redirect("/userLogin");
-        
       }
     } else {
       loginError = "User not found";
       res.redirect("/userLogin");
-    
     }
   } catch (error: any) {
     console.error(error);

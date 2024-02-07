@@ -174,10 +174,13 @@
   opacity: 1;
 }
 .bg-secondary{
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(230, 188, 0);
+}
+.bg-second{
+  background-color: black;
 }
 .bg-primary{
-    background-color: rgb(49, 43, 43);
+    background-color: rgba(49, 43, 43, 0.758);
 }
 .btn-brdr:hover{
     background-color: gray;
@@ -196,15 +199,22 @@
 /*** Hero Header ***/
 .hero-header {
   background: linear-gradient(
-      rgba(255, 255, 255, 0.505),
-      rgba(0, 0, 0, 0.575)
+      rgba(255, 255, 255, 0.557),
+      rgba(0, 0, 0, 0)
     ),
-    url(../img/download.jpeg);
+    url(../img/front.png);
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
+  height: 578px;
+  width: 100%;
 }
 
+@media (min-width: 1200px) {
+  .carousel-item {
+    width: 100%;
+  }
+}
 .carousel-item {
   position: relative;
 }
@@ -240,7 +250,7 @@
 
 .page-header {
   position: relative;
-  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+  background: linear-gradient(rgba(255, 252, 252, 0.463), rgba(255, 252, 252, 0.463)),
     url(../img/Shop.jpeg);
   background-position: center center;
   background-repeat: no-repeat;
@@ -532,10 +542,12 @@
 
 .carousel-inner.img {
   object-fit: cover;
+  width: fit-content;
 }
 
 .carousel-item {
     position: relative;
+   
   }
 
   .carousel-item .btn {
@@ -545,5 +557,3 @@
   .carousel-item:hover .btn {
     display: inline-block;
   }
-
-  

@@ -66,16 +66,8 @@
           </div>
         </form>
       </div>
-      <!-- <div class="dark:text-white sm:mt-7" id="signinId-section">
-        <p class="flex justify-center">
-          New to NICHE ?
-          <span class="text-blue-400 cursor-pointer ms-2" onclick="showSignup()">
-            Join now</span>
-        </p>
-      </div> -->
-
-
-      <!-- signup -->
+  
+      <!----------------------------- REGISTER --------------------------->
       <div id="signup-section"
         class="md:px-20 md:py-10 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto hidden">
         <div class="" id="RegisterDiv">
@@ -125,7 +117,7 @@
           </div>
         </div>
 
-        <!-- OTP MODAL -->
+        <!------------------------------------ OTP MODAL --------------------------------->
         <div id="otpDiv" class="hidden">
           <div class="flex-col flex gap-6 my-8">
             <h1 class="text-3xl font-medium">Enter OTP Code</h1>
@@ -142,14 +134,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <div class="dark:text-white sm:mt-7 hidden" id="signupId-section">
-      <p class="flex justify-center">
-        Have an account ?
-        <span class="text-blue-400 cursor-pointer ms-2" onclick="showSignin()">
-          Log in</span>
-      </p>
-    </div> -->
   </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
@@ -167,8 +151,7 @@
     const RegisterDiv = document.querySelector("#RegisterDiv");
     const otpDiv = document.querySelector("#otpDiv");
     const userErr = document.getElementById("userErr");
-    // var passwordToggler = document.getElementById('passwordToggler');
-
+  
 
     const openModal = () => {
       if (ConfirmpassWord.value === Password.value) {

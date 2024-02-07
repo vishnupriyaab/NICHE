@@ -5,6 +5,7 @@ import userRoute from "./router/userRouter";
 import path from "path";
 import morgan from "morgan";
 import session, { MemoryStore } from "express-session"
+import adminRoute from "./router/adminRoute";
 
 const app: Application = express();
 app.use(morgan("dev"));
@@ -35,6 +36,7 @@ app.use(express.static(__dirname + "/assets"));
 
 //Routs
 app.use("/", userRoute);
+app.use("/", adminRoute);
 
 connectionDB(); //connecting to database
 
