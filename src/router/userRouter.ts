@@ -4,6 +4,7 @@ import isLoggedIn from "../middleware/sessionAuth";
 import { userRegistrationValidation, validateUserRegistration } from "../middleware/userAuth";
 
 
+
 const userRoute: Router = Router();
 
 userRoute.get("/userLogin", getLogin);

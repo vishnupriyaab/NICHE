@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <title>NICHE Dashboard</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
@@ -12,42 +11,74 @@
     <meta property="og:url" content="" />
     <meta property="og:image" content="" />
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="/img/theme/favicon.svg" />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/img/theme/favicon.svg"
+    />
     <!-- Template CSS -->
     <link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
-</head>
+  </head>
 
-<body class="overflow-hidden">
+  <body class="overflow-hidden">
     <main>
-        <section class="content-main mt-80 mb-80  justify-content-center">
-            <div class="card mx-auto card-login ">
-                <div class="card-body">
-                    <h2 class="card-title mb-4 mt-40 text-center">Admin Login</h2>
-                    <form method="post" action="/adminAuth">
-                        <div class="mb-3 mb-20">
-                            <p class="text-left">Email</p>
-                            <input class="form-control" name="email" type="email" />
-                        </div>
-                        <div class="mb-3">
-                            <p class="text-left">Password</p>
-                            <input class="form-control" name="password" type="password" />
-                        </div>
+      <section class="content-main mt-80 mb-80 justify-content-center">
+        <div class="card mx-auto card-login">
+          <div class="card-body">
+            <h2 class="card-title mb-4 mt-40 text-center">Admin Login</h2>
+            <form method="post">
+              <p class="text-red-500" id="emailErr"><%= loginError %></p>
+              <div class="mb-3 mb-20">
+                <p class="text-left">Email</p>
+                <input class="form-control" id="email" type="email" name="email" />
+              </div>
+              <div class="mb-3">
+                <p class="text-left">Password</p>
+                <input class="form-control" id="password" name="password" type="password"  />  
+              </div>
 
-                        <div class="mb-4 text-center mt-50">
-                            <button type="submit" class="btn btn-primary w-70">Login</button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-        </section>
-
+              <div class="mb-4 text-center mt-50">
+                <button onclick="adminLogin()" type="submit" class="btn btn-primary w-70">
+                  Login
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
     </main>
     <script src="/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="/js/main.js?v=1.1" type="text/javascript"></script>
-</body>
+    <script>
+      
+      
+      function adminLogin(){
+        const adminEmail = document.querySelector("#email");
+    
+        const adminPassword = document.querySelector("#password");
+        const adminemailErr = document.querySelector("#emailErr");
+        try {
+          
+    
+          axios.post('/adminlogin',{
+          email: adminEmail.value,
+          password: adminPassword.value,
+        }).then((res)=>{
+console.log(res);
+        }).catch((error)=>{
+            if (error) {
+              adminemailErr.innerText = error.response.data.errors[0].msg;
+            }
+        })
+      } catch (error) {
+          console.log(error);
+        }
+        
+      }
+    </script>
 
+  </body>
 </html>

@@ -1,14 +1,16 @@
 <%- include('include/_header') %>
             <section class="content-main">
                 <div class="content-header">
+                    
                     <div>
-                        <h2 class="content-title card-title">Products List</h2>
+                        <h2 class="content-title card-title">Products</h2>
                         <p>Lorem ipsum dolor sit amet.</p>
                     </div>
                     <div>
-                        <a href="#" class="btn btn-light rounded font-md">Export</a>
-                        <a href="#" class="btn btn-light rounded font-md">Import</a>
-                        <a href="#" class="btn btn-primary btn-sm rounded">Create new</a>
+                        <a href="#" class="btn btn-primary btn-sm rounded">Add Product</a>
+                    </div>
+                    <div>
+                        <a href="#" class="btn btn-primary btn-sm rounded">Unlisted Products</a>
                     </div>
                 </div>
                 <div class="card mb-4">
@@ -16,7 +18,7 @@
                         <div class="row align-items-center">
                             <div class="col col-check flex-grow-0">
                                 <div class="form-check ms-2">
-                                    <input class="form-check-input" type="checkbox" value="" />
+                                    <!-- <input class="form-check-input" type="checkbox" value="" /> -->
                                 </div>
                             </div>
                             <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
@@ -27,9 +29,9 @@
                                     <option>Automobile</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 col-6">
+                            <!-- <div class="col-md-2 col-6">
                                 <input type="date" value="02.05.2021" class="form-control" />
-                            </div>
+                            </div> -->
                             <div class="col-md-2 col-6">
                                 <select class="form-select">
                                     <option selected>Status</option>
@@ -46,7 +48,7 @@
                             <div class="row align-items-center">
                                 <div class="col col-check flex-grow-0">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" />
+                                        <!-- <input class="form-check-input" type="checkbox" /> -->
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
@@ -74,69 +76,9 @@
                             <!-- row .// -->
                         </article>
                         <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="/imggitems/2.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">All Natural Italian-Style Chicken</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$990.99</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-success">Active</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
+                     
                         <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="/imggitems/3.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">Gortons Beer Battered Fish Fillets</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$76.99</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-warning">Archived</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
+                       
                         <!-- itemlist  .// -->
                         <article class="itemlist">
                             <div class="row align-items-center">
@@ -366,7 +308,7 @@
                     <!-- card-body end// -->
                 </div>
                 <!-- card end// -->
-                <div class="pagination-area mt-30 mb-50">
+                <!-- <div class="pagination-area mt-30 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
                             <li class="page-item active"><a class="page-link" href="#">01</a></li>
@@ -379,22 +321,15 @@
                             </li>
                         </ul>
                     </nav>
-                </div>
+                </div> -->
             </section>
             <!-- content-main end// -->
-            <footer class="main-footer font-xs">
-                <div class="row pb-30 pt-15">
-                    <div class="col-sm-6">
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script>
-                        &copy; Nest - HTML Ecommerce Template .
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="text-sm-end">All rights reserved</div>
-                    </div>
-                </div>
-            </footer>
+           
+
+            
+        <%- include('include/_footer') %>
+
+        
         </main>
         <script src="/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="/js/vendors/bootstrap.bundle.min.js"></script>

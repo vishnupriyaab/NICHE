@@ -86,9 +86,9 @@ export async function contact(req: Request, res: Response) {
 }
 
 //UserSignup
-export async function userRegister(req: Request, res: Response) {
+export async function userRegister(req: Request<{},{},UserRequestBody>, res: Response) {
   try {
-    const { Email, UserName, Password, Phone, otp }: UserRequestBody = req.body;
+    const { Email, UserName, Password, Phone, otp } = req.body;
 
     const isVerified = verifyOtp(otp);
     console.log(isVerified);

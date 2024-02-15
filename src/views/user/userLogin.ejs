@@ -84,7 +84,7 @@
               <p class="text-left">Email</p>
               <input type="email"
                 class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
-                name="emailAdd" id="emailAddress" value="" />
+                name="emailAdd" id="emailAddress" />
               <p class="text-left text-red-600"></p>
               <p class="text-left">Phone Number</p>
               <input type="number"
@@ -96,6 +96,7 @@
               <input type="password"
                 class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
                 id="passWord" />
+
               <p class="text-left text-red-600" id="confirmpasswordErr"></p>
               <p class="text-left">Confirm password</p>
               <input type="password"
@@ -168,7 +169,6 @@
             otpDiv.classList.remove("hidden");
           })
           .catch((error) => {
-            console.log(error.response.data.errors);
             if (error) {
               userErr.innerText = error.response.data.errors[0].msg;
             }
@@ -194,7 +194,6 @@
           if (data.data == "Registered Successfully") {
             Swal.fire({
               title: "Verification successful",
-              // text: "You clicked the button",
               icon: "Ok!",
             }).then(()=>{
               window.location.href ="/home";

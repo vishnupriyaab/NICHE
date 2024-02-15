@@ -1,20 +1,13 @@
-import mongoose, { Document, Schema } from 'mongoose';
-import bcrypt from 'bcrypt';
+import mongoose, { Document,Schema } from "mongoose";
+import bcrypt from "bcrypt";
 
-interface User {
-    username: string;
+export interface IAdmin {
     email: string;
-    phone: number;
     password: string;
-    block: Boolean;
-    liveStatus: Boolean;
+    role: string;
 }
 
-const userSchema = new Schema<User>({
-    username: {
-        type: String,
-        required: true,
-    },
+const adminSchema = new Schema<IAdmin>({
     email: {
         type: String,
         required: true,
@@ -24,24 +17,15 @@ const userSchema = new Schema<User>({
         type: String,
         required: true,
     },
-    phone: {
-        type: Number,
-        required: true,
-    },
-    block: {
-        type: Boolean,
-        default: false,
-    },
-    liveStatus: {
-        type: Boolean,
-        default: true,
+    role: {
+        type: String,
+        required :true,
     }
-
 });
 
 // Use a pre-save hook to hash the password before saving
-userSchema.pre('save', async function (next) {
-    const user = this as Document & User;
+adminSchema.pre('save', async function (next) {
+    const user = this as Document & IAdmin;
 
     // Only hash the password if it's modified or new
     if (!user.isModified('password')) {
@@ -64,6 +48,6 @@ userSchema.pre('save', async function (next) {
     }
 });
 
-const userDb = mongoose.model<User>('userdb', userSchema);
+const adminDb = mongoose.model<IAdmin>('admindb',adminSchema)
 
-export default userDb;
+export default adminDb;
