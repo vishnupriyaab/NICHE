@@ -46,7 +46,7 @@ export async function addCategory(req: Request, res: Response) {
         name: name,
       });
       await newCategory.save();
-      // res.send("Category added successfully");
+      res.send("successs");
       console.log("susxcvb");
       
     }
