@@ -268,15 +268,16 @@
         
                 const name = document.getElementById("category");
                 const categoryErr = document.getElementById("categoryErr");
-
-            
                 console.log(name.value,"sdfghj");
                 axios.post("/addcategory",{
                     name: name.value,
                 }).then((res)=>{
+                    categoryErr.innerHTML = res.data;
+
                     console.log(res);
                 }).catch((error)=>{
                    if(error){
+                    console.log(error);
                     categoryErr.innerHTML = error.response.data.errors[0].msg;
                    }
                 })
