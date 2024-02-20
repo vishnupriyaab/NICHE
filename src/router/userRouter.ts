@@ -8,7 +8,7 @@ import { userRegistrationValidation, validateUserRegistration } from "../middlew
 const userRoute: Router = Router();
 
 userRoute.get("/userLogin", getLogin);
-userRoute.get("/home", isLoggedIn,getHome);
+userRoute.get("/", getHome); //isLoggedIn
 userRoute.get("/shop",getShop);
 userRoute.get("/shopDetails",shopDetails);
 userRoute.get("/cart",cart);

@@ -82,9 +82,9 @@
             <a href="#" class="text-white"
               ><small class="text-white mx-2">Contact</small>/</a
             >
-            <a href="#" class="text-white"
+            <!-- <a href="#" class="text-white"
               ><small class="text-white ms-2">Sign In</small></a
-            >
+            > -->
           </div>
         </div>
       </div>
@@ -142,9 +142,17 @@
                   >3</span
                 >
               </a>
-              <a href="#" class="my-auto">
-                <i class="fas fa-user fa-2x"></i>
-              </a>
+              <% if (user) { %>
+                <a href="#" class="my-auto">
+                  <i class="fas fa-user fa-2x"></i>
+                </a>
+                <% } else { %>
+                  <a href="/userLogin" class="my-auto">
+                    <i class="fas fa-user fa-2x"></i>
+                  </a>
+               
+              <% } %>
+              
             </div>
           </div>
         </nav>

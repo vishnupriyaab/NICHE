@@ -16,7 +16,7 @@ export async function getLogin(
   res: Response
 ): Promise<void> {
   try {
-    res.render("user/userLogin", { loginError: loginError });
+    res.render("user/userLogin", { loginError });
     loginError = null;
     return;
   } catch (error: any) {
@@ -28,7 +28,10 @@ export async function getHome(
   res: Response
 ): Promise<void> {
   try {
-    res.render("user/home", { loginError: loginError });
+    const user = req.session.userId
+    console.log(req.session);
+    
+    res.render("user/home", { loginError, user});
     loginError = null;
   } catch (error: any) {
     console.error(error);
@@ -139,7 +142,7 @@ export async function postLogin(
         // logout
         // delete req.session.userId
         // res.redirect("/userLogin");
-        res.redirect("/home");
+        res.redirect("/");
       } else {
         loginError = "Invalid password";
         res.redirect("/userLogin");

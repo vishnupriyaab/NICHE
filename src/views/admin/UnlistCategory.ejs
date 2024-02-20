@@ -2,8 +2,8 @@
     <section class="content-main">
         <div class="content-header">
             <div>
-                <h2 class="content-title card-title">Categories</h2>
-                <p>Add, edit or delete a category</p>
+                <h2 class="content-title card-title">Unlisted Categories</h2>
+                <p>Add or Edit a category</p>
             </div>
             <div>
                 <input type="text" placeholder="Search Categories" class="form-control bg-white" />
@@ -35,8 +35,8 @@
                         </div>
 
                         <div class="d-grid mt-70">
-                            <p id="editCategoryErr" style="color: red;"></p>
-                            <button class="btn btn-primary" onclick="editcategory()">Submit</button>
+                            <p id="categoryErr" style="color: red;"></p>
+                            <button class="btn btn-primary" onclick="editcategory()">Submit </button>
                         </div>
                         <!-- </form> -->
                     </div>
@@ -57,7 +57,6 @@
                                         <th class="text-center">Edit</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
                                     <% category.map((value, index)=> { %>
 
@@ -70,19 +69,11 @@
                                                 <%= value.name %>
                                             </td>
                                             <td>
-                                                <% if (value.unlistStatus == true) { %>
-                                                    <button onclick="unlistCategory('<%= value._id %>')" id="Listbtn"
-                                                        class="btn btn-light rounded btn-sm font-sm justify-content-center"
-                                                        style="color: red; width: 50px; height: 25px">Unlist
-                                                    </button>
-                                                <% } else { %>
-                                                    <button onclick="listCategory('<%= value._id %>')" id="Listbtn"
-                                                        class="btn btn-light rounded btn-sm font-sm justify-content-center"
-                                                        style="color: green; width: 50px; height: 25px">List
-                                                    </button>
-                                                <% } %>
+                                                <button onclick="listCategory(`<%= value._id %>`)" id="Listbtn"
+                                                    class="btn btn-light rounded btn-sm font-sm justify-content-center "
+                                                    style="color: red; width: 50px; height: 25px">List
+                                                </button>
                                             </td>
-                                            
 
                                             <td class="text-center">
                                                 <a href="#"
@@ -96,6 +87,7 @@
                                         </tr>
                                         <% }) %>
                                 </tbody>
+                                
                             </table>
                         </div>
                     </div>
@@ -121,50 +113,38 @@
         <script src="/js/vendors/select2.min.js"></script>
         <script src="/js/vendors/perfect-scrollbar.js"></script>
         <script src="/js/vendors/jquery.fullscreen.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
         <!-- Main Script -->
         <script src="/js/main.js?v=1.1" type="text/javascript"></script>
         <script>
 
 
             const unlistCategory = (id) => {
+                const unlistCategory = document.getElementById("unListbtn")
+                const listCategory = document.getElementById("Listbtn")
+                console.log(unlistCategory);
+               
 
-                axios.patch("/unlistCategory", {
-                    id: id,
-                }).then((value) => {
-                    Swal.fire({
-                        title: "Good job!",
-                        text: "Successfully Unlisted",
-                        icon: "success"
-                    });
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 1000);
-                }).catch((error) => {
-                    window.location.reload();
-                    console.log(error);
-                })
+                                axios.patch("/unlistCategory",{
+                                    id:id,
+                                }).then((res)=>{
+                console.log(res);
+                if(res.data == true){
+unlistCategory.textContent = "unlist"
+                    // unlistCategory.style.display = 'none';
+                    // listCategory.style.display = 'block';
+                }else{
+                    unlistCategory.style.display = 'block';
+                    listCategory.style.display = 'none';
+                    unlistCategory.textContent = "unlist"
+                }
+
+                                }).catch((error)=>{
+                                    console.log(error);
+                                })
             }
 
-            const listCategory = (id) => {
 
-                axios.patch("/listCategory", {
-                    id: id,
-                }).then((value) => {
-                    Swal.fire({
-                        title: "Good job!",
-                        text: "Successfully Listed",
-                        icon: "success"
-                    });
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 1000);
-                }).catch((error) => {
-                    window.location.reload();
-                    console.log(error);
-                })
-            }
+
 
             const addCategory = () => {
                 const name = document.getElementById("category");
@@ -188,12 +168,12 @@
             const editcategory = () => {
                 const name = document.getElementById("category1");
                 const id = document.getElementById("category2");
-                const editCategoryErr = document.getElementById("editCategoryErr");
+                const categoryErr = document.getElementById("categoryErr");
                 axios.patch("/editcategory", {
                     name: name.value,
                     id: id.value
                 }).then((res) => {
-                    editCategoryErr.innerHTML = res.data;
+                    categoryErr.innerHTML = res.data;
 
                     if (res.data == "success") {
 
@@ -201,7 +181,7 @@
                     }
                 }).catch((error) => {
                     if (error) {
-                        editCategoryErr.innerHTML = error.response.data.errors[0].msg;
+                        categoryErr.innerHTML = error.response.data.errors[0].msg;
                     }
                 })
             }

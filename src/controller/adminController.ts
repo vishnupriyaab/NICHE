@@ -2,10 +2,14 @@ import { Request, Response } from "express";
 import adminDb, { IAdmin } from "../model/adminModel";
 import bcrypt from "bcrypt";
 import categoryDb from "../model/categoryModel";
+import cloudinaryUploadImage from "../config/cloudinary";
+import { Product } from "../interface/productInterface";
+import productDb from "../model/productModel";
 
 interface body {
   email: string;
   password: string;
+  id: string;
 }
 let loginError: string | null = null;
 
@@ -26,7 +30,7 @@ export async function getUsers(req: Request, res: Response) {
 export async function getCategory(req: Request, res: Response) {
   try {
     const category = await categoryDb.find();
-    console.log(category);
+    // console.log(category);
     res.render("admin/category", { category });
   } catch (error: any) {
     console.error(error);
@@ -36,22 +40,81 @@ export async function getCategory(req: Request, res: Response) {
 export async function addCategory(req: Request, res: Response) {
   try {
     const { name } = req.body;
-    const alreadyExisted = await categoryDb.findOne({ name });
-    console.log(alreadyExisted, "dfghjkl");
+    console.log(name);
+    const cname = name.toUpperCase().trim();
+
+    const alreadyExisted = await categoryDb.findOne({ name: cname });
+
     if (alreadyExisted) {
       res.send("Already Existed");
-      
     } else {
       const newCategory = new categoryDb({
-        name: name,
+        name: cname,
       });
       await newCategory.save();
-      res.send("successs");
+      res.send("success");
       console.log("susxcvb");
-      
     }
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function editCategory(req: Request, res: Response) {
+  try {
+    const { name, id } = req.body;
+    const cname = name.toUpperCase().trim();
+
+    const alreadyExisted = await categoryDb.findOne({ name: cname });
+    if (alreadyExisted) {
+      res.send("Already Existed");
+    } else {
+      console.log(id);
+
+      await categoryDb.updateOne({ _id: id }, { $set: { name: cname } });
+      res.send("success");
+      console.log("susxcvb");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function unlistCategory(req: Request, res: Response) {
+  try {
+    const data = await categoryDb.findOneAndUpdate(
+      { _id: req.body.id },
+      { $set: { unlistStatus: false } }
+    );
+    if (data) {
+      res.status(200).json({ status: true });
+    } else {
+      res.status(401).json({
+        message: "Invalid Id",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+export async function listCategory(req: Request, res: Response) {
+  try {
+    const data = await categoryDb.findOneAndUpdate(
+      { _id: req.body.id },
+      { $set: { unlistStatus: true } }
+    );
+    if (data) {
+      res.status(200).json({ status: true });
+    } else {
+      res.status(401).json({
+        message: "Invalid Id",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 }
 
@@ -133,5 +196,51 @@ export async function adminRegister(
     } else {
       res.json(error);
     }
+  }
+}
+export async function getaddProduct(req: Request, res: Response) {
+  try {
+    const category = await categoryDb.find();
+    res.render("admin/addProduct", { category });
+  } catch (error: any) {
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+export async function addproduct(req: Request<{}, {}, Product>, res: Response) {
+  try {
+    let { name, description, price, stock, imgArr, category } = req.body;
+
+    if (!name || !description || !price || !stock || !imgArr || !category) {
+      return res
+        .status(401)
+        .json({ errStatus: true, message: "Content cannot be empty" });
+    }
+
+    const catID = await categoryDb.findById(category);
+
+    const url = await cloudinaryUploadImage(imgArr);
+
+    const newCat = new productDb({
+      name,
+      description,
+      price,
+      stock,
+      imgArr: url,
+      category: catID,
+    });
+
+    const saved = await newCat.save();
+
+    if (saved) {
+      return res.status(201).json({ message: "Product Added" });
+    }
+    
+    // Add a return statement here if necessary
+    return res.status(500).send("Internal Server Error");
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal Server Error");
   }
 }

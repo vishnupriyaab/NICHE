@@ -18,35 +18,36 @@
 
 <body class="bg-slate-50 dark:bg-slate-800 font-sans">
   <div class="grid grid-cols-1 sm:grid-cols-2">
-    <div class="flex flex-col justify-center md:min-h-screen relative">
-      <div class="text-center">
-        <!-- <img class="invert-0 dark:invert object-cover" src="img/logo.png" alt="Logo"> -->
-        <h1 class="sm:text-11xl md:text-3xl font-semibold dark:text-white"
-          style="clip-path: polygon(0 0, 100% 1%, 100% 100%, 0% 100%)">
-          Welcome to <br />
-          <span class="logoText font-bold sm:text-6xl text-4xl uppercase">NICHE</span>
-        </h1>
-        <h4 class="text-2xl dark:text-white mt-1">
-          - Give Wings To Your Dreams -
-        </h4>
-      </div>
-    </div>
+    <div class="flex justify-center items-center min-h-screen relative">
+  <div class="text-center">
+    <!-- <img class="invert-0 dark:invert object-cover" src="img/logo.png" alt="Logo"> -->
+    <h1 class="sm:text-11xl md:text-3xl font-semibold dark:text-white"
+      style="clip-path: polygon(0 0, 100% 1%, 100% 100%, 0% 100%)">
+      Welcome to <br />
+      <span class="logoText font-bold sm:text-6xl text-4xl uppercase">NICHE</span>
+    </h1>
+    <h4 class="text-2xl dark:text-white mt-1">
+      - Give Wings To Your Dreams -
+    </h4>
+  </div>
+</div>
+
 
     <!-------------------- login --------------------->
     <div class="flex flex-col justify-center mt-14 md:mt-10">
       <div id="signin-section"
-        class="md:p-16 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto">
-        <h1 class="text-5xl font-medium dark:text-white">Login In</h1>
+        class=" md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto" style="padding: 32px; padding-left: 60px;padding-right: 60px;">
+        <h1 class="text-4xl font-medium dark:text-white">LogIn</h1>
         <form method="post" action="/userLogin">
           <div class="flex justify-center">
             <p class="text-red-500"><%= loginError %></p>
             <div class="flex-col flex gap-2 my-10">
               <p class="text-left">Email</p>
               <input type="email" name="email" required id="email"
-                class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"/>
+                class="shadow appearance-none border rounded py-1.5 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"/>
                 <p class="text-left">Password</p>
               <input type="password" name="password" type="password" required
-                class="shadow appearance-none border rounded py-2 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"/>
+                class="shadow appearance-none border rounded py-1.5 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"/>
               <p class="dark:text-white cursor-pointer mt-5">
                 Forgot Password ?
               </p>
@@ -71,36 +72,36 @@
       <div id="signup-section"
         class="md:px-20 md:py-10 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto hidden">
         <div class="" id="RegisterDiv">
-          <h1 class="text-3xl font-medium">Register</h1>
+          <h1 class="text-2xl font-medium">Register</h1>
           <div class="flex justify-center">
             <div class="flex-col flex gap-2 my-8">
               <p id="userErr" class="text-red-500"></p>
               <p id="userM" class="text-left text-red-600"></p>
               <p class="text-left">User Name</p>
               <input type="text"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded h-8 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
                 id="userName" />
               <p class="text-left text-red-600"></p>
               <p class="text-left">Email</p>
               <input type="email"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded h-8 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
                 name="emailAdd" id="emailAddress" />
               <p class="text-left text-red-600"></p>
               <p class="text-left">Phone Number</p>
               <input type="number"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded h-8 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
                 id="phoneNumber" />
 
               <p class="text-left text-red-600"></p>
               <p class="text-left">Password</p>
               <input type="password"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded h-8 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
                 id="passWord" />
 
               <p class="text-left text-red-600" id="confirmpasswordErr"></p>
               <p class="text-left">Confirm password</p>
               <input type="password"
-                class="shadow appearance-none border rounded h-9 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded h-8 w-64 ps-3 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"
                 id="confirmPassWord" />
               <button
                 class="mt-5 bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"

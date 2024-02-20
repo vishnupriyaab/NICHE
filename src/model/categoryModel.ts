@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 interface Category {
   name: string;
-  action: boolean;
+  unlistStatus: boolean;
   edit: boolean;
 }
 
@@ -11,9 +11,9 @@ const categorySchema = new Schema<Category>({
     type: String,
     required: true,
   },
-  action: {
+  unlistStatus: {
     type: Boolean,
-    dafault: true,
+    default: false,
   },
 });
 const categoryDb = mongoose.model<Category>("categorydb", categorySchema);
