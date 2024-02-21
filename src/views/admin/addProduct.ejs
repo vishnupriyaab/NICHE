@@ -23,7 +23,7 @@
                                         id="errorpopup">
                                     </div> -->
                             <div class="card-body">
-                                <form action="/api/addproduct" id="addProductForm" method="post">
+                                <form action="/addproduct" id="addProductForm" method="post">
 
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Product Name</label>
@@ -134,10 +134,18 @@
                 </div>
                 </div>
             </section>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
+            integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
             <script>
 
                 document.querySelector('.submit').addEventListener('click', () => {
                     document.querySelector('#form').submit();
+                    console.log("12345");
                 });
 
                 // JavaScript for custom validation
@@ -179,7 +187,7 @@
                             price: price.value,
                             stock: stock.value,
                             category: category.value,
-                            ImageArr,
+                            imgArr: ImageArr
                         })
 
                         .then(({ data }) => {
@@ -190,22 +198,22 @@
                                     }
                                 );
                             }
-                            let errorModal = document.getElementById('errorpopup')
-                            errorModal.innerText = data.data.message
-                            errorModal.classList.remove('d-none')
-                            if (data.data.message == "Product Added") {
-                                errorModal.classList.add('d-none')
-                            }
+                            // let errorModal = document.getElementById('errorpopup')
+                            // errorModal.innerText = data.data.message
+                            // errorModal.classList.remove('d-none')
+                            // if (data.data.message == "Product Added") {
+                            //     errorModal.classList.add('d-none')
+                            // }
                         })
                         .catch((error) => {
-                            if (error?.response?.data?.errStatus) {
-                                let errorModal = document.getElementById('errorpopup')
-                                errorModal.innerText = error.response.data.message
-                                return errorModal.classList.remove('d-none')
-                                if (error.response.data.message == "Product Added") {
-                                    errorModal.classList.add('d-none')
-                                }
-                            }
+                            // if (error?.response?.data?.errStatus) {
+                            //     let errorModal = document.getElementById('errorpopup')
+                            //     errorModal.innerText = error.response.data.message
+                            //     return errorModal.classList.remove('d-none')
+                            //     if (error.response.data.message == "Product Added") {
+                            //         errorModal.classList.add('d-none')
+                            //     }
+                            // }
                             console.log(error);
                         })
 

@@ -201,6 +201,8 @@ export async function adminRegister(
 export async function getaddProduct(req: Request, res: Response) {
   try {
     const category = await categoryDb.find();
+    // console.log(category);
+    
     res.render("admin/addProduct", { category });
   } catch (error: any) {
     res.status(500).send("Internal Server Error");
@@ -210,16 +212,20 @@ export async function getaddProduct(req: Request, res: Response) {
 export async function addproduct(req: Request<{}, {}, Product>, res: Response) {
   try {
     let { name, description, price, stock, imgArr, category } = req.body;
-
-    if (!name || !description || !price || !stock || !imgArr || !category) {
-      return res
-        .status(401)
-        .json({ errStatus: true, message: "Content cannot be empty" });
-    }
+    
+    // if (!name || !description || !price || !stock || !imgArr || !category) {
+    //   return res
+    //     .status(401)
+    //     .json({ errStatus: true, message: "Content cannot be empty" });
+    // }
 
     const catID = await categoryDb.findById(category);
-
+    
+    
+    
     const url = await cloudinaryUploadImage(imgArr);
+
+    
 
     const newCat = new productDb({
       name,
