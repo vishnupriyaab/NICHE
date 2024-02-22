@@ -1,0 +1,156 @@
+<%- include('include/_header') %>
+
+
+
+
+
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Deleted Products</h2>
+                    </div>
+                    <div>
+                        <div class="d-grid">
+                            <a href="/products"> <button class="btn btn-primary">Go Back</button> </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <header class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col col-check flex-grow-0">
+                                <div class="form-check ms-2">
+                                    <input class="form-check-input" type="checkbox" value="" />
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6">
+                                <select class="form-select">
+                                    <option selected>Status</option>
+                                    <option>Active</option>
+                                    <option>Disabled</option>
+                                    <option>Show all</option>
+                                </select>
+                            </div>
+                        </div>
+                    </header>
+                    <!-- card-header end// -->
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Product Image</th>
+                                        <th>Product Name</th>
+                                        <th>Description</th>
+                                        <th>Price</th>
+                                        <th>Stock</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                 
+                                
+                                <tbody>
+                                    <% for( let i=0; i < product.length; i++ ) { %>
+                                <% if (product[i].isHidden == true) { %>
+
+                                        <tr>
+                                            <td>
+                                                <%= i+1 %>
+                                            </td>
+                                            <td>
+                                                <img style="width: 150px; height: 150px;" src='<%= product[i].imgArr[0] %>' alt="image not found">
+                                            </td>
+                                            <td>
+                                                <p>
+                                                    <%= product[i].name %>
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <p>
+                                                    <%= product[i].description %>
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <p>
+                                                    <%= product[i].price %>
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <p>
+                                                    <%= product[i].stock %>
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <p>
+                                                    <%= product[i].category.name %>
+                                                </p>
+                                            </td>
+                                      
+                                            <td>
+                                                
+                                                <button type="button" class="btn btn-danger btn-sm"
+                                                    onclick="restoreproduct('<%= product[i]._id %>')">Restore</button>
+
+                                            </td>
+                                        </tr>
+
+
+                                        <% } %>
+                        </div>
+                        <% } %>
+
+                        </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+
+                <!-- card-body end// -->
+                </div>
+                <!-- card end// -->
+                <% if (product.length > 10) { %>
+
+                    <div class="pagination-area mt-30 mb-50">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <% } else if ( product.length == 0 ) { %>
+                     
+
+                        <div>
+                            <h3 class="text-center text-danger">No Data Available..!!</h3>
+                        </div>
+
+
+                        <% } %>
+
+            </section>
+
+            <script>
+                function restoreproduct(id) {
+                    axios.post('/restoreproduct', { id })
+                        .then((data) => {
+                            Swal.fire({
+                                title: "Good job!",
+                                text: "Successfully Restored",
+                                icon: "success"
+                            });
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 1000);
+                        }).catch((err) => {
+                            console.log(err);
+                        })
+                }
+            </script>
+
+            <%- include('include/_footer') %>

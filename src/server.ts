@@ -8,7 +8,6 @@ import session, { MemoryStore } from "express-session"
 import adminRoute from "./router/adminRoute";
 
 const app: Application = express();
-// app.use(morgan("dev"));
 app.use(express.json({ limit: "10mb" }));
 app.use(
   express.urlencoded({ limit: "10mb", extended: true, parameterLimit: 50000 })
@@ -20,8 +19,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   store: new MemoryStore(),
-  // Add a store configuration if needed
-  // store: new MongoStore({ mongooseConnection: mongoose.connection }),
 }));
 
 //view engine setup
@@ -29,10 +26,6 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(__dirname + "/assets"));
 
-// app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-//   console.error(error.stack);
-//   res.status(500).send("Internal Server Error");
-// });
 
 //Routs
 app.use("/", userRoute);

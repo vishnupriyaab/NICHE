@@ -1,0 +1,138 @@
+<%- include('include/_header') %>
+
+            <div class="container">
+                <h1>Edit Product</h1>
+                <form action="/updateproduct/<%= product._id %>" id="updateForm" enctype="multipart/form-data">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Product Name:</label>
+                            <input type="text" class="form-control" id="name" name="name" value="<%= product.name %>">
+                        </div>
+                        <!-- <div class="col-md-6">
+                            <label for="category" class="form-label">Category:</label>
+                            <input type="text" class="form-control" id="category" name="category"
+                                value=" <%= // product.category.name %> ">
+                            </select>
+                        </div> -->
+
+                    </div>
+                    <div class="d-flex gap-4">
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price:</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" class="form-control" id="price" name="price" step="0.01" min="0"
+                                    value="<%= product.price %>">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="stock" class="form-label">Stock:</label>
+                            <input type="number" class="form-control" id="stock" name="stock" min="0"
+                                value="<%= product.stock %>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category:</label>
+                            <select class="form-select" name="category" id="category">
+                                <% for (let i of category) { %>
+                                    <option value="<%= i._id %>">
+                                        <%= i.name %>
+                                    </option>
+                                    <% } %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Description</label>
+                        <textarea placeholder="Type here" name="description" class="form-control" rows="4"
+                            id="description"><%= product.description %></textarea>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="images" class="form-label">Images:</label>
+                        <input type="file" class="form-control" id="images" name="images" multiple>
+                        <small class="text-muted">Drag and drop multiple images or click to select.</small>
+                    </div>
+
+                    <% if (product.imgArr.length> 0) { %>
+                        <div class="mb-3">
+                            <h5>Existing Images:</h5>
+                            <ul>
+                                <% product.imgArr.forEach((image, i)=> { %>
+                                    <li>
+                                        <img src="<%= image %>" width="100" alt="Product Image">
+                                        <a href="#" data-image-url="<%= image %>"
+                                            class="remove-image btn btn-sm btn-danger"> <button
+                                                onclick="deleteImage('<%= i %>', '<%= product._id %>')" >Delete Image</button></a>
+                                    </li>
+                                    <% }); %>
+                            </ul>
+                        </div>
+                        <% } %>
+
+                            <button type="submit" class="btn btn-primary" style="margin-bottom: 7rem;">Update
+                                Product</button>
+                </form>
+            </div>
+            <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+                integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+            <script>
+                const removeImageButtons = document.getElementsByClassName('remove-image');
+
+                Array.from(removeImageButtons).forEach((button) => {
+                    button.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        const imageUrl = button.dataset.imageUrl;
+                    });
+                });
+
+                document.getElementById('updateForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    let uploadedImage = [];
+
+                    for (let i = 0; i < document.getElementById('images').files.length; i++) {
+                        uploadedImage[i] = await convertBase64(document.getElementById('images').files[i]);
+                    }
+
+                    axios
+                        .put(document.getElementById('updateForm').getAttribute('action'), {
+                            productname: document.getElementById('name').value,
+                            category: document.getElementById('category').value,
+                            price: document.getElementById('price').value,
+                            stock: document.getElementById('stock').value,
+                            imgArr: uploadedImage,
+                        }).then((response) => {
+                            window.location.href = '/products'
+                        })
+                });
+
+                function convertBase64(file) {
+                    return new Promise((resolve, reject) => {
+                        const fileReader = new FileReader();
+                        fileReader.readAsDataURL(file);
+                        fileReader.onload = () => {
+                            resolve(fileReader.result);
+                        };
+                        fileReader.onerror = (error) => {
+                            reject(error);
+                        };
+                    });
+                }
+
+                function deleteImage(i, productId) {
+                    console.log(i);
+                    console.log(productId);
+                    axios.delete(`/deleteimage/${i}/${productId}`)
+                        .then(response => {
+                            console.log('Image deleted successfully');
+                            location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error deleting image:', error);
+                        });
+                }
+
+            </script>
+
+            <%- include('include/_footer') %>
