@@ -27,32 +27,40 @@
       <span class="logoText font-bold sm:text-6xl text-4xl uppercase">NICHE</span>
     </h1>
     <h4 class="text-2xl dark:text-white mt-1">
+      <%if(messages?.loginPassword){%>
+        SUCCESS
+      <%}%>
       - Give Wings To Your Dreams -
     </h4>
   </div>
 </div>
 
+<script>
+  console.log(('<%= messages.error %>'));
+</script>
 
     <!-------------------- login --------------------->
     <div class="flex flex-col justify-center mt-14 md:mt-10">
       <div id="signin-section"
         class=" md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto" style="padding: 32px; padding-left: 60px;padding-right: 60px;">
         <h1 class="text-4xl font-medium dark:text-white">LogIn</h1>
-        <form method="post" action="/userLogin">
+        <form method="post" action="/userLogin" id="">
           <div class="flex justify-center">
-            <p class="text-red-500"><%= loginError %></p>
             <div class="flex-col flex gap-2 my-10">
-              <p class="text-left">Email</p>
-              <input type="email" name="email" required id="email"
-                class="shadow appearance-none border rounded py-1.5 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"/>
-                <p class="text-left">Password</p>
-              <input type="password" name="password" type="password" required
-                class="shadow appearance-none border rounded py-1.5 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline"/>
+              <p class="text-red-500" id="loginErr"><%= loginError %></p>
+              <p class="text-left" >Email</p>
+              <input type="email" name="email"
+                class="shadow appearance-none border rounded py-1.5 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline" />
+                <p class="text-red-500"><%= messages?.email %></p>
+                <p class="text-left" >Password</p>
+              <input type="password" name="password" type="password"
+                class="shadow appearance-none border rounded py-1.5 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline" />
+              <p class="text-red-500"><%= messages?.password %></p>
               <p class="dark:text-white cursor-pointer mt-5">
                 Forgot Password ?
               </p>
               <button type="submit"
-                class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full">
+                class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full" onclick="loginshowErr()">
                 Login
               </button>
       
@@ -141,6 +149,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
+   
     const Email = document.querySelector("#emailAddress");
     const UserName = document.querySelector("#userName");
     const Password = document.querySelector("#passWord");
@@ -195,7 +204,7 @@
               title: "Verification successful",
               icon: "Ok!",
             }).then(()=>{
-              window.location.href ="/home";
+              window.location.href ="/";
             });
           }
         })

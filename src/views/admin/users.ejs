@@ -1,102 +1,105 @@
 <%- include('include/_header') %>
-            <section class="content-main">
-                <div class="content-header">
-                    <h2 class="content-title">Users</h2>
-                    <!-- <div>
-                        <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
-                    </div> -->
-                </div>
-                <div class="card mb-4">
-                    <header class="card-header">
-                        <div class="row gx-3">
-                            <div class="col-lg-4 col-md-6 me-auto">
-                                <input type="text" placeholder="Search..." class="form-control" />
-                            </div>
-                            <div class="col-lg-2 col-md-3 col-6">
-                                <select class="form-select">
-                                    <option>Status</option>
-                                    <option>Active</option>
-                                    <option>Disabled</option>
-                                    <!-- <option>Show all</option> -->
-                                </select>
-                            </div>
-                            <!-- <div class="col-lg-2 col-md-3 col-6">
-                                <select class="form-select">
-                                    <option>Show 20</option>
-                                    <option>Show 30</option>
-                                    <option>Show 40</option>
-                                </select>
-                            </div> -->
-                        </div>
-                    </header>
-                    <!-- card-header end// -->
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Users</th>
-                                        <th>Email</th>
-                                        <th>Status</th>
-                                        <th class="text-end">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td width="40%">
-                                            <a href="#" class="itemside">
-                                                <div class="left">
-                                                </div>
-                                                <div class="info pl-3">
-                                                    <h6 class="mb-0 title">Eleanor Pena</h6>
-                                                    <small class="text-muted">Seller ID: #439</small>
-                                                </div>
-                                            </a>
-                                        </td>
-                                        <td>eleanor2020@example.com</td>
-                                        <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                        <td class="text-end">
-                                            <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">Block</a>
-                                        </td>
-                                    </tr>
-                                   
-                                </tbody>
-                            </table>
-                            <!-- table-responsive.// -->
-                        </div>
+
+    <section class="content-main">
+        <div class="content-header">
+            <h2 class="content-title">Users list</h2>
+        </div>
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row gx-3">
+                    <div class="col-lg-4 col-md-6 me-auto">
+                        <input type="text" placeholder="Search..." class="form-control" />
                     </div>
-                    <!-- card-body end// -->
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <select class="form-select">
+                            <option>Status</option>
+                            <option>Active</option>
+                            <option>Disabled</option>
+                        </select>
+                    </div>
                 </div>
-                <!-- card end// -->
-                <!-- <div class="pagination-area mt-15 mb-50">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                            <li class="page-item"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item"><a class="page-link" href="#">03</a></li>
-                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#">16</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div> -->
-            </section>
-            <!-- content-main end// -->
-          
+            </header>
+            <!-- card-header end// -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <% for(let i=0;i<user.length;i++){ %>
+                            <tbody>
+                                <td>
+                                    <p>
+                                        <%= user[i].username %>
+                                    </p>
+                                </td>
+                                <td>
+                                    <p>
+                                        <%= user[i].email %>
+                                    </p>
+                                </td>
+                                <td>
+                                    <% if (user[i].status==true) { %>
 
-            
-        <%- include('include/_footer') %>
+                                        <p class="text-success ">Active</p>
+
+                                        <% } else { %>
+
+                                            <p class="text-danger ">Inactive</p>
+
+                                            <% } %>
+
+                                </td>
+                                <td>
+                                    <% if (user[i].block==false) { %>
+
+                                        <a href="/blockuser?userid=<%= user[i]._id %>"><button type="button"
+                                                class="btn btn-danger">Block</button></a>
+
+                                        <% } else { %>
+
+                                            <a href="/unblockuser?userid=<%= user[i]._id %>"> <button type="button"
+                                                    class="btn btn-success">Unblock</button></a>
+
+                                            <% } %>
+                                </td>
+
+                            </tbody>
+                            <% } %>
+                    </table>
+                    <!-- table-responsive.// -->
+                </div>
+            </div>
+            <!-- card-body end// -->
+        </div>
+        <!-- card end// -->
+
+        <% if (user.length!=0) { %>
+
+            <div class="pagination-area mt-30 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <% } else { %>
+
+                <div>
+                    <h3 class="text-center text-danger">No Data Available..!!</h3>
+                </div>
 
 
-        </main>
-        <script src="/js/vendors/jquery-3.6.0.min.js"></script>
-        <script src="/js/vendors/bootstrap.bundle.min.js"></script>
-        <script src="/js/vendors/select2.min.js"></script>
-        <script src="/js/vendors/perfect-scrollbar.js"></script>
-        <script src="/js/vendors/jquery.fullscreen.min.js"></script>
-        <!-- Main Script -->
-        <script src="/js/main.js?v=1.1" type="text/javascript"></script>
-    </body>
-</html>
+                <% } %>
+    </section>
+
+
+    <%- include('include/_footer') %>

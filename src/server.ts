@@ -6,13 +6,19 @@ import path from "path";
 import morgan from "morgan";
 import session, { MemoryStore } from "express-session"
 import adminRoute from "./router/adminRoute";
+import flash from 'express-flash'
 
 const app: Application = express();
 app.use(express.json({ limit: "10mb" }));
 app.use(
   express.urlencoded({ limit: "10mb", extended: true, parameterLimit: 50000 })
 );
-
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); 
+  res.setHeader("Pragma", "no-cache"); 
+  res.setHeader("Expires", "0");
+  next()
+});
 
 app.use(session({
   secret: 'your-secret-key',
@@ -20,6 +26,8 @@ app.use(session({
   saveUninitialized: true,
   store: new MemoryStore(),
 }));
+
+app.use(flash());
 
 //view engine setup
 app.set("view engine", "ejs");

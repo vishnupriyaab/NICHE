@@ -11,10 +11,10 @@ const isLoggedIn = (req:Request, res:Response, next:NextFunction) => {
   
   
   export const adminLoggedIn = (req:Request, res:Response, next:NextFunction) => {
-    if (req.session.userId) {
+    if (req.session.adminId) {
       next();
     } else {
-      res.redirect("/userLogin");
+      res.redirect("/adminLogin");
     }
   };
  

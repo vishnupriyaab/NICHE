@@ -5,6 +5,7 @@ import categoryDb from "../model/categoryModel";
 import cloudinaryUploadImage from "../config/cloudinary";
 import { Product } from "../interface/productInterface";
 import productDb from "../model/productModel";
+import userDb from "../model/userModel";
 
 interface body {
   email: string;
@@ -14,7 +15,7 @@ interface body {
 let loginError: string | null = null;
 
 export async function getDashboard(req: Request, res: Response) {
-  try {
+  try {    
     res.render("admin/dashboard");
   } catch (error: any) {
     console.error(error);
@@ -22,16 +23,45 @@ export async function getDashboard(req: Request, res: Response) {
 }
 export async function getUsers(req: Request, res: Response) {
   try {
-    res.render("admin/users");
+    const user = await userDb.find();
+    res.render("admin/users", { user });
   } catch (error: any) {
-    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 }
+
+export async function blockuser(req:Request, res:Response) {
+  try {
+    const data = await userDb.updateOne(
+      { _id: req.query.userid },
+      { $set: { block: true } }
+    );
+    res.status(200).redirect("/users");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+export async function unblockuser(req:Request, res:Response) {
+  try {
+    const data = await userDb.updateOne(
+      { _id: req.query.userid },
+      { $set: { block: false } }
+    );
+    res.status(200).redirect("/users");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
 export async function getCategory(req: Request, res: Response) {
   try {
+    const selectedCat = req.query.filter || 'ALL';
+
     const category = await categoryDb.find();
-    // console.log(category);
-    res.render("admin/category", { category });
+    res.render("admin/category", { category, selectedCat });
   } catch (error: any) {
     console.error(error);
   }
@@ -160,6 +190,17 @@ export async function getAdminlogin(
     console.error(error);
   }
 }
+export async function getAdminlogout(req: Request,res: Response){
+  try {
+    delete req.session.adminId;
+    res.redirect("/adminlogin")
+    loginError = null;
+    return;
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
 
 export async function updateproduct(req:Request, res:Response) {
   try {    
@@ -202,14 +243,13 @@ export async function isAdmin(req: Request<{}, {}, IAdmin>, res: Response) {
     console.log(req.body, "body");
     const { email, password, role } = req.body;
     const admin = await adminDb.findOne({ email });
-    // if( === adminE && inputPassword === adminPassword){
-    //   req.session.isAuth = true;
-    //   res.status(200).redirect("/dashboard");
     console.log(admin);
     if (admin) {
       const match = await bcrypt.compare(password, admin.password);
       if (match) {
         req.session.adminId = admin.id;
+        console.log(req.session.adminId);
+        
         loginError = null;
         res.redirect("/dashboard");
       } else {
@@ -348,6 +388,19 @@ export async function restoreProduct(req:Request, res:Response) {
     );
 
     if (data) res.status(200).send(true);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+
+export async function getCategorySearch(req:Request,res:Response) {
+  try {
+    const payLoad = req.body.payLoad.trim();
+    let search = await categoryDb.find({name: {$regex: new RegExp('^'+ payLoad + '.*', 'i')}})
+    search = search.slice(0, 10);
+    res.status(200).json({payLoad: search});
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

@@ -31,3 +31,12 @@ export const validateadminRegistration = (
   next();
 };
 
+export const checkAdmin = (req:Request,res:Response,next:NextFunction):void =>{
+  
+  console.log(req.session.adminId);
+  if(req.session.adminId){
+    res.redirect("/dashboard");
+  }else{
+    next();
+  }
+}

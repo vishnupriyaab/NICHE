@@ -5,8 +5,21 @@
                 <h2 class="content-title card-title">Categories</h2>
                 <p>Add, edit or delete a category</p>
             </div>
+
             <div>
-                <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+                <select id="categorySelect" name="cars" class="form-control bg-white" onchange="handleOptionChange()">
+                    <option value="ALL" <%= (selectedCat === 'ALL')?'selected':'' %> >All</option>
+                    <% for( let i = 0; i < category.length; i++ ) { %>
+                        <option value="<%= category[i].name %>" <%= (selectedCat === category[i].name)?'selected':'' %> ><%= category[i].name %></option>
+                    <% } %>
+                </select>               
+            </div>
+            
+            
+            <div style="display: flex;">
+                <input type="text" placeholder="Search Categories" class="form-control bg-white" onkeyup="sendData(this)"/>
+                <button type="submit" style="border: none;"><i class="fa-solid fa-magnifying-glass"></i>
+                </button>
             </div>
         </div>
         <div class="card">
@@ -58,43 +71,44 @@
                                     </tr>
                                 </thead>
 
-                                <tbody>
+                                <tbody id="searchResult">
                                     <% category.map((value, index)=> { %>
+                                        <% if ((selectedCat === value.name) || (selectedCat === 'ALL')) { %>
+                                            <tr>
+                                                <td class="text-center">
+                                                <td>
+                                                    <%= index + 1 %>
+                                                </td>
+                                                <td>
+                                                    <%= value.name %>
+                                                </td>
+                                                <td>
+                                                    <% if (value.unlistStatus == true) { %>
+                                                        <button onclick="unlistCategory('<%= value._id %>')" id="Listbtn"
+                                                            class="btn btn-light rounded btn-sm font-sm justify-content-center"
+                                                            style="color: red; width: 50px; height: 25px">Unlist
+                                                        </button>
+                                                    <% } else { %>
+                                                        <button onclick="listCategory('<%= value._id %>')" id="Listbtn"
+                                                            class="btn btn-light rounded btn-sm font-sm justify-content-center"
+                                                            style="color: green; width: 50px; height: 25px">List
+                                                        </button>
+                                                    <% } %>
+                                                </td>
+                                                
 
-                                        <tr>
-                                            <td class="text-center">
-                                            <td>
-                                                <%= index + 1 %>
-                                            </td>
-                                            <td>
-                                                <%= value.name %>
-                                            </td>
-                                            <td>
-                                                <% if (value.unlistStatus == true) { %>
-                                                    <button onclick="unlistCategory('<%= value._id %>')" id="Listbtn"
+                                                <td class="text-center">
+                                                    <a href="#"
                                                         class="btn btn-light rounded btn-sm font-sm justify-content-center"
-                                                        style="color: red; width: 50px; height: 25px">Unlist
-                                                    </button>
-                                                <% } else { %>
-                                                    <button onclick="listCategory('<%= value._id %>')" id="Listbtn"
-                                                        class="btn btn-light rounded btn-sm font-sm justify-content-center"
-                                                        style="color: green; width: 50px; height: 25px">List
-                                                    </button>
-                                                <% } %>
-                                            </td>
-                                            
+                                                        style="width: 50px; height: 25px"
+                                                        onclick="editDiv('<%= value.name %>', '<%= value._id %>')">
+                                                        <i>Edit</i> </a>
+                                                </td>
 
-                                            <td class="text-center">
-                                                <a href="#"
-                                                    class="btn btn-light rounded btn-sm font-sm justify-content-center"
-                                                    style="width: 50px; height: 25px"
-                                                    onclick="editDiv('<%= value.name %>', '<%= value._id %>')">
-                                                    <i>Edit</i> </a>
-                                            </td>
-
-                                            </td>
-                                        </tr>
-                                        <% }) %>
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    <% }) %>
                                 </tbody>
                             </table>
                         </div>
@@ -125,7 +139,70 @@
 
         <!-- Main Script -->
         <script src="/js/main.js?v=1.1" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js" integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
+            
+
+           async function sendData(e){
+                try {
+                    const searchResult = document.getElementById('searchResult');
+                   const response = await axios.post('/getCategorySearch', {payLoad: e.value});
+                   const payLoad = response.data.payLoad;
+                   searchResult.innerHTML = '';
+                   if(payLoad.length < 1){
+                    searchResult.innerHTML = '<tr><td class="text-center" colspan="5">Sorry nothing...</td></tr>';
+                    return;
+                   }
+
+                   let html = '';
+                   payLoad.forEach((value, index) => {
+                    html += `<tr>
+                                <td class="text-center">
+                                <td>${index + 1}</td>
+                                <td>${value.name}</td>`;
+
+                    if (value.unlistStatus) {
+                        html += `<td>
+                                    <button onclick="unlistCategory('${value._id }')" id="Listbtn" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="color: red; width: 50px; height: 25px">Unlist</button>
+                                </td>`;
+                    } else {
+                        html += `<td>
+                                    <button onclick="listCategory('${ value._id }')" id="Listbtn" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="color: green; width: 50px; height: 25px">List</button>
+                                </td>`;
+                    }
+
+                    html += `<td class="text-center">
+                                <a href="#" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="width: 50px; height: 25px" onclick="editDiv('${ value.name }', '${ value._id }')"><i>Edit</i></a>
+                            </td>`
+
+                    html += `</td>
+                        </tr>`;
+                });
+
+                searchResult.innerHTML = html;
+                   return
+                } catch (err) {
+                    
+                }
+            }
+
+
+            function handleOptionChange() {
+                const selectedOption = document.getElementById('categorySelect').value;
+
+                // Redirect based on the selected option
+                if (selectedOption === 'ALL') {
+                    window.location.href = '/category';
+                } else {
+                    const url = `/category?filter=${selectedOption}`;
+                    window.location.href = url;
+                }
+
+                // Set the selectedIndex of the select box to the selected option
+                selectBox.selectedIndex = selectBox.selectedIndex;
+            }
+
+
 
 
             const unlistCategory = (id) => {

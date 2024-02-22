@@ -18,6 +18,7 @@
     />
     <!-- Template CSS -->
     <link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
 
   <body>
@@ -65,9 +66,9 @@
         <hr />
         <ul class="menu-aside">
           <li class="menu-item has-submenu">
-            <a class="menu-link" href="#">
+            <a class="menu-link" href="/adminlogout">
               <i class="icon material-icons md-chevron_right"></i>
-              <span class="text">Logout</span>
+              <a href="/adminlogout"><span class="text">Logout</span></a>
             </a>
           </li>
         </ul>
@@ -106,16 +107,16 @@
             <i class="material-icons md-apps"></i>
           </button>
           <ul class="nav">
-            <li class="nav-item">
-              <a class="nav-link btn-icon darkmode" href="#">
+            <!-- <li class="nav-item">
+              <a class="nav-link btn-icon darkmode">
                 <i class="material-icons md-nights_stay"></i>
               </a>
-            </li>
+            </li> -->
             <li class="dropdown nav-item">
               <a
                 class="dropdown-toggle"
                 data-bs-toggle="dropdown"
-                href="#"
+                href=""
                 id="dropdownAccount"
                 aria-expanded="false"
               >
@@ -128,27 +129,8 @@
                 class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="dropdownAccount"
               >
-                <a class="dropdown-item" href="#"
-                  ><i class="material-icons md-perm_identity"></i>Edit
-                  Profile</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><i class="material-icons md-settings"></i>Account Settings</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><i class="material-icons md-account_balance_wallet"></i
-                  >Wallet</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><i class="material-icons md-receipt"></i>Billing</a
-                >
-                <a class="dropdown-item" href="#"
-                  ><i class="material-icons md-help_outline"></i>Help center</a
-                >
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger" href="#"
-                  ><i class="material-icons md-exit_to_app"></i>Logout</a
-                >
+                <a class="dropdown-item text-danger" href="/adminlogout"
+                  ><i class="material-icons md-exit_to_app"></i>Logout</a>
               </div>
             </li>
           </ul>

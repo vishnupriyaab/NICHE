@@ -103,7 +103,6 @@ export async function userRegister(req: Request<{},{},UserRequestBody>, res: Res
         password: Password,
         phone: Phone,
       });
-
       await newUser.save();
       res.send("Registered Successfully");
     } else {
@@ -127,7 +126,6 @@ export async function otpSnd(req: Request, res: Response): Promise<void> {
 }
 
 // post the userLogin
-
 export async function postLogin(
   req: Request<{}, {}, body>,
   res: Response
@@ -139,9 +137,6 @@ export async function postLogin(
       if (match) {
         req.session.userId = user.id;
         loginError = null;
-        // logout
-        // delete req.session.userId
-        // res.redirect("/userLogin");
         res.redirect("/");
       } else {
         loginError = "Invalid password";
@@ -157,3 +152,15 @@ export async function postLogin(
     res.redirect("/userLogin");
   }
 }
+
+export async function getuserLogout(req: Request,res: Response){
+  try {
+    delete req.session.userId;
+    res.redirect("/");
+    return;
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+

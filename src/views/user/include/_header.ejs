@@ -143,12 +143,22 @@
                 >
               </a>
               <% if (user) { %>
-                <a href="#" class="my-auto">
-                  <i class="fas fa-user fa-2x"></i>
-                </a>
+                <ul class="navbar-nav list-none">
+                <li class="relative dropdown nav-item">
+                  <a href="#" class="flex items-center dropdown-toggle my-auto" aria-expanded="false">
+                    <i class="fas fa-user fa-2x"></i>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-end absolute hidden text-base shadow-lg py-1 bg-white rounded-md w-48" aria-labelledby="dropdownAccount">
+                    <a href="/userLogout" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                      <i class="material-icons md-exit_to_app mr-2"></i>Logout
+                    </a>
+                  </div>
+                </li>
+                </ul>
+                
                 <% } else { %>
                   <a href="/userLogin" class="my-auto">
-                    <i class="fas fa-user fa-2x"></i>
+                    <i class="fas fa-user fa-2x"></i> 
                   </a>
                
               <% } %>
