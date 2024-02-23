@@ -1,5 +1,5 @@
 import { NextFunction, Router } from "express";
-import { _404page, cart, checkout, contact, getHome, getLogin, getShop, getsingleProduct, getuserLogout, otpSnd, postLogin, shopDetails, testimonial, userRegister } from "../controller/userController";
+import { _404page, cart, checkout, contact, getHome, getLogin, getShop, getsingleProduct, getuserLogout, otpSnd, postLogin, resendOtp, shopDetails, testimonial, userRegister } from "../controller/userController";
 import isLoggedIn from "../middleware/sessionAuth";
 import { userRegistrationValidation, userloginValidation, validateUserRegistration, validateUserlogin } from "../middleware/userAuth";
 
@@ -25,5 +25,6 @@ userRoute.get("/singleProductpage/:id",getsingleProduct);
 userRoute.post("/userLogin",userloginValidation,validateUserlogin, postLogin);
 userRoute.post("/registerValue", userRegister);
 userRoute.post("/otpSend", userRegistrationValidation,validateUserRegistration , otpSnd);
+userRoute.get("/resendotp",resendOtp )
 
 export default userRoute;

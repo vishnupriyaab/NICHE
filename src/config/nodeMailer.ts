@@ -11,10 +11,9 @@ export function generateOTP(): string {
 }
 
 // Function to send an email with OTP
-export async function sendEmailWithOTP(email: string): Promise<string> {
+export async function   sendEmailWithOTP(email: string , otp:string): Promise<string> {
   // Create an OTP
-  otp = generateOTP();
-
+  
   // Create a Nodemailer transporter
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -66,27 +65,29 @@ export async function sendEmailWithOTP(email: string): Promise<string> {
   }
 }
 
-export function otpSnd(req: Request, res: Response): void {
-  try {
-    // Assuming that the email is provided in the request body
-    const userEmail: string = req.body.email;
+// export function otpSnd(req: Request, res: Response): void {
+//   try {
+//     // Assuming that the email is provided in the request body
+//     const userEmail: string = req.body.email;
 
-    // Call the function to send email with OTP
-    sendEmailWithOTP(userEmail)
-      .then((otp) => {
-        console.log("OTP sent successfully:", otp);
-        res.send("OTP Sent Successfully");
-      })
-      .catch((error) => {
-        console.error("Failed to send OTP:", error as Error);
-        res.status(500).send("Failed to send OTP");
-      });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Internal Server Error");
-  }
-}
+//     // Call the function to send email with OTP
+//     sendEmailWithOTP(userEmail, otp)
+//       .then((otp) => {
+//         console.log("OTP sent successfully:", otp);
+//         res.send("OTP Sent Successfully");
+//       })
+//       .catch((error) => {
+//         console.error("Failed to send OTP:", error as Error);
+//         res.status(500).send("Failed to send OTP");
+//       });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// }
 
-export function verifyOtp(val: string) {
+export function verifyOtp(val: string,otp:string) {
+  console.log(otp,val,"2");
+  
   return parseInt(val) === parseInt(otp);
 }

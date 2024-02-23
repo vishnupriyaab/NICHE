@@ -12,5 +12,7 @@ declare module "express-session" {
     userId: string;
     isAuth:boolean
     adminId: string
+    Email: string
+    otp:string
   }
 }

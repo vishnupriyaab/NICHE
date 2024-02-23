@@ -19,51 +19,58 @@
 <body class="bg-slate-50 dark:bg-slate-800 font-sans">
   <div class="grid grid-cols-1 sm:grid-cols-2">
     <div class="flex justify-center items-center min-h-screen relative">
-  <div class="text-center">
-    <!-- <img class="invert-0 dark:invert object-cover" src="img/logo.png" alt="Logo"> -->
-    <h1 class="sm:text-11xl md:text-3xl font-semibold dark:text-white"
-      style="clip-path: polygon(0 0, 100% 1%, 100% 100%, 0% 100%)">
-      Welcome to <br />
-      <span class="logoText font-bold sm:text-6xl text-4xl uppercase">NICHE</span>
-    </h1>
-    <h4 class="text-2xl dark:text-white mt-1">
-      <%if(messages?.loginPassword){%>
-        SUCCESS
-      <%}%>
-      - Give Wings To Your Dreams -
-    </h4>
-  </div>
-</div>
+      <div class="text-center">
+        <!-- <img class="invert-0 dark:invert object-cover" src="img/logo.png" alt="Logo"> -->
+        <h1 class="sm:text-11xl md:text-3xl font-semibold dark:text-white"
+          style="clip-path: polygon(0 0, 100% 1%, 100% 100%, 0% 100%)">
+          Welcome to <br />
+          <span class="logoText font-bold sm:text-6xl text-4xl uppercase">NICHE</span>
+        </h1>
+        <h4 class="text-2xl dark:text-white mt-1">
+          <%if(messages?.loginPassword){%>
+            <%}%>
+              - Give Wings To Your Dreams -
+        </h4>
+      </div>
+    </div>
 
-<script>
-  console.log(('<%= messages.error %>'));
-</script>
+    <script>
+      console.log(('<%= messages.error %>'));
+    </script>
 
     <!-------------------- login --------------------->
     <div class="flex flex-col justify-center mt-14 md:mt-10">
       <div id="signin-section"
-        class=" md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto" style="padding: 32px; padding-left: 60px;padding-right: 60px;">
+        class=" md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto"
+        style="padding: 32px; padding-left: 60px;padding-right: 60px;">
         <h1 class="text-4xl font-medium dark:text-white">LogIn</h1>
         <form method="post" action="/userLogin" id="">
           <div class="flex justify-center">
             <div class="flex-col flex gap-2 my-10">
-              <p class="text-red-500" id="loginErr"><%= loginError %></p>
-              <p class="text-left" >Email</p>
+              <p class="text-red-500" id="loginErr">
+                <%= loginError %>
+              </p>
+              <p class="text-left">Email</p>
               <input type="email" name="email"
                 class="shadow appearance-none border rounded py-1.5 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline" />
-                <p class="text-red-500"><%= messages?.email %></p>
-                <p class="text-left" >Password</p>
+              <p class="text-red-500">
+                <%= messages?.email %>
+              </p>
+              <p class="text-left">Password</p>
               <input type="password" name="password" type="password"
                 class="shadow appearance-none border rounded py-1.5 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline" />
-              <p class="text-red-500"><%= messages?.password %></p>
+              <p class="text-red-500">
+                <%= messages?.password %>
+              </p>
               <p class="dark:text-white cursor-pointer mt-5">
                 Forgot Password ?
               </p>
               <button type="submit"
-                class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full" onclick="loginshowErr()">
+                class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
+                onclick="loginshowErr()">
                 Login
               </button>
-      
+
             </div>
           </div>
           <div class="dark:text-white sm:mt-7" id="signinId-section">
@@ -75,7 +82,7 @@
           </div>
         </form>
       </div>
-  
+
       <!----------------------------- REGISTER --------------------------->
       <div id="signup-section"
         class="md:px-20 md:py-10 md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto hidden">
@@ -137,7 +144,16 @@
                 placeholder="otp input" id="otp" />
             </div>
             <button onclick="HandleRegister()"
-              class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full">Verify OTP</button>
+              class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full">Verify
+              OTP</button>
+            <!-- Countdown Timer -->
+            <div id="countdownTimer" class="block p-2 text-black">30</div>
+            <!-- Resend OTP Button -->
+            <button id="resendOTPBtn"
+              class="bg-black hidden dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full"
+              onclick="resendOtp()">
+              Resend OTP
+            </button>
           </div>
         </div>
       </div>
@@ -149,7 +165,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-   
+
     const Email = document.querySelector("#emailAddress");
     const UserName = document.querySelector("#userName");
     const Password = document.querySelector("#passWord");
@@ -160,7 +176,73 @@
     const RegisterDiv = document.querySelector("#RegisterDiv");
     const otpDiv = document.querySelector("#otpDiv");
     const userErr = document.getElementById("userErr");
-  
+
+
+
+    // Function to enable the Resend OTP button after the timer ends
+    function enableResendOTPButton() {
+      document.getElementById("resendOTPBtn").disabled = false;
+    }
+
+    function resendOtp() {
+      console.log("qwertyui");
+      axios.get("/resendotp").then((res)=>{
+        console.log(res);
+        startCountdown();
+      }).catch((error)=>{
+        console.log(error);
+      })
+    }
+
+    // Start or resume the countdown timer
+    function startCountdown() {
+      var timeLeft = 5;
+      var elem = document.getElementById('countdownTimer');
+      var timerId = setInterval(countdown, 1000);
+
+      function countdown() {
+
+        if (timeLeft == -1) {
+          document.getElementById("resendOTPBtn").style.display = "block"
+
+          document.getElementById('countdownTimer').innerHTML = ""
+          Element.innerHTML = ''
+          clearTimeout(timerId);
+        } else {
+          elem.innerHTML = ' resend OTP in :' + timeLeft
+          timeLeft--;
+        }
+      }
+
+    }
+
+    // Update the countdown timer display
+    function updateCountdown(remainingTime) {
+      const countdownTimer = document.getElementById("countdownTimer");
+      countdownTimer.innerText = `Resend OTP in ${Math.floor(remainingTime)} seconds`;
+
+      if (remainingTime > 0) {
+        setTimeout(() => updateCountdown(remainingTime - 1), 1000);
+      } else {
+        enableResendOTPButton();
+        countdownTimer.innerText = "";
+      }
+    }
+
+    document
+      .getElementById("resendOTPBtn")
+      .addEventListener("click", function () {
+        // Send POST request to /resendotp endpoint
+        axios
+          .post("/resendotp")
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            // Handle error
+            console.error("Error resending OTP:", error);
+          });
+      });
 
     const openModal = () => {
       if (ConfirmpassWord.value === Password.value) {
@@ -173,6 +255,7 @@
             ConfirmpassWord: Password.value,
           })
           .then((res) => {
+            startCountdown()
             RegisterDiv.classList.add("hidden");
             otpDiv.classList.remove("hidden");
           })
@@ -188,7 +271,9 @@
 
     function HandleRegister() {
       console.log(ConfirmpassWord.value, Password.value);
-
+      localStorage.setItem("startTime", new Date().getTime());
+      // Start or resume the countdown timer
+      // startCountdown();
       axios
         .post("/registerValue", {
           Email: Email.value,
@@ -196,16 +281,16 @@
           Password: Password.value,
           Phone: Phone.value,
           otp: otp.value,
+        }).then((data) => {
 
-        })
-        .then((data) => {
           if (data.data == "Registered Successfully") {
             Swal.fire({
               title: "Verification successful",
               icon: "Ok!",
-            }).then(()=>{
-              window.location.href ="/";
+            }).then(() => {
+              window.location.href = "/userLogin";
             });
+
           }
         })
         .catch((error) => {
@@ -213,6 +298,8 @@
         });
       cpErr.innerHTML = " ";
     }
+
+
 
     const showSignup = () => {
       const signupSection = document.getElementById("signup-section");

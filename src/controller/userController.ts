@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserRequestBody } from "../interface/userInterface";
 import userDb from "../model/userModel";
-import { sendEmailWithOTP, verifyOtp } from "../config/nodeMailer";
+import { generateOTP, sendEmailWithOTP, verifyOtp } from "../config/nodeMailer";
 import bcrypt from "bcrypt";
 import productDb from "../model/productModel";
 
@@ -29,13 +29,12 @@ export async function getHome(
   res: Response
 ): Promise<void> {
   try {
-    const user = req.session.userId
+    const user = req.session.userId;
     console.log(req.session);
-    const product = await productDb.find().populate('category');
+    const product = await productDb.find().populate("category");
     console.log(product);
-    
-    
-    res.render("user/home", { loginError, user, product});
+
+    res.render("user/home", { loginError, user, product });
     loginError = null;
   } catch (error: any) {
     console.error(error);
@@ -93,11 +92,18 @@ export async function contact(req: Request, res: Response) {
 }
 
 //UserSignup
-export async function userRegister(req: Request<{},{},UserRequestBody>, res: Response) {
+export async function userRegister(
+  req: Request<{}, {}, UserRequestBody>,
+  res: Response
+) {
   try {
     const { Email, UserName, Password, Phone, otp } = req.body;
+    console.log(Email);
 
-    const isVerified = verifyOtp(otp);
+    req.session.Email = Email;
+    console.log(req.session.Email, req.session.otp, "1");
+
+    const isVerified = verifyOtp(otp, req.session.otp ? req.session.otp : "");
     console.log(isVerified);
 
     if (isVerified) {
@@ -108,7 +114,9 @@ export async function userRegister(req: Request<{},{},UserRequestBody>, res: Res
         phone: Phone,
       });
       await newUser.save();
+
       res.send("Registered Successfully");
+
     } else {
       res.send("otp is invalid");
     }
@@ -120,12 +128,38 @@ export async function userRegister(req: Request<{},{},UserRequestBody>, res: Res
 // 2.1 - 3.1 ms SPEED otp sending
 export async function otpSnd(req: Request, res: Response): Promise<void> {
   try {
-    console.log(req.body);
-
-    const status = await sendEmailWithOTP(req.body.Email);
+    console.log(req.body, "hyyyy");
+    req.session.Email = req.body.Email;
+    const newOTP = generateOTP();
+    req.session.otp = newOTP;
+    const status = await sendEmailWithOTP(req.body.Email, newOTP);
     if (status) res.send("Otp sended");
   } catch (error) {
     console.log(error);
+  }
+}
+export async function resendOtp(req: Request, res: Response) {
+  try {
+    console.log("xcvbnm,");
+    const email = req.session.Email;
+    // await userDb.findOneAndDelete({ email: email });
+
+    // Generate a new OTP
+    const newOTP = generateOTP();
+    req.session.otp = newOTP;
+    // Save the new OTP to the databasers
+    // await userDb.create({ email, otp: newOTP });
+ 
+      await sendEmailWithOTP(email?email:"", newOTP);
+    
+
+    console.log(`New OTP generated for ${email}: ${newOTP}`);
+
+    // Redirect back to the page with a success message or handle it as needed
+    res.json({message:"Resend Otp Sended"});
+  } catch (error) {
+    console.error("Error while resending OTP:", error);
+    res.status(500).send("Internal Server Error");
   }
 }
 
@@ -157,7 +191,7 @@ export async function postLogin(
   }
 }
 
-export async function getuserLogout(req: Request,res: Response){
+export async function getuserLogout(req: Request, res: Response) {
   try {
     delete req.session.userId;
     res.redirect("/");
@@ -168,7 +202,7 @@ export async function getuserLogout(req: Request,res: Response){
   }
 }
 
-export async function getsingleProduct(req:Request, res:Response) {
+export async function getsingleProduct(req: Request, res: Response) {
   try {
     const data = await productDb.findOne({ _id: req.params.id });
     const userid = req.session.userId;
