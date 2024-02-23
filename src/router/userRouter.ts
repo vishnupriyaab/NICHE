@@ -1,5 +1,5 @@
 import { NextFunction, Router } from "express";
-import { _404page, cart, checkout, contact, getHome, getLogin, getShop, getuserLogout, otpSnd, postLogin, shopDetails, testimonial, userRegister } from "../controller/userController";
+import { _404page, cart, checkout, contact, getHome, getLogin, getShop, getsingleProduct, getuserLogout, otpSnd, postLogin, shopDetails, testimonial, userRegister } from "../controller/userController";
 import isLoggedIn from "../middleware/sessionAuth";
 import { userRegistrationValidation, userloginValidation, validateUserRegistration, validateUserlogin } from "../middleware/userAuth";
 
@@ -18,6 +18,7 @@ userRoute.get("/checkout",checkout);
 userRoute.get("/testimonial",testimonial);
 userRoute.get("/_404page",_404page);
 userRoute.get("/contact",contact);
+userRoute.get("/singleProductpage/:id",getsingleProduct);
 
 
 

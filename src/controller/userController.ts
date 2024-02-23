@@ -168,3 +168,17 @@ export async function getuserLogout(req: Request,res: Response){
   }
 }
 
+export async function getsingleProduct(req:Request, res:Response) {
+  try {
+    const data = await productDb.findOne({ _id: req.params.id });
+    const userid = req.session.userId;
+
+    const userdata = await userDb.findById(userid);
+    res
+      .status(200)
+      .render("user/singleProductpage", { product: data, user: userdata });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}

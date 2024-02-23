@@ -151,13 +151,14 @@
                 <div class="col-lg-12">
                   <div class="row g-4">
                     <% for( let i = 0; i < product.length; i++ ) { %>
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                      
-                        <div class="rounded position-relative fruite-item">
-                          <div class="fruite-img">
-                            <img
-                            src="<%= product[i].imgArr[0] %>"
-                            class="img-fluid w-100 rounded-top"
+                      <div class="col-md-6 col-lg-4 col-xl-3">
+                          <a href="/singleProductpage/<%= product[i]._id %>">
+                          
+                          <div class="rounded position-relative fruite-item">
+                            <div class="fruite-img">
+                              <img
+                              src="<%= product[i].imgArr[0] %>"
+                              class="img-fluid w-100 rounded-top"
                             alt=""
                             />
                           </div>
@@ -170,9 +171,9 @@
                         <div
                         class="p-4 border border-secondary border-top-0 rounded-bottom"
                         >
-                        <h4><%= product[i].name %></h4>
+                        <h4> <%= product[i].name %></h4>
                         <p class="text-dark">
-                          <%= product[i].category.name %>
+                          FOR <%= product[i].category.name %>
                         </p>
                         <div
                         class="d-flex justify-content-between flex-lg-wrap"
@@ -180,7 +181,59 @@
                         <p class="text-dark fs-5 fw-bold mb-0">
                           <span class="price">₹<%= product[i].price %> </span>
                           <!-- <span class="Offer">20% </span>
-                          <del class="org-price">₹4,990</del> -->
+                            <del class="org-price">₹4,990</del> -->
+                          </p>
+                          <a
+                          href="#"
+                          class="btn border border-secondary rounded-pill px-3 text-primary"
+                          ><i
+                          class="fa fa-shopping-bag me-2 text-primary"
+                          ></i>
+                          Add to cart</a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  </div>
+                  <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="tab-2" class="tab-pane fade show p-0">
+              <div class="row g-4">
+                <div class="col-lg-12">
+                  <div class="row g-4">
+                    <% for( let i = 0; i < product.length; i++ ) { %>
+                    <% if (product[i].category.name=== 'MEN') { %>
+                     
+                      <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div class="rounded position-relative fruite-item">
+                          <div class="fruite-img">
+                            <img
+                            src="<%= product[i].imgArr[0] %>"
+                            class="img-fluid w-100 rounded-top"
+                            alt=""
+                            />
+                          </div>
+                          <div
+                          class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                          style="top: 10px; left: 10px"
+                          ><%= product[i].category.name %>
+                        </div>
+                        <div
+                        class="p-4 border border-secondary border-top-0 rounded-bottom"
+                        >
+                        <h4><%= product[i].name %></h4>
+                        <p>
+                          FOR <%= product[i].category.name %>
+                        </p>
+                        <div
+                        class="d-flex justify-content-between flex-lg-wrap"
+                        >
+                        <p class="text-dark fs-5 fw-bold mb-0">
+                          $<%= product[i].price %>
                         </p>
                         <a
                         href="#"
@@ -195,94 +248,8 @@
                   </div>
                 </div>
                 <% } %>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div id="tab-2" class="tab-pane fade show p-0">
-              <div class="row g-4">
-                <div class="col-lg-12">
-                  <div class="row g-4">
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                      <div class="rounded position-relative fruite-item">
-                        <div class="fruite-img">
-                          <img
-                            src="/img/Men's Lifestyle Shoes - Fashion Sneakers - New Balance.jpeg"
-                            class="img-fluid w-100 rounded-top"
-                            alt=""
-                          />
-                        </div>
-                        <div
-                          class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                          style="top: 10px; left: 10px"
-                        >
-                         Men
-                        </div>
-                        <div
-                          class="p-4 border border-secondary border-top-0 rounded-bottom"
-                        >
-                          <h4>Blue Canvas</h4>
-                          <p>
-                            Men's Shoes
-                          </p>
-                          <div
-                            class="d-flex justify-content-between flex-lg-wrap"
-                          >
-                            <p class="text-dark fs-5 fw-bold mb-0">
-                              $4.99 / kg
-                            </p>
-                            <a
-                              href="#"
-                              class="btn border border-secondary rounded-pill px-3 text-primary"
-                              ><i
-                                class="fa fa-shopping-bag me-2 text-primary"
-                              ></i>
-                              Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                      <div class="rounded position-relative fruite-item">
-                        <div class="fruite-img">
-                          <img
-                            src="/img/New Balance Women's Fresh Foam X Hierro Mid.jpeg"
-                            class="img-fluid w-100 rounded-top"
-                            alt=""
-                          />
-                        </div>
-                        <div
-                          class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                          style="top: 10px; left: 10px"
-                        >
-                        Men
-                        </div>
-                        <div
-                          class="p-4 border border-secondary border-top-0 rounded-bottom"
-                        >
-                          <h4>Green Shoes</h4>
-                          <p>
-                            Men's Shoes
-                          </p>
-                          <div
-                            class="d-flex justify-content-between flex-lg-wrap"
-                          >
-                            <p class="text-dark fs-5 fw-bold mb-0">
-                              $4.99 / kg
-                            </p>
-                            <a
-                              href="#"
-                              class="btn border border-secondary rounded-pill px-3 text-primary"
-                              ><i
-                                class="fa fa-shopping-bag me-2 text-primary"
-                              ></i>
-                              Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                <% } %>
+                
                   </div>
                 </div>
               </div>
@@ -291,177 +258,100 @@
               <div class="row g-4">
                 <div class="col-lg-12">
                   <div class="row g-4">
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                      <div class="rounded position-relative fruite-item">
-                        <div class="fruite-img">
-                          <img
-                            src="/img/10 Pairs Of Shoes To Celebrate Pride & Honor The Stonewall50 In.jpeg"
+                    <% for( let i = 0; i < product.length; i++ ) { %>
+                    <% if (product[i].category.name=== 'WOMEN') { %>
+                     
+                      <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div class="rounded position-relative fruite-item">
+                          <div class="fruite-img">
+                            <img
+                            src="<%= product[i].imgArr[0] %>"
                             class="img-fluid w-100 rounded-top"
                             alt=""
-                          />
-                        </div>
-                        <div
+                            />
+                          </div>
+                          <div
                           class="text-white bg-secondary px-3 py-1 rounded position-absolute"
                           style="top: 10px; left: 10px"
-                        >
-                          Women
+                          ><%= product[i].category.name %>
                         </div>
                         <div
-                          class="p-4 border border-secondary border-top-0 rounded-bottom"
+                        class="p-4 border border-secondary border-top-0 rounded-bottom"
                         >
-                          <h4>Purple Canvas</h4>
-                          <p>
-                            Women's Shoes
-                          </p>
-                          <div
-                            class="d-flex justify-content-between flex-lg-wrap"
-                          >
-                            <p class="text-dark fs-5 fw-bold mb-0">
-                              $4.99 / kg
-                            </p>
-                            <a
-                              href="#"
-                              class="btn border border-secondary rounded-pill px-3 text-primary"
-                              ><i
-                                class="fa fa-shopping-bag me-2 text-primary"
-                              ></i>
-                              Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                      <div class="rounded position-relative fruite-item">
-                        <div class="fruite-img">
-                          <img
-                            src="/img/Product Search _ Vans (2).jpeg"
-                            class="img-fluid w-100 rounded-top"
-                            alt=""
-                          />
-                        </div>
+                        <h4><%= product[i].name %></h4></h4>
+                        <p> FOR <%= product[i].category.name %></p>
                         <div
-                          class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                          style="top: 10px; left: 10px"
+                        class="d-flex justify-content-between flex-lg-wrap"
                         >
-                          Women
-                        </div>
-                        <div
-                          class="p-4 border border-secondary border-top-0 rounded-bottom"
+                        <p class="text-dark fs-5 fw-bold mb-0">
+                          $<%= product[i].price %>
+                        </p>
+                        <a
+                        href="#"
+                        class="btn border border-secondary rounded-pill px-3 text-primary"
+                        ><i
+                        class="fa fa-shopping-bag me-2 text-primary"
+                        ></i>
+                        Add to cart</a
                         >
-                          <h4>Pink Laddy</h4>
-                          <p>
-                          Women's Shoes
-                          </p>
-                          <div
-                            class="d-flex justify-content-between flex-lg-wrap"
-                          >
-                            <p class="text-dark fs-5 fw-bold mb-0">
-                              $4.99 / kg
-                            </p>
-                            <a
-                              href="#"
-                              class="btn border border-secondary rounded-pill px-3 text-primary"
-                              ><i
-                                class="fa fa-shopping-bag me-2 text-primary"
-                              ></i>
-                              Add to cart</a
-                            >
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+                <% } %>
+                <% } %>
+                
               </div>
+            </div>
+          </div>
             </div>
             <div id="tab-4" class="tab-pane fade show p-0">
               <div class="row g-4">
                 <div class="col-lg-12">
                   <div class="row g-4">
+                   <% for( let i = 0; i < product.length; i++ ) { %>
+                   <% if (product[i].category.name=== 'KIDS') { %>
                     <div class="col-md-6 col-lg-4 col-xl-3">
                       <div class="rounded position-relative fruite-item">
                         <div class="fruite-img">
                           <img
-                            src="/img/b2a537b6-20f7-4349-9c54-7688b128448e.jpeg"
-                            class="img-fluid w-100 rounded-top"
-                            alt=""
+                          src="<%= product[i].imgArr[0] %>"
+                          class="img-fluid w-100 rounded-top"
+                          alt=""
                           />
                         </div>
                         <div
-                          class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                          style="top: 10px; left: 10px"
-                        >
-                          Kids
-                        </div>
-                        <div
-                          class="p-4 border border-secondary border-top-0 rounded-bottom"
-                        >
-                          <h4>Multi Cat</h4>
-                          <p>
-                            Kid's Shoes
-                          </p>
-                          <div
-                            class="d-flex justify-content-between flex-lg-wrap"
-                          >
-                            <p class="text-dark fs-5 fw-bold mb-0">
-                              $4.99 / kg
-                            </p>
-                            <a
-                              href="#"
-                              class="btn border border-secondary rounded-pill px-3 text-primary"
-                              ><i
-                                class="fa fa-shopping-bag me-2 text-primary"
-                              ></i>
-                              Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                      <div class="rounded position-relative fruite-item">
-                        <div class="fruite-img">
-                          <img
-                            src="/img/c4bd81a5-82c1-407e-86d5-40da433e2302.jpeg"
-                            class="img-fluid w-100 rounded-top"
-                            alt=""
-                          />
-                        </div>
-                        <div
-                          class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                          style="top: 10px; left: 10px"
-                        >
-                          Kids
-                        </div>
-                        <div
-                          class="p-4 border border-secondary border-top-0 rounded-bottom"
-                        >
-                          <h4>Nike Canvas</h4>
-                          <p>
-                            Kid's Shoes
-                          </p>
-                          <div
-                            class="d-flex justify-content-between flex-lg-wrap"
-                          >
-                            <p class="text-dark fs-5 fw-bold mb-0">
-                              $4.99 / kg
-                            </p>
-                            <a
-                              href="#"
-                              class="btn border border-secondary rounded-pill px-3 text-primary"
-                              ><i
-                                class="fa fa-shopping-bag me-2 text-primary"
-                              ></i>
-                              Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
+                        class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                        style="top: 10px; left: 10px"
+                        ><%= product[i].category.name %></div>
+                      <div
+                      class="p-4 border border-secondary border-top-0 rounded-bottom"
+                      >
+                      <h4><%= product[i].name %></h4>
+                      <p>FOR <%= product[i].category.name %></p>
+                      <div
+                      class="d-flex justify-content-between flex-lg-wrap"
+                      >
+                      <p class="text-dark fs-5 fw-bold mb-0">
+                        $4.99 / kg
+                      </p>
+                      <a
+                      href="#"
+                      class="btn border border-secondary rounded-pill px-3 text-primary"
+                      ><i
+                      class="fa fa-shopping-bag me-2 text-primary"
+                      ></i>
+                      Add to cart</a
+                      >
                     </div>
                   </div>
                 </div>
               </div>
+              <% } %>
+              <% } %>
+            </div>
+          </div>
+        </div>
             </div>
             <div id="tab-5" class="tab-pane fade show p-0">
               <div class="row g-4">
