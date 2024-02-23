@@ -186,9 +186,10 @@
 
     function resendOtp() {
       console.log("qwertyui");
+      document.getElementById("resendOTPBtn").style.display = "none";
+
+      startCountdown();
       axios.get("/resendotp").then((res)=>{
-        console.log(res);
-        startCountdown();
       }).catch((error)=>{
         console.log(error);
       })
@@ -197,6 +198,8 @@
     // Start or resume the countdown timer
     function startCountdown() {
       var timeLeft = 5;
+    
+
       var elem = document.getElementById('countdownTimer');
       var timerId = setInterval(countdown, 1000);
 
@@ -229,20 +232,20 @@
       }
     }
 
-    document
-      .getElementById("resendOTPBtn")
-      .addEventListener("click", function () {
-        // Send POST request to /resendotp endpoint
-        axios
-          .post("/resendotp")
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            // Handle error
-            console.error("Error resending OTP:", error);
-          });
-      });
+    // document
+    //   .getElementById("resendOTPBtn")
+    //   .addEventListener("click", function () {
+    //     // Send POST request to /resendotp endpoint
+    //     axios
+    //       .post("/resendotp")
+    //       .then(function (response) {
+    //         console.log(response);
+    //       })
+    //       .catch(function (error) {
+    //         // Handle error
+    //         console.error("Error resending OTP:", error);
+    //       });
+    //   });
 
     const openModal = () => {
       if (ConfirmpassWord.value === Password.value) {
