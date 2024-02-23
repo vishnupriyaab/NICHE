@@ -3,6 +3,7 @@ import { UserRequestBody } from "../interface/userInterface";
 import userDb from "../model/userModel";
 import { sendEmailWithOTP, verifyOtp } from "../config/nodeMailer";
 import bcrypt from "bcrypt";
+import productDb from "../model/productModel";
 
 interface body {
   email: string;
@@ -30,8 +31,11 @@ export async function getHome(
   try {
     const user = req.session.userId
     console.log(req.session);
+    const product = await productDb.find().populate('category');
+    console.log(product);
     
-    res.render("user/home", { loginError, user});
+    
+    res.render("user/home", { loginError, user, product});
     loginError = null;
   } catch (error: any) {
     console.error(error);
