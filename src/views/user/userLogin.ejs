@@ -44,20 +44,20 @@
         class=" md:outline text-center outline-offset-2 outline-1 md:outline-blue-500 rounded md:shadow-2xl mx-auto"
         style="padding: 32px; padding-left: 60px;padding-right: 60px;">
         <h1 class="text-4xl font-medium dark:text-white">LogIn</h1>
-        <form method="post" action="/userLogin" id="">
           <div class="flex justify-center">
             <div class="flex-col flex gap-2 my-10">
+              <p class="text-red-500" id="serverError"></p>
               <p class="text-red-500" id="loginErr">
                 <%= loginError %>
               </p>
               <p class="text-left">Email</p>
-              <input type="email" name="email"
+              <input type="email" id="loginemail" name="email" value="<%= messages?.savedEmail?messages.savedEmail:'' %>"
                 class="shadow appearance-none border rounded py-1.5 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline" />
               <p class="text-red-500">
                 <%= messages?.email %>
               </p>
               <p class="text-left">Password</p>
-              <input type="password" name="password" type="password"
+              <input type="password" id="loginpassword" name="password" type="password"
                 class="shadow appearance-none border rounded py-1.5 px-6 text-gray-700 leading-tight focus: outline-none focus:shadow-outline" />
               <p class="text-red-500">
                 <%= messages?.password %>
@@ -66,8 +66,8 @@
                 Forgot Password ?
               </p>
               <button type="submit"
-                class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full"
-                onclick="loginshowErr()">
+                class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-2 rounded-full" onclick="loginUser()"
+                >
                 Login
               </button>
 
@@ -80,7 +80,6 @@
                 Join now</span>
             </p>
           </div>
-        </form>
       </div>
 
       <!----------------------------- REGISTER --------------------------->
@@ -147,7 +146,7 @@
               class="bg-black dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full">Verify
               OTP</button>
             <!-- Countdown Timer -->
-            <div id="countdownTimer" class="block p-2 text-black">30</div>
+            <div id="countdownTimer" class="block p-2 text-black"></div>
             <!-- Resend OTP Button -->
             <button id="resendOTPBtn"
               class="bg-black hidden dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full"
@@ -178,6 +177,36 @@
     const userErr = document.getElementById("userErr");
 
 
+    function loginUser() {
+
+      const email = document.getElementById('loginemail').value;
+      const password = document.getElementById('loginpassword').value;
+
+      axios.post("/userLogin", {
+                email, password,
+            })
+                .then(res => {
+                  if(res.data.status){
+                    return location.href = res.data.url;
+                  }
+
+                  if(res.data.block){
+                    document.getElementById('serverError').innerHTML = res.data.message;
+                  }
+
+                  console.log(res.data);
+                  
+                  
+                })
+                .catch((error) => {
+                  if(error.response.data.err){
+                    return location.href = error.response.data.url;
+                  }
+                  window.location.href = '/userLogin'
+                })
+      
+    }
+
 
     // Function to enable the Resend OTP button after the timer ends
     function enableResendOTPButton() {
@@ -197,9 +226,8 @@
 
     // Start or resume the countdown timer
     function startCountdown() {
-      var timeLeft = 5;
-    
-
+      var timeLeft = 30;
+      
       var elem = document.getElementById('countdownTimer');
       var timerId = setInterval(countdown, 1000);
 
@@ -232,21 +260,6 @@
       }
     }
 
-    // document
-    //   .getElementById("resendOTPBtn")
-    //   .addEventListener("click", function () {
-    //     // Send POST request to /resendotp endpoint
-    //     axios
-    //       .post("/resendotp")
-    //       .then(function (response) {
-    //         console.log(response);
-    //       })
-    //       .catch(function (error) {
-    //         // Handle error
-    //         console.error("Error resending OTP:", error);
-    //       });
-    //   });
-
     const openModal = () => {
       if (ConfirmpassWord.value === Password.value) {
         axios
@@ -275,8 +288,6 @@
     function HandleRegister() {
       console.log(ConfirmpassWord.value, Password.value);
       localStorage.setItem("startTime", new Date().getTime());
-      // Start or resume the countdown timer
-      // startCountdown();
       axios
         .post("/registerValue", {
           Email: Email.value,

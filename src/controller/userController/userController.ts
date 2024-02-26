@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { UserRequestBody } from "../interface/userInterface";
-import userDb from "../model/userModel";
-import { generateOTP, sendEmailWithOTP, verifyOtp } from "../config/nodeMailer";
+import { UserRequestBody } from "../../interface/userInterface";
+import userDb from "../../model/userModel";
+import { generateOTP, sendEmailWithOTP, verifyOtp } from "../../config/nodeMailer";
 import bcrypt from "bcrypt";
-import productDb from "../model/productModel";
+import productDb from "../../model/productModel";
 
 interface body {
   email: string;
@@ -30,10 +30,7 @@ export async function getHome(
 ): Promise<void> {
   try {
     const user = req.session.userId;
-    console.log(req.session);
     const product = await productDb.find().populate("category");
-    console.log(product);
-
     res.render("user/home", { loginError, user, product });
     loginError = null;
   } catch (error: any) {
@@ -43,23 +40,20 @@ export async function getHome(
 
 export async function getShop(req: Request, res: Response) {
   try {
-    res.render("user/shop");
+    const user = req.session.userId;
+    res.render("user/shop", {user});
   } catch (error: any) {
     console.error(error);
   }
 }
-export async function shopDetails(req: Request, res: Response) {
-  try {
-    res.render("user/shopDetails");
-  } catch (error: any) {
-    console.error(error);
-  }
-}
+
 export async function cart(req: Request, res: Response) {
   try {
-    res.render("user/cart");
+    const user = req.session.userId;
+    res.render("user/cart",{user});
   } catch (error: any) {
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 }
 export async function checkout(req: Request, res: Response) {
@@ -99,7 +93,6 @@ export async function userRegister(
   try {
     const { Email, UserName, Password, Phone, otp } = req.body;
     console.log(Email);
-
     req.session.Email = Email;
     console.log(req.session.Email, req.session.otp, "1");
 
@@ -142,21 +135,13 @@ export async function resendOtp(req: Request, res: Response) {
   try {
     console.log("xcvbnm,");
     const email = req.session.Email;
-    // await userDb.findOneAndDelete({ email: email });
-
-    // Generate a new OTP
     const newOTP = generateOTP();
     req.session.otp = newOTP;
-    // Save the new OTP to the databasers
-    // await userDb.create({ email, otp: newOTP });
- 
-      await sendEmailWithOTP(email?email:"", newOTP);
-    
-
+    await sendEmailWithOTP(email ? email : "", newOTP);
     console.log(`New OTP generated for ${email}: ${newOTP}`);
 
     // Redirect back to the page with a success message or handle it as needed
-    res.json({message:"Resend Otp Sended"});
+    res.json({ message: "Resend Otp Sended" });
   } catch (error) {
     console.error("Error while resending OTP:", error);
     res.status(500).send("Internal Server Error");
@@ -170,24 +155,47 @@ export async function postLogin(
 ): Promise<void> {
   try {
     const user = await userDb.findOne({ email: req.body.email });
-    if (user) {
+    if(user?.block == true){
+      // @ts-ignore
+      req.flash("savedEmail", req.body.email);
+      res.json({block: true,message:"User Blocked by Admin"})
+    }else if (user) {
       const match = await bcrypt.compare(req.body.password, user.password);
       if (match) {
         req.session.userId = user.id;
         loginError = null;
-        res.redirect("/");
+        res.status(200).json({
+          status: true,
+          url: '/'
+        });
       } else {
         loginError = "Invalid password";
-        res.redirect("/userLogin");
+        // @ts-ignore
+        req.flash("savedEmail", req.body.email);
+        res.status(401).json({
+          err: true,
+          url: '/userLogin'
+        });
+        // res.redirect("/userLogin");
       }
     } else {
       loginError = "User not found";
-      res.redirect("/userLogin");
+      // @ts-ignore
+      req.flash("savedEmail", req.body.email);
+      res.status(401).json({
+        err: true,
+        url: '/userLogin'
+      });
+      // res.redirect("/userLogin");
     }
   } catch (error: any) {
     console.error(error);
     loginError = "Internal server error";
-    res.redirect("/userLogin");
+    res.status(500).json({
+      err: true,
+      url: '/userLogin'
+    });
+    // res.redirect("/userLogin");
   }
 }
 
@@ -206,7 +214,6 @@ export async function getsingleProduct(req: Request, res: Response) {
   try {
     const data = await productDb.findOne({ _id: req.params.id });
     const userid = req.session.userId;
-
     const userdata = await userDb.findById(userid);
     res
       .status(200)

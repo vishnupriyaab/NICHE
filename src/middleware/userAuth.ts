@@ -1,5 +1,6 @@
 import { body, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
+import userDb from "../model/userModel";
 
 
 export const userloginValidation =  [
@@ -28,7 +29,10 @@ export const validateUserlogin = (
     
     
     
-    res.status(401).redirect('/userLogin');
+    res.status(401).json({
+      err: true,
+      url: '/userLogin'
+    });
     return; 
   }
   next();
@@ -58,3 +62,14 @@ export const validateUserRegistration = (
   next();
 };
 
+export async function checkBlocked(req:Request, res:Response, next:NextFunction) {
+  const userid = req.session.userId;
+
+  const user = await userDb.findOne({_id: userid})
+
+  if (!userid || user?.block === false) {
+    delete req.session.userId;
+    return res.redirect('/');
+  }
+  next();
+}
