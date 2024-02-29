@@ -1,5 +1,22 @@
 <%- include('include/_header') %>
 
+    <style>
+        .quantityInput {
+            width: 4rem;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 0.25rem;
+            text-align: center;
+            appearance: textfield;
+        }
+
+        .quantityInput::-webkit-outer-spin-button,
+        .quantityInput::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
         <h1 class="text-center text-white display-6">Cart</h1>
@@ -13,7 +30,7 @@
 
 
     <!-- Cart Page Start -->
-    <div class="container-fluid py-5">
+    <div class="container-fluid py-1">
         <div class="container py-5">
             <div class="table-responsive">
                 <table class="table">
@@ -28,121 +45,63 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">
-                                <div class="d-flex align-items-center">
-                                    <img src="img/vegetable-item-3.png" class="img-fluid me-5 rounded-circle"
-                                        style="width: 80px; height: 80px;" alt="">
-                                </div>
-                            </th>
-                            <td>
-                                <p class="mb-0 mt-4">Big Banana</p>
-                            </td>
-                            <td>
-                                <p class="mb-0 mt-4">2.99 $</p>
-                            </td>
-                            <td>
-                                <div class="input-group quantity mt-4" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-minus rounded-circle bg-light border">
-                                            <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm text-center border-0"
-                                        value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="mb-0 mt-4">2.99 $</p>
-                            </td>
-                            <td>
-                                <button class="btn btn-md rounded-circle bg-light border mt-4">
-                                    <i class="fa fa-times text-danger"></i>
-                                </button>
-                            </td>
+                        <% products.forEach((element, i)=> { %>
 
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <div class="d-flex align-items-center">
-                                    <img src="img/vegetable-item-5.jpg" class="img-fluid me-5 rounded-circle"
-                                        style="width: 80px; height: 80px;" alt="" alt="">
-                                </div>
-                            </th>
-                            <td>
-                                <p class="mb-0 mt-4">Potatoes</p>
-                            </td>
-                            <td>
-                                <p class="mb-0 mt-4">2.99 $</p>
-                            </td>
-                            <td>
-                                <div class="input-group quantity mt-4" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-minus rounded-circle bg-light border">
-                                            <i class="fa fa-minus"></i>
-                                        </button>
+
+
+                            <tr>
+                                <th scope="row">
+                                    <div class="d-flex align-items-center">
+                                        <img src="<%=  element.productsDetails.imgArr[0] %>"
+                                            class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;"
+                                            alt="">
                                     </div>
-                                    <input type="text" class="form-control form-control-sm text-center border-0"
-                                        value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
+                                </th>
+                                <td>
+                                    <p class="mb-0 mt-4">
+                                        <%= element.productsDetails.name %>
+                                    </p>
+                                </td>
+                                <td>
+                                    <p class="mb-0 mt-4">$<%= element.productsDetails.price %>
+                                    </p>
+                                </td>
+                                <td>
+                                    <div class="input-group quantity mt-4" style="width: 100px;">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-minus rounded-circle bg-light border decBtn"
+                                                onclick="updateQuantity(-1, '<%= element.products.productId %>')">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+
+                                        <input type="number" id="quantityInput" 
+                                            class="form-control form-control-sm text-center border-0 quantityInput"
+                                            value="<%= element.products.quantity %>">
+
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-plus rounded-circle bg-light border incBtn"
+                                                onclick="updateQuantity(1, '<%= element.products.productId %>')">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="mb-0 mt-4">2.99 $</p>
-                            </td>
-                            <td>
-                                <button class="btn btn-md rounded-circle bg-light border mt-4">
-                                    <i class="fa fa-times text-danger"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <div class="d-flex align-items-center">
-                                    <img src="img/vegetable-item-2.jpg" class="img-fluid me-5 rounded-circle"
-                                        style="width: 80px; height: 80px;" alt="" alt="">
-                                </div>
-                            </th>
-                            <td>
-                                <p class="mb-0 mt-4">Awesome Brocoli</p>
-                            </td>
-                            <td>
-                                <p class="mb-0 mt-4">2.99 $</p>
-                            </td>
-                            <td>
-                                <div class="input-group quantity mt-4" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-minus rounded-circle bg-light border">
-                                            <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm text-center border-0"
-                                        value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="mb-0 mt-4">2.99 $</p>
-                            </td>
-                            <td>
-                                <button class="btn btn-md rounded-circle bg-light border mt-4">
-                                    <i class="fa fa-times text-danger"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                    <p class="text-danger mt-2" id="errMesg"></p>
+                                </td>
+                                <td>
+                                    <p class="mb-0 mt-4 snglTotalAmount">$<%= element.productsDetails.price *
+                                            element.products.quantity %>
+                                    </p>
+                                </td>
+                                <td>
+                                    <button class="btn btn-md rounded-circle bg-light border mt-4">
+                                        <i class="fa fa-times text-danger"></i>
+                                    </button>
+                                </td>
+
+                            </tr>
+
+                            <% }) %>
                     </tbody>
                 </table>
             </div>
@@ -159,19 +118,22 @@
                             <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
                             <div class="d-flex justify-content-between mb-4">
                                 <h5 class="mb-0 me-4">Subtotal:</h5>
-                                <p class="mb-0">$96.00</p>
+                                <p class="mb-0 totalAmt">$<%= products.reduce((total, element)=> {
+                                        return total += (element.productsDetails.price * element.products.quantity);
+                                        }, 0) %></p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h5 class="mb-0 me-4">Shipping</h5>
                                 <div class="">
-                                    <p class="mb-0">Flat rate: $3.00</p>
+                                    <p class="mb-0">FREE</p>
                                 </div>
                             </div>
-                            <p class="mb-0 text-end">Shipping to Ukraine.</p>
                         </div>
                         <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                             <h5 class="mb-0 ps-4 me-4">Total</h5>
-                            <p class="mb-0 pe-4">$99.00</p>
+                            <p class="mb-0 pe-4 totalAmt">$<%= products.reduce((total, element)=> {
+                                    return total += (element.productsDetails.price * element.products.quantity);
+                                    }, 0) %></p>
                         </div>
                         <button
                             class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
@@ -182,5 +144,135 @@
         </div>
     </div>
     <!-- Cart Page End -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+
+        // async function updateQuantity(change, productId, index) {
+        //     index = parseInt(index);
+        //     console.log("sdfe", index);
+        //     const quantityInput = document.getElementById("quantityInput_" + productId).value;
+        //     console.log('kjasdfbhcsdjkafgvb',quantityInput);
+
+        //     if (!isNaN(quantityInput)) {
+        //         console.log('in if');
+        //         quantityInput += change;
+        //         if (quantityInput < 0) {
+        //             currentValue = 1;
+        //         }
+        //         await reloadContent(productId, change);
+        //         // Reload total amount after updating the quantity
+        //         await reloadTotalAmount(index, productId);
+        //     }
+        // }
+
+
+        // function reloadContent(productId, change) {
+        //     const errMesg = document.getElementById("errMesg" + productId);
+        //     const quantity = Number(document.getElementById("quantityInput_" + productId).value) + 1;
+        //     console.log(quantity, "dfghjkkjhvc");
+        //     axios
+        //         .post("/updatequantity", {
+        //             productId,
+        //             quantity,
+        //         })
+        //         .then(function (response) {
+        //             if (response.data === true) {
+        //                 errMesg.textContent = '';
+        //             }
+        //         })
+        //         .catch(function (error) {
+        //             console.log(error, 'kdhjdshkdhk');
+        //             if (error.response.data.stockErr && change != -1) {
+        //                 errMesg.textContent = error.response.data.message;
+        //                 document.getElementById("quantityInput_" + productId).value = Number(document.getElementById("quantityInput_" + productId).value) - 1;
+        //                 return;
+        //             }
+
+        //             if (error.response.data.productErr) {
+        //                 console.log('sdjhjdshfjhjkh');
+        //                 document.getElementById("quantityInput_" + productId).value = Number(document.getElementById("quantityInput_" + productId).value) - 1;
+        //                 errMesg.textContent = error.response.data.message;
+        //                 setTimeout(() => {
+        //                     location.reload();
+        //                 }, 1500);
+        //                 return;
+        //             }
+        //             console.error("Error fetching data:", error);
+        //         });
+        // }
+
+        // function reloadTotalAmount(index, productId) {
+        //     console.log(index, productId);
+        //     axios
+        //         .get(`/getUpdatedTotalAmount/${productId}`)
+        //         .then((response) => {
+        //             const totalAmountValueElement = document.querySelectorAll(".totalAmt");
+        //             const snglTotalAmount = document.querySelectorAll('.snglTotalAmount');
+        //             if (totalAmountValueElement) {
+        //                 snglTotalAmount[index].textContent = `$${response.data.amt}`;
+        //                 totalAmountValueElement[0].textContent = `$${response.data.updatedTotalAmount}`;
+        //                 totalAmountValueElement[1].textContent = `$${response.data.updatedTotalAmount}`;
+        //             }
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error fetching updated total amount:", error);
+        //         });
+        // }
+
+        toastr.options = {
+  "closeButton": false,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": false,
+  "positionClass": "toast-top-right",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "5000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+}
+
+        async function updateQuantity (change, productId){
+            try {
+                const quantityInput = document.getElementById('quantityInput');
+                const currentQnty = parseInt(quantityInput.value);
+                const errMesg = document.getElementById('errMesg');
+                console.log(currentQnty,"asdfghj");
+
+                if(currentQnty+change<1){
+                    toastr.info("Quantity can't be less than One","Info!")
+                    return;
+                }
+             const response = await fetch('/cart/updateQuantity',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: change
+                })
+             })
+const data = await response.json();
+if(data.success){
+    
+}
+
+            } catch (error) {
+                
+            }
+        }
+
+
+
+
+    </script>
 
     <%- include('include/_footer') %>

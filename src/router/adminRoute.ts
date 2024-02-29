@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { adminRegister, getAdminlogin, getAdminlogout, getDashboard, isAdmin } from "../controller/adminController/dashboardContro";
+import { adminRegister, getAdminlogin, getAdminlogout, getDashboard, isAdmin } from "../controller/adminController/dashboardCtrl";
 import { adminLoginValidation, checkAdmin, validateadminRegistration } from "../middleware/adminAuth";
 import { categoryValidation, editcategoryValidation, editvalidateCategory, validateCategory } from "../middleware/categoryAuth";
 import { adminLoggedIn } from "../middleware/sessionAuth";
-import { addCategory, editCategory, getCategory, getCategorySearch, listCategory, unlistCategory } from "../controller/adminController/categoryContro";
-import { addproduct, deleteImage, deleteProduct, getEditproduct, getProducts, getaddProduct, getunlistedProduct, restoreProduct, updateproduct } from "../controller/adminController/productContro";
-import { blockuser, getUsers, unblockuser } from "../controller/adminController/userContro";
+import { addCategory, editCategory, getCategory, getCategorySearch, listCategory, unlistCategory } from "../controller/adminController/categoryCtrl";
+import { addproduct, deleteImage, deleteProduct, getEditproduct, getProducts, getaddProduct, getunlistedProduct, restoreProduct, updateproduct } from "../controller/adminController/productCtrl";
+import { blockuser, getUsers, unblockuser } from "../controller/adminController/userCtrl";
 
 
 const adminRoute: Router = Router();

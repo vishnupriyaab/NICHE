@@ -4,6 +4,7 @@ import userDb from "../../model/userModel";
 import { generateOTP, sendEmailWithOTP, verifyOtp } from "../../config/nodeMailer";
 import bcrypt from "bcrypt";
 import productDb from "../../model/productModel";
+import CartDb from "../../model/cartModel";
 
 interface body {
   email: string;
@@ -31,7 +32,9 @@ export async function getHome(
   try {
     const user = req.session.userId;
     const product = await productDb.find().populate("category");
-    res.render("user/home", { loginError, user, product });
+    const cart = await CartDb.findOne({userId :user}).populate("products");
+    
+    res.render("user/home", { loginError, user, product ,cart});
     loginError = null;
   } catch (error: any) {
     console.error(error);
@@ -41,21 +44,14 @@ export async function getHome(
 export async function getShop(req: Request, res: Response) {
   try {
     const user = req.session.userId;
+    const cart = await CartDb.findOne({userId :user}).populate("products");
     res.render("user/shop", {user});
   } catch (error: any) {
     console.error(error);
   }
 }
 
-export async function cart(req: Request, res: Response) {
-  try {
-    const user = req.session.userId;
-    res.render("user/cart",{user});
-  } catch (error: any) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-}
+
 export async function checkout(req: Request, res: Response) {
   try {
     res.render("user/checkout");
@@ -80,6 +76,15 @@ export async function _404page(req: Request, res: Response) {
 export async function contact(req: Request, res: Response) {
   try {
     res.render("user/contact");
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+export async function userProfile(req: Request, res: Response) {
+  try {
+    const user = await userDb.findById({ _id: req.session.userId });
+    const cart = await CartDb.findOne({userId :user}).populate("products");
+    res.render("user/userProfile",{user});
   } catch (error: any) {
     console.error(error);
   }
@@ -210,16 +215,3 @@ export async function getuserLogout(req: Request, res: Response) {
   }
 }
 
-export async function getsingleProduct(req: Request, res: Response) {
-  try {
-    const data = await productDb.findOne({ _id: req.params.id });
-    const userid = req.session.userId;
-    const userdata = await userDb.findById(userid);
-    res
-      .status(200)
-      .render("user/singleProductpage", { product: data, user: userdata });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-}

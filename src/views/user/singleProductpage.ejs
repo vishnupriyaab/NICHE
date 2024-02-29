@@ -109,10 +109,16 @@
                         <div class="row mb-4">
                             <div class="col-md-4 col-6">
                                 <label class="mb-2">Size</label>
-                                <select class="form-select border border-secondary" style="height: 35px;">
-                                    <option>Small</option>
-                                    <option>Medium</option>
-                                    <option>Large</option>
+                                <select class="form-select border border-secondary" style="height: 35px; width: auto;">
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option>12</option>
                                 </select>
                             </div>
                             <!-- col.// -->
@@ -134,15 +140,40 @@
                             </div>
                         </div>
                         <a href="#" class="btn btn-warning shadow-0"> Buy now </a>
-                        <a href="#" class="btn btn-primary border shadow-0 icon-hover "> <i class="me-1 fa fa-shopping-basket"></i> Add to
+                        <a onclick="addTocart('<%- product._id %>')" class="btn btn-primary border shadow-0 icon-hover "> <i class="me-1 fa fa-shopping-basket"></i> Add to
                             cart </a>
                         <a href="#" class="btn btn-light border icon-hover px-3"> <i
-                                class="me-1 fa fa-heart fa-lg"></i> Save </a>
+                                class="me-1 fa fa-heart fa-lg"></i> Wishlist </a>
                     </div>
                 </main>
             </div>
         </div>
     </section>
     <!-- content -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
+    integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    function addTocart(id){
+        axios.post('/addtocart',{id})
+        .then(res=>{
+            console.log(res);
+            if(res.data.message === 'Product already in cart'){
+                console.log(res,"response");
+                console.log(res.data,"response data");
+                window.location.href = '/cart';
+            }else if(res.data.message === "Please Login"){
+                window.location.href = '/userLogin';
+            }else{
+                console.log(res.data.message);
+            }
+        }).catch(error =>{
+            console.log("Error:",error);
+        });
+    }
+</script>
+
+
 
         <%- include('include/_footer') %>

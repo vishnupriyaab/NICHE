@@ -7,7 +7,6 @@ export const userloginValidation =  [
   body('email')
     .exists().isEmail().normalizeEmail().withMessage('Email is required')
     ,
-  
   body('password')
     .exists()
     .trim()

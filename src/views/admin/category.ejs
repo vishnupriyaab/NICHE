@@ -144,7 +144,7 @@
             
 
            async function sendData(e){
-                try {
+                            try {
                     const searchResult = document.getElementById('searchResult');
                    const response = await axios.post('/getCategorySearch', {payLoad: e.value});
                    const payLoad = response.data.payLoad;
