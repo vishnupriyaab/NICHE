@@ -6,6 +6,7 @@ import CartDb from "../../model/cartModel";
 
 export async function getsingleProduct(req: Request, res: Response) {
     try {
+      console.log("getsingleProduct");
       
       const product = await productDb.findOne({ _id: req.params.id });
       const userid = req.session.userId;

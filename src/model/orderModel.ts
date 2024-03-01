@@ -60,4 +60,6 @@ const orderSchema = new Schema<Order>(
   }
 );
 
-module.exports = mongoose.model("Order", orderSchema);
+const orderDb = mongoose.model<Order>("Order", orderSchema);
+
+export default orderDb;

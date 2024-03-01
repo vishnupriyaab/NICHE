@@ -62,11 +62,13 @@ export const validateUserRegistration = (
 };
 
 export async function checkBlocked(req:Request, res:Response, next:NextFunction) {
+  console.log("checkBlocked");
+  
   const userid = req.session.userId;
 
   const user = await userDb.findOne({_id: userid})
 
-  if (!userid || user?.block === false) {
+  if (!userid || user?.block === true) {
     delete req.session.userId;
     return res.redirect('/');
   }

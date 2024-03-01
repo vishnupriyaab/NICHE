@@ -99,7 +99,7 @@ export async function deleteImage(req: Request, res: Response) {
 
 export async function getaddProduct(req: Request, res: Response) {
   try {
-    const category = await categoryDb.find();
+    const category = await categoryDb.find({unlistStatus:true});
     res.render("admin/addProduct", { category });
   } catch (error: any) {
     res.status(500).send("Internal Server Error");

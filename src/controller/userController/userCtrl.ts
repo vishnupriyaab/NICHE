@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
 import { UserRequestBody } from "../../interface/userInterface";
 import userDb from "../../model/userModel";
-import { generateOTP, sendEmailWithOTP, verifyOtp } from "../../config/nodeMailer";
+import {
+  generateOTP,
+  sendEmailWithOTP,
+  verifyOtp,
+} from "../../config/nodeMailer";
 import bcrypt from "bcrypt";
 import productDb from "../../model/productModel";
 import CartDb from "../../model/cartModel";
+import orderDb from "../../model/orderModel";
+import categoryDb from "../../model/categoryModel";
 
 interface body {
   email: string;
@@ -31,10 +37,10 @@ export async function getHome(
 ): Promise<void> {
   try {
     const user = req.session.userId;
-    const product = await productDb.find().populate("category");
-    const cart = await CartDb.findOne({userId :user}).populate("products");
-    
-    res.render("user/home", { loginError, user, product ,cart});
+    const product = await productDb.find({isHidden: false}).populate("category");
+    const cart = await CartDb.findOne({ userId: user }).populate("products");
+
+    res.render("user/home", { loginError, user, product, cart });
     loginError = null;
   } catch (error: any) {
     console.error(error);
@@ -44,13 +50,12 @@ export async function getHome(
 export async function getShop(req: Request, res: Response) {
   try {
     const user = req.session.userId;
-    const cart = await CartDb.findOne({userId :user}).populate("products");
-    res.render("user/shop", {user});
+    const cart = await CartDb.findOne({ userId: user }).populate("products");
+    res.render("user/shop", { user });
   } catch (error: any) {
     console.error(error);
   }
 }
-
 
 export async function checkout(req: Request, res: Response) {
   try {
@@ -83,12 +88,12 @@ export async function contact(req: Request, res: Response) {
 export async function userProfile(req: Request, res: Response) {
   try {
     console.log("deffrev", req.session.userId);
-    
-    const user = await userDb.findOne({_id: req.session.userId})
-console.log(user,"user");
 
-    const cart = await CartDb.findOne({userId :user}).populate("products");
-    res.render("user/userProfile",{user,cart});
+    const user = await userDb.findOne({ _id: req.session.userId });
+    console.log(user, "user");
+
+    const cart = await CartDb.findOne({ userId: user }).populate("products");
+    res.render("user/userProfile", { user, cart });
   } catch (error: any) {
     console.error(error);
   }
@@ -118,7 +123,6 @@ export async function userRegister(
       await newUser.save();
 
       res.send("Registered Successfully");
-
     } else {
       res.send("otp is invalid");
     }
@@ -164,18 +168,18 @@ export async function postLogin(
 ): Promise<void> {
   try {
     const user = await userDb.findOne({ email: req.body.email });
-    if(user?.block == true){
+    if (user?.block == true) {
       // @ts-ignore
       req.flash("savedEmail", req.body.email);
-      res.json({block: true,message:"User Blocked by Admin"})
-    }else if (user) {
+      res.json({ block: true, message: "User Blocked by Admin" });
+    } else if (user) {
       const match = await bcrypt.compare(req.body.password, user.password);
       if (match) {
         req.session.userId = user.id;
         loginError = null;
         res.status(200).json({
           status: true,
-          url: '/'
+          url: "/",
         });
       } else {
         loginError = "Invalid password";
@@ -183,7 +187,7 @@ export async function postLogin(
         req.flash("savedEmail", req.body.email);
         res.status(401).json({
           err: true,
-          url: '/userLogin'
+          url: "/userLogin",
         });
         // res.redirect("/userLogin");
       }
@@ -193,7 +197,7 @@ export async function postLogin(
       req.flash("savedEmail", req.body.email);
       res.status(401).json({
         err: true,
-        url: '/userLogin'
+        url: "/userLogin",
       });
       // res.redirect("/userLogin");
     }
@@ -202,7 +206,7 @@ export async function postLogin(
     loginError = "Internal server error";
     res.status(500).json({
       err: true,
-      url: '/userLogin'
+      url: "/userLogin",
     });
     // res.redirect("/userLogin");
   }
@@ -219,13 +223,17 @@ export async function getuserLogout(req: Request, res: Response) {
   }
 }
 
-
-export async function getuserOredrPage(req:Request, res:Response){
+export async function getuserOredrPage(req: Request, res: Response) {
   try {
-    const user = req.session.userId;
-    
+    const cartProduct = await CartDb.findOne({
+      orderBy: req.session.userId,
+    }).populate("products.product");
+    const orderData = await orderDb.find({ orderBy: req.session.userId });
+    console.log(orderData, "orderData");
+    // const addressData = await Address.find
+
+
   } catch (error) {
     console.log(error);
-    
   }
 }

@@ -51,7 +51,7 @@ userRoute.get(
 );
 userRoute.get("/resendotp", resendOtp);
 // userRoute.get("/getUpdatedTotalAmount/:productId", reloadTotalAmount);
-userRoute.get("/userProfile", userProfile);
+userRoute.get("/userProfile",isLoggedIn, userProfile);
 userRoute.get("/userOredrPage", );
 
 userRoute.post(
