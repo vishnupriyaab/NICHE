@@ -1,6 +1,8 @@
-const mongoose = require("mongoose");
+import mongoose, { Schema} from "mongoose";
+import Order from "../interface/orderInterface";
 
-var orderSchema = new mongoose.Schema(
+
+const orderSchema = new Schema<Order>(
   {
     products: [
       {
@@ -37,7 +39,7 @@ var orderSchema = new mongoose.Schema(
       ],
     },
     address: {
-      type: Array,
+      type: [String],
     },
     orderTotal: {
       type: Number,
