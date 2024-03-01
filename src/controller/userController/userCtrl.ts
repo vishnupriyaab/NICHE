@@ -82,9 +82,13 @@ export async function contact(req: Request, res: Response) {
 }
 export async function userProfile(req: Request, res: Response) {
   try {
-    const user = req.session.userId;
+    console.log("deffrev", req.session.userId);
+    
+    const user = await userDb.findOne({_id: req.session.userId})
+console.log(user,"user");
+
     const cart = await CartDb.findOne({userId :user}).populate("products");
-    res.render("user/userProfile",{user});
+    res.render("user/userProfile",{user,cart});
   } catch (error: any) {
     console.error(error);
   }
@@ -215,3 +219,13 @@ export async function getuserLogout(req: Request, res: Response) {
   }
 }
 
+
+export async function getuserOredrPage(req:Request, res:Response){
+  try {
+    const user = req.session.userId;
+    
+  } catch (error) {
+    console.log(error);
+    
+  }
+}
