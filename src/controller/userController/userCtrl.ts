@@ -82,7 +82,7 @@ export async function contact(req: Request, res: Response) {
 }
 export async function userProfile(req: Request, res: Response) {
   try {
-    const user = await userDb.findById({ _id: req.session.userId });
+    const user = req.session.userId;
     const cart = await CartDb.findOne({userId :user}).populate("products");
     res.render("user/userProfile",{user});
   } catch (error: any) {

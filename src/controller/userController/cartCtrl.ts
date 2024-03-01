@@ -69,7 +69,6 @@ export async function addTocart(req: Request, res: Response): Promise<void> {
       return;
     }
     let cart = await CartDb.findOne({ userId });
-
     if (!cart) {
       cart = await CartDb.create({ userId });
     }

@@ -1,5 +1,6 @@
 import { NextFunction, Router } from "express";
 import {
+  checkBlocked,
   userRegistrationValidation,
   userloginValidation,
   validateUserRegistration,
@@ -28,13 +29,12 @@ import {
   userProfile,
   userRegister,
 } from "../controller/userController/userCtrl";
+import { isLoggedIn, isLoggedout } from "../middleware/sessionAuth";
 
 const userRoute: Router = Router();
 
-
 userRoute.get("/userLogin", getLogin);
-userRoute.get("/userLogout", getuserLogout);
-
+userRoute.get("/userLogout", isLoggedIn, getuserLogout);
 
 userRoute.get("/", getHome);
 userRoute.get("/shop", getShop);
@@ -43,14 +43,24 @@ userRoute.get("/checkout", checkout);
 userRoute.get("/testimonial", testimonial);
 userRoute.get("/_404page", _404page);
 userRoute.get("/contact", contact);
-userRoute.get("/singleProductpage/:id", getsingleProduct);
+userRoute.get(
+  "/singleProductpage/:id",
+  isLoggedIn,
+  checkBlocked,
+  getsingleProduct
+);
 userRoute.get("/resendotp", resendOtp);
 // userRoute.get("/getUpdatedTotalAmount/:productId", reloadTotalAmount);
 userRoute.get("/userProfile", userProfile);
 
-
-userRoute.post("/userLogin", userloginValidation, validateUserlogin, postLogin);
-userRoute.post("/registerValue", userRegister);
+userRoute.post(
+  "/userLogin",
+  isLoggedout,
+  userloginValidation,
+  validateUserlogin,
+  postLogin
+);
+userRoute.post("/registerValue", isLoggedout, userRegister);
 userRoute.post(
   "/otpSend",
   userRegistrationValidation,

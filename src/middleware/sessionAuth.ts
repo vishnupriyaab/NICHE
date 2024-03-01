@@ -1,23 +1,48 @@
 import{Request,Response,NextFunction} from "express"
+import userDb from "../model/userModel";
 
-const isLoggedIn = (req:Request, res:Response, next:NextFunction) => {
-    if (req.session.userId) {
-      next();
-    } else {
-      res.redirect("/userLogin");
+export const isLoggedIn = (req:Request, res:Response, next:NextFunction) => {
+    try {
+      if (req.session.userId) {
+        next();
+      } else {
+        res.redirect("/userLogin");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
-  export default isLoggedIn 
-  
-  
-  export const adminLoggedIn = (req:Request, res:Response, next:NextFunction) => {
-    if (req.session.adminId) {
-      next();
-    } else {
-      res.redirect("/adminLogin");
+
+
+  export const isLoggedout = (req:Request, res:Response, next:NextFunction) => {
+    try {
+      if (req.session.userId) {
+        res.redirect("/");
+      } else {
+        next();
+      }
+    } catch (error) {
+      console.log(error);
+      
     }
   };
  
+  
+  export const adminLoggedIn = (req:Request, res:Response, next:NextFunction) => {
+    try {
+      if (req.session.adminId) {
+        next();
+      } else {
+        res.redirect("/adminLogin");
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+  };
+ 
+
+
   
 
  
