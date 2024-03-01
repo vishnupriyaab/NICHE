@@ -46,10 +46,8 @@ const adminPassword = process.env.ADMIN_PASS;
 
 export async function isAdmin(req: Request<{}, {}, IAdmin>, res: Response) {
   try {
-    console.log(req.body, "body");
     const { email, password, role } = req.body;
     const admin = await adminDb.findOne({ email });
-    console.log(admin);
     if (admin) {
       const match = await bcrypt.compare(password, admin.password);
       if (match) {

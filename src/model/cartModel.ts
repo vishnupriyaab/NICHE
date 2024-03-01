@@ -24,13 +24,15 @@ const cartSChema = new Schema<Cart>(
         },
       },
     ],
-    cartTotal: Number,
+    cartTotal:{
+      type: Number
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const CartDb = mongoose.model<Cart>("cartdb", cartSChema);
+ const CartDb = mongoose.model<Cart>("cartdb", cartSChema);
 
 export default CartDb;

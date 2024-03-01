@@ -185,7 +185,7 @@
                             <del class="org-price">₹4,990</del> -->
                           </p>
                           <a
-                          href="#"
+                          href="#" onclick=""
                           class="btn border border-secondary rounded-pill px-3 text-primary"
                           ><i
                           class="fa fa-shopping-bag me-2 text-primary"
@@ -522,7 +522,7 @@
             <div class="d-flex justify-content-between flex-lg-wrap">
               <p class="text-dark fs-5 fw-bold mb-0">$<%= product[i].price %></p>
               <a
-              href="#"
+              href="#" onclick="addTocart('<%- product._id %>')"
               class="btn border border-secondary rounded-pill px-3 text-primary"
               ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
               cart</a
@@ -830,5 +830,26 @@
       </div>
     </div>
     <!-- Tastimonial End -->
+
+    <script>
+      function addTocart(id){
+          axios.post('/addtocart',{id})
+          .then(res=>{
+              console.log(res);
+              if(res.data.message === 'Product already in cart'){
+                  console.log(res,"response");
+                  console.log(res.data,"response data");
+                  window.location.href = '/cart';
+              }else if(res.data.message === "Please Login"){
+                  window.location.href = '/userLogin';
+              }else{
+                  console.log(res.data.message);
+              }
+          }).catch(error =>{
+              console.log("Error:",error);
+          });
+      }
+  </script>
+
 
     <%- include('include/_footer') %>

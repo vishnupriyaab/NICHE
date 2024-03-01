@@ -57,7 +57,6 @@ export async function   sendEmailWithOTP(email: string , otp:string): Promise<st
   try {
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent: ", otp);
-
     return otp;
   } catch (error) {
     console.error("Error sending email: ", (error as Error).message);
@@ -65,29 +64,7 @@ export async function   sendEmailWithOTP(email: string , otp:string): Promise<st
   }
 }
 
-// export function otpSnd(req: Request, res: Response): void {
-//   try {
-//     // Assuming that the email is provided in the request body
-//     const userEmail: string = req.body.email;
-
-//     // Call the function to send email with OTP
-//     sendEmailWithOTP(userEmail, otp)
-//       .then((otp) => {
-//         console.log("OTP sent successfully:", otp);
-//         res.send("OTP Sent Successfully");
-//       })
-//       .catch((error) => {
-//         console.error("Failed to send OTP:", error as Error);
-//         res.status(500).send("Failed to send OTP");
-//       });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// }
 
 export function verifyOtp(val: string,otp:string) {
-  console.log(otp,val,"2");
-  
   return parseInt(val) === parseInt(otp);
 }

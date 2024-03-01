@@ -30,7 +30,6 @@ export async function addCategory(req: Request, res: Response) {
       });
       await newCategory.save();
       res.send("success");
-      console.log("susxcvb");
     }
   } catch (error) {
     console.log(error);
@@ -46,11 +45,9 @@ export async function editCategory(req: Request, res: Response) {
     if (alreadyExisted) {
       res.send("Already Existed");
     } else {
-      console.log(id);
 
       await categoryDb.updateOne({ _id: id }, { $set: { name: cname } });
       res.send("success");
-      console.log("susxcvb");
     }
   } catch (error) {
     console.log(error);

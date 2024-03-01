@@ -19,9 +19,6 @@ cloudinary.config({
 export default function cloudinaryUploadImage(images: string[]) {
   return new Promise((resolve, reject) => {
     const uploadPromises = [];
-
-    console.log(images);
-    
     for (const image of images) {
       uploadPromises.push(
         new Promise((resolve, reject) => {

@@ -126,19 +126,21 @@
                 <i class="fas fa-search text-primary"></i>
               </button>
               <% if(user) { %>
-              <a href="/cart" class="position-relative me-4 my-auto">
-                <i class="fa fa-shopping-bag fa-2x" ></i>
-                <% let sum = 0
+                <div class="site-cart">
+                  <a href="/cart" class="position-relative me-4 my-auto">
+                    <i class="fa fa-shopping-bag fa-2x" ></i>
+                    <% let sum = 0
                 if(cart && cart.products ){ 
                   cart.products.forEach(product => {
                     sum+=product.quantity;
                   })
-                   }%>
-                <span 
-                  class="position-absolute bg-orange rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
-                  style="top: -5px; left: 15px; height: 20px; min-width: 20px"
-                  ><%= cart && sum>0? sum:'0' %></span>
+                }%>
+                <span id="CartCount"
+                class="position-absolute bg-orange rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
+                style="top: -5px; left: 15px; height: 20px; min-width: 20px"
+                ><%= cart && sum>0? sum:'0' %></span>
               </a>
+            </div>
               <% } %>
               <% if (user) { %>
                 <ul class="navbar-nav list-none">

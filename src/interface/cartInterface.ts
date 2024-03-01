@@ -12,7 +12,7 @@ interface Cart extends mongoose.Document {
     products: Product[];
     createdAt: Date;
     updatedAt: Date;
-    cartTotal: Number;
+    cartTotal: any;
 }
 
 export default Cart;
