@@ -57,13 +57,13 @@ export async function getShop(req: Request, res: Response) {
   }
 }
 
-export async function checkout(req: Request, res: Response) {
-  try {
-    res.render("user/checkout");
-  } catch (error: any) {
-    console.error(error);
-  }
-}
+// export async function checkout(req: Request, res: Response) {
+//   try {
+//     res.render("user/checkout");
+//   } catch (error: any) {
+//     console.error(error);
+//   }
+// }
 export async function testimonial(req: Request, res: Response) {
   try {
     res.render("user/testimonial");
@@ -223,17 +223,3 @@ export async function getuserLogout(req: Request, res: Response) {
   }
 }
 
-export async function getuserOredrPage(req: Request, res: Response) {
-  try {
-    const cartProduct = await CartDb.findOne({
-      orderBy: req.session.userId,
-    }).populate("products.product");
-    const orderData = await orderDb.find({ orderBy: req.session.userId });
-    console.log(orderData, "orderData");
-    // const addressData = await Address.find
-
-
-  } catch (error) {
-    console.log(error);
-  }
-}

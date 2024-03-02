@@ -15,6 +15,12 @@
     -webkit-appearance: none;
     margin: 0;
   }
+
+  button.btn:hover {
+    background-color: #0000006e; /* Change to desired background color */
+    color: #333; /* Change to desired text color */
+    /* You can add more styles for hover effect as needed */
+  }
 </style>
 
 <!-- Single Page Header start -->
@@ -45,7 +51,6 @@
         </thead>
         <tbody>
           <% products.forEach((element, i)=> { %>
-
           <tr>
             <th scope="row">
               <div class="d-flex align-items-center">
@@ -61,19 +66,18 @@
               <p class="mb-0 mt-4"><%= element.productsDetails.name %></p>
             </td>
             <td>
-              <p class="mb-0 mt-4 money">$<%= element.productsDetails.price %></p>
+              <p class="mb-0 mt-4">$<%= element.productsDetails.price %></p>
             </td>
             <td>
               <div class="input-group quantity mt-4" style="width: 100px">
                 <div class="input-group-btn">
                   <button
                     class="btn btn-sm btn-minus rounded-circle bg-light border decBtn"
-                    onclick="updateQuantity(-1, '<%= element.products.productId %>')"
+                    onclick="updateQuantity(-1, '<%= element.products.productId %>', '<%= i %>')"
                   >
                     <i class="fa fa-minus"></i>
                   </button>
                 </div>
-
                 <input
                   type="number"
                   id="quantityInput<%= element.products.productId %>"
@@ -84,29 +88,33 @@
                   pattern="[0-9]*"
                   readonly
                   class="form-control form-control-sm text-center border-0 quantityInput"
-                  data-decimals="0"
                   value="<%= element.products.quantity %>"
                 />
-
                 <div class="input-group-btn">
                   <button
                     class="btn btn-sm btn-plus rounded-circle bg-light border incBtn"
-                    onclick="updateQuantity(1, '<%= element.products.productId %>')"
+                    onclick="updateQuantity(1, '<%= element.products.productId %>', '<%= i %>')"
                   >
                     <i class="fa fa-plus"></i>
                   </button>
                 </div>
               </div>
-              <p class="text-danger mt-2" id="errMesg"></p>
+              <p
+                class="text-danger mt-2"
+                id="errMesg<%= element.products.productId %>"
+              ></p>
             </td>
             <td>
-              <p class="mb-0 mt-4 money">
+              <p class="mb-0 mt-4 snglTotalAmount">
                 $<%= element.productsDetails.price * element.products.quantity
                 %>
               </p>
             </td>
             <td>
-              <button class="btn btn-md rounded-circle bg-light border mt-4">
+              <button
+                onclick="removeProduct('<%=  element.userId %>','<%= element.products.productId %>')"
+                class="btn btn-md rounded-circle bg-light border mt-4"
+              >
                 <i class="fa fa-times text-danger"></i>
               </button>
             </td>
@@ -119,12 +127,13 @@
     <div class="mt-5">
       <input
         type="text"
-        class="border-0 border-bottom rounded me-5 py-3 mb-4"
+        class="border-1 rounded me-5 py-3 mb-4"
         placeholder="Coupon Code"
       />
       <button
-        class="btn border-secondary rounded-pill px-4 py-3 text-primary"
+        class="btn rounded-pill px-4 py-3 text-primary"
         type="button"
+        style="border-color: black"
       >
         Apply Coupon
       </button>
@@ -139,7 +148,7 @@
             </h1>
             <div class="d-flex justify-content-between mb-4">
               <h5 class="mb-0 me-4">Subtotal:</h5>
-              <p class="mb-0 money" id="subtotalReload">
+              <p class="mb-0 totalAmt">
                 $<%= products.reduce((total, element)=> { return total +=
                 (element.productsDetails.price * element.products.quantity); },
                 0) %>
@@ -162,17 +171,31 @@
               %>
             </p>
           </div>
+          <div>
+          <a id="checkoutLink" href="/checkout">
           <button
-            class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
-            type="button"
-          >
-            Proceed Checkout
+              id="checkoutButton"
+              class="btn rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4 border-2"
+              style="border-color: black"
+              type="button"
+              >
+              Proceed Checkout
+            </a>
           </button>
+        </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<% products.forEach(order => { %> <% const productDetailsId =
+  order.productsDetails._id.toString(); %> <% const stock =
+  order.productsDetails.stock %>
+  <div class="product" data-product-id="<%= productDetailsId %>"></div>
+  <div class="stock" data-stock="<%= stock %>"></div>
+  <% }); %>
+
 <!-- Cart Page End -->
 <link
   rel="stylesheet"
@@ -180,79 +203,173 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"
 />
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-  // async function updateQuantity(change, productId, index) {
-  //     index = parseInt(index);
-  //     console.log("sdfe", index);
-  //     const quantityInput = document.getElementById("quantityInput_" + productId).value;
-  //     console.log('kjasdfbhcsdjkafgvb',quantityInput);
 
-  //     if (!isNaN(quantityInput)) {
-  //         console.log('in if');
-  //         quantityInput += change;
-  //         if (quantityInput < 0) {
-  //             currentValue = 1;
-  //         }
-  //         await reloadContent(productId, change);
-  //         // Reload total amount after updating the quantity
-  //         await reloadTotalAmount(index, productId);
-  //     }
-  // }
+  document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("checkoutButton")
+          .addEventListener("click", function () {
+        
+            const stockElement = document.querySelector("[data-stock]");
+            const stock = stockElement
+              ? parseInt(stockElement.dataset.stock)
+              : 0;
+            const quantity = parseInt(
+              document.querySelector(".quantityInput").value
+            );
+            if (quantity < stock) {
+              
+              document
+                .getElementById("outOfStockMessage")
+                .classList.add("hidden");
+            } else {
+              event.preventDefault();
+              document
+                .getElementById("outOfStockMessage")
+                .classList.remove("hidden");
+            }
+          });
+      });
 
-  // function reloadContent(productId, change) {
-  //     const errMesg = document.getElementById("errMesg" + productId);
-  //     const quantity = Number(document.getElementById("quantityInput_" + productId).value) + 1;
-  //     console.log(quantity, "dfghjkkjhvc");
-  //     axios
-  //         .post("/updatequantity", {
-  //             productId,
-  //             quantity,
-  //         })
-  //         .then(function (response) {
-  //             if (response.data === true) {
-  //                 errMesg.textContent = '';
-  //             }
-  //         })
-  //         .catch(function (error) {
-  //             console.log(error, 'kdhjdshkdhk');
-  //             if (error.response.data.stockErr && change != -1) {
-  //                 errMesg.textContent = error.response.data.message;
-  //                 document.getElementById("quantityInput_" + productId).value = Number(document.getElementById("quantityInput_" + productId).value) - 1;
-  //                 return;
-  //             }
 
-  //             if (error.response.data.productErr) {
-  //                 console.log('sdjhjdshfjhjkh');
-  //                 document.getElementById("quantityInput_" + productId).value = Number(document.getElementById("quantityInput_" + productId).value) - 1;
-  //                 errMesg.textContent = error.response.data.message;
-  //                 setTimeout(() => {
-  //                     location.reload();
-  //                 }, 1500);
-  //                 return;
-  //             }
-  //             console.error("Error fetching data:", error);
-  //         });
-  // }
 
-  // function reloadTotalAmount(index, productId) {
-  //     console.log(index, productId);
-  //     axios
-  //         .get(`/getUpdatedTotalAmount/${productId}`)
-  //         .then((response) => {
-  //             const totalAmountValueElement = document.querySelectorAll(".totalAmt");
-  //             const snglTotalAmount = document.querySelectorAll('.snglTotalAmount');
-  //             if (totalAmountValueElement) {
-  //                 snglTotalAmount[index].textContent = `$${response.data.amt}`;
-  //                 totalAmountValueElement[0].textContent = `$${response.data.updatedTotalAmount}`;
-  //                 totalAmountValueElement[1].textContent = `$${response.data.updatedTotalAmount}`;
-  //             }
-  //         })
-  //         .catch((error) => {
-  //             console.error("Error fetching updated total amount:", error);
-  //         });
-  // }
+  async function updateQuantity(change, productId, index) {
+    let quantityInput = document.getElementById(
+      "quantityInput" + productId
+    ).value;
 
+    if (!isNaN(quantityInput)) {
+      console.log("in if");
+      quantityInput += change;
+      if (quantityInput < 0) {
+        currentValue = 1;
+      }
+      await reloadContent(productId, change);
+      // Reload total amount after updating the quantity
+      reloadTotalAmount(index, productId, change);
+    }
+  }
+
+  function reloadContent(productId, change) {
+    const errMesg = document.getElementById("errMesg" + productId);
+    const quantity =
+      Number(document.getElementById("quantityInput" + productId).value) +
+      change;
+    axios
+      .post("/updatequantity", {
+        productId,
+        quantity,
+      })
+      .then(function (response) {
+        if (response.data === true) {
+          errMesg.textContent = "";
+        }
+      })
+      .catch(function (error) {
+        if (error.response.data.stockErr && change != -1) {
+          errMesg.textContent = error.response.data.message;
+          document.getElementById("quantityInput" + productId).value =
+            Number(document.getElementById("quantityInput" + productId).value) -
+            1;
+          return;
+        }
+
+        if (error.response.data.productErr) {
+          console.log("sdjhjdshfjhjkh");
+          document.getElementById("quantityInput" + productId).value =
+            Number(document.getElementById("quantityInput" + productId).value) -
+            1;
+          errMesg.textContent = error.response.data.message;
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
+          return;
+        }
+        console.error("Error fetching data:", error);
+      });
+  }
+
+  function reloadTotalAmount(index, productId, change) {
+    console.log("c");
+    console.log(index, productId);
+    axios
+      .post(`/getUpdatedTotalAmount/${productId}`, { change })
+      .then((response) => {
+        const totalAmountValueElement = document.querySelectorAll(".totalAmt");
+        const snglTotalAmount = document.querySelectorAll(".snglTotalAmount");
+        console.log(response);
+        console.log(response.data.updatedTotalAmount);
+        if (totalAmountValueElement.length > 0) {
+          snglTotalAmount[index].textContent = `$${response.data.amt}`;
+          totalAmountValueElement[0].textContent = `$${response.data.updatedTotalAmount}`;
+          totalAmountValueElement[1].textContent = `$${response.data.updatedTotalAmount}`;
+        }
+      })
+      .catch((error) => {
+        console.log("err j=herr");
+        console.error("Error fetching updated total amount:", error);
+      });
+  }
+
+  function removeProduct(userId, productId) {
+    axios
+      .patch("/removeFromCart", { userId, productId })
+      .then((res) => {
+        console.log(res.data.message);
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  //   toastr.options = {
+  //     closeButton: false,
+  //     debug: false,
+  //     newestOnTop: false,
+  //     progressBar: false,
+  //     positionClass: "toast-top-right",
+  //     preventDuplicates: false,
+  //     onclick: null,
+  //     showDuration: "300",
+  //     hideDuration: "1000",
+  //     timeOut: "5000",
+  //     extendedTimeOut: "1000",
+  //     showEasing: "swing",
+  //     hideEasing: "linear",
+  //     showMethod: "fadeIn",
+  //     hideMethod: "fadeOut",
+  //   };
+
+  //   async function updateQuantity(change, productId) {
+  //     try {
+  //       const quantityInput = document.getElementById("quantityInput");
+  //       const currentQnty = parseInt(quantityInput.value);
+  //       const errMesg = document.getElementById("errMesg");
+  //       console.log(currentQnty, "asdfghj");
+
+  //       if (currentQnty + change < 1) {
+  //         toastr.info("Quantity can't be less than One", "Info!");
+  //         return;
+  //       }
+  //       const response = await fetch("/cart/updateQuantity", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           productId: productId,
+  //           quantity: change,
+  //         }),
+  //       });
+  //       const data = await response.json();
+  //       if (data.success) {
+  //       }
+  //     } catch (error) {}
+  //   }
 </script>
 
 <%- include('include/_footer') %>

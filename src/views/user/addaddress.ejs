@@ -1,0 +1,111 @@
+<%- include('include/_header') %>
+
+<div class="px-4 pt-44 mt-3" style="margin: 0 auto; max-width: 600px;">
+    <p class="text-xl font-medium">Address Details</p>
+    <p class="text-gray-400">Select Address or Enter Address</p>
+
+    <div class="flex gap-5">
+
+        <div class="relative w-6/12">
+            <label for="name" class="mt-4 mb-2 block text-sm font-medium">Name</label>
+            <input type="text" id="name" name="name"
+                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Your Name" />
+            <span id="nameError"
+                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg hidden"></span>
+        </div>
+        <div class="relative w-6/12">
+            <label for="phonenumber" class="mt-4 mb-2 block text-sm font-medium">Phone Number</label>
+            <input type="number" id="phonenumber" name="phonenumber"
+                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Phone Number" />
+            <span id="phoneError"
+                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
+        </div>
+    </div>
+
+    <div class="flex gap-5">
+        <div class="relative w-6/12">
+            <label for="pincode" class="mt-4 mb-2 block text-sm font-medium">Pincode</label>
+            <input type="number" id="pincode" name="pincode"
+                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Enter Pincode" />
+            <span id="pincodeError"
+                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
+        </div>
+        <div class="relative w-6/12">
+            <label for="locality" class="mt-4 mb-2 block text-sm font-medium">Locality</label> <input type="text"
+                id="locality" name="locality"
+                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Locality" />
+            <span id="localityError"
+                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
+        </div>
+    </div>
+
+    <div class="flex gap-5 mb-4">
+        <div class="relative w-6/12">
+            <label for="district" class="mt-4 mb-2 block text-sm font-medium">District</label>
+            <input type="text" id="district" name="district"
+                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Enter District" />
+            <span id="districtError"
+                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
+        </div>
+        <div class="relative w-6/12">
+            <label for="state" class="mt-4 mb-2 block text-sm font-medium">State</label> <input type="text"
+                id="state" name="state"
+                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Enter State" />
+            <span id="stateError"
+                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
+        </div>
+    </div>
+    <div>
+
+        <div class="flex flex-wrap gap-x-4 mb-4">
+            <p class="text-sm font-medium mb-2">Address Type : </p> <label class="inline-flex items-center">
+                <input type="radio" id="home" name="address_type" value="home"
+                    class="rounded-full appearance-none h-4 w-4 border border-gray-300 checked:bg-blue-500 checked:border-blue-500 focus:ring-blue-500 focus:outline-none" />
+                <span class="ml-2 text-sm text-gray-600">Home Address</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="radio" id="office" name="address_type" value="office"
+                    class="rounded-full appearance-none h-4 w-4 border border-gray-300 checked:bg-blue-500 checked:border-blue-500 focus:ring-blue-500 focus:outline-none" />
+                <span class="ml-2 text-sm text-gray-600">Office Address</span>
+            </label>
+        </div>
+        <span id="selectedAddressTypeError"
+            class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
+
+    </div>
+
+    <!-- <div class="text-center bg-red-600 relative z-10  top-5 py-1.5 px-3 rounded-lg text-white hidden transition duration-300 ease-in-out animate-bounce"
+        id="errorpopup"></div> -->
+
+    <div class="mt-8 flex justify-between items-center mb-8">
+        <!-- Back button -->
+        <a href="#" onclick="goBack()"
+            class="inline-flex items-center px-4 py-2 text-base font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back
+        </a>
+        <div class="mt-8 flex justify-center mb-8">
+            <button type="submit" onclick="addAddress()"
+                class="inline-flex items-center px-4 py-2 text-base font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Add Address
+            </button>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
+        integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<%- include('include/_footer') %>

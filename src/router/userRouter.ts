@@ -1,9 +1,10 @@
 import { NextFunction, Router } from "express";
 import {checkBlocked,userRegistrationValidation,userloginValidation,validateUserRegistration,validateUserlogin,} from "../middleware/userAuth";
 import { getsingleProduct } from "../controller/userController/productCtrl";
-import {_404page,checkout,contact,getHome,getLogin,getShop,getuserLogout,otpSnd,postLogin,resendOtp,testimonial,userProfile,userRegister,} from "../controller/userController/userCtrl";
+import {_404page,contact,getHome,getLogin,getShop,getuserLogout,otpSnd,postLogin,resendOtp,testimonial,userProfile,userRegister,} from "../controller/userController/userCtrl";
 import { isLoggedIn, isLoggedout } from "../middleware/sessionAuth";
-import { addTocart, cart, updatequantity } from "../controller/userController/cartCtrl";
+import { addTocart, cart, reloadTotalAmount, removeproductfromcart, updatequantity } from "../controller/userController/cartCtrl";
+import { addaddress, checkout } from "../controller/userController/orderCtrl";
 
 const userRoute: Router = Router();
 
@@ -20,12 +21,17 @@ userRoute.get("/contact", contact);
 userRoute.get("/singleProductpage/:id",isLoggedIn,checkBlocked,getsingleProduct);
 userRoute.get("/resendotp", resendOtp);
 userRoute.get("/userProfile", isLoggedIn, userProfile);
-userRoute.get("/userOredrPage");
+userRoute.get("/addaddress",checkBlocked, addaddress)
+
 
 userRoute.post("/userLogin",isLoggedout,userloginValidation,validateUserlogin,postLogin);
 userRoute.post("/registerValue", isLoggedout, userRegister);
 userRoute.post("/otpSend",userRegistrationValidation,validateUserRegistration,otpSnd);
-userRoute.post("/addTocart",addTocart );
+userRoute.post("/addTocart", addTocart);
 userRoute.post("/updateQuantity", updatequantity);
+userRoute.post("/getUpdatedTotalAmount/:productId", reloadTotalAmount);
+
+userRoute.patch("/removeFromCart", removeproductfromcart);
+
 
 export default userRoute;

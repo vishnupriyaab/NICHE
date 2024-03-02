@@ -1,219 +1,260 @@
 <%- include('include/_header') %>
 
 
-        <!-- Single Page Header start -->
-        <div class="container-fluid page-header py-5">
-            <h1 class="text-center text-white display-6">Checkout</h1>
-            <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                <li class="breadcrumb-item active text-white">Checkout</li>
-            </ol>
+<div class="container mx-auto py-8 mt-32">
+  <div class="bg-white shadow rounded-lg p-6 mb-4">
+    <h2 class="text-xl font-bold mb-2">Product Summary</h2>
+    <% products.forEach(product => { %>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Product Image -->
+      <div class="md:col-span-1">
+        <img
+          id="imageproduct"
+          src="<%= product.productsDetails.imgArr[0] %>"
+          alt="<%= product.productsDetails.name %>"
+          style="width: 100px; height: 100px"
+        />
+      </div>
+      <!-- Product Details -->
+      <div class="md:col-span-2 flex flex-col justify-between">
+        <p class="text-gray-900 mb-2" id="prdname">
+          <%= product.productsDetails.name %>
+        </p>
+        <!-- Product Price -->
+        <p class="text-gray-700 mb-2" id="prdsum">
+          Total Price: ₹<%= (product.productsDetails.price) *
+          (product.products.quantity) %>
+        </p>
+        <!-- Product Quantity -->
+        <p class="text-gray-700 mb-2" id="prdquantity">
+          Quantity: <%= product.products.quantity %>
+        </p>
+      </div>
+    </div>
+    <hr />
+    <% }); %>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">Select Address</h2>
+      <div class="space-y-4">
+        <div class="flex items-center">
+          <button
+            id="openAddressModalButton"
+            class="bg-black hover:bg-gray-800 px-6 py-3 font-medium text-white rounded-md transition duration-300 ease-in-out"
+          >
+            Select or Add Address
+          </button>
         </div>
-        <!-- Single Page Header End -->
+      </div>
+      <!-- Selected address section -->
+      <div id="selectedAddressSection" class="mt-4 hidden">
+        <h3 class="text-lg font-semibold mb-2">Selected Address:</h3>
+        <span id="selectedAddress"></span>
+      </div>
+    </div>
 
+    <!-- Modal -->
+    <div id="addressModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+      <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+          <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
 
-        <!-- Checkout Page Start -->
-        <div class="container-fluid py-5">
-            <div class="container py-5">
-                <h1 class="mb-4">Billing details</h1>
-                <form action="#">
-                    <div class="row g-5">
-                        <div class="col-md-12 col-lg-6 col-xl-7">
-                            <div class="row">
-                                <div class="col-md-12 col-lg-6">
-                                    <div class="form-item w-100">
-                                        <label class="form-label my-3">First Name<sup>*</sup></label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-12 col-lg-6">
-                                    <div class="form-item w-100">
-                                        <label class="form-label my-3">Last Name<sup>*</sup></label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Company Name<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Address <sup>*</sup></label>
-                                <input type="text" class="form-control" placeholder="House Number Street Name">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Town/City<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Country<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Postcode/Zip<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Mobile<sup>*</sup></label>
-                                <input type="tel" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Email Address<sup>*</sup></label>
-                                <input type="email" class="form-control">
-                            </div>
-                            <div class="form-check my-3">
-                                <input type="checkbox" class="form-check-input" id="Account-1" name="Accounts" value="Accounts">
-                                <label class="form-check-label" for="Account-1">Create an account?</label>
-                            </div>
-                            <hr>
-                            <div class="form-check my-3">
-                                <input class="form-check-input" type="checkbox" id="Address-1" name="Address" value="Address">
-                                <label class="form-check-label" for="Address-1">Ship to a different address?</label>
-                            </div>
-                            <div class="form-item">
-                                <textarea name="text" class="form-control" spellcheck="false" cols="30" rows="11" placeholder="Oreder Notes (Optional)"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-6 col-xl-5">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Products</th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Quantity</th>
-                                            <th scope="col">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="d-flex align-items-center mt-2">
-                                                    <img src="img/vegetable-item-2.jpg" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
-                                                </div>
-                                            </th>
-                                            <td class="py-5">Awesome Brocoli</td>
-                                            <td class="py-5">$69.00</td>
-                                            <td class="py-5">2</td>
-                                            <td class="py-5">$138.00</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="d-flex align-items-center mt-2">
-                                                    <img src="img/vegetable-item-5.jpg" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
-                                                </div>
-                                            </th>
-                                            <td class="py-5">Potatoes</td>
-                                            <td class="py-5">$69.00</td>
-                                            <td class="py-5">2</td>
-                                            <td class="py-5">$138.00</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="d-flex align-items-center mt-2">
-                                                    <img src="img/vegetable-item-3.png" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
-                                                </div>
-                                            </th>
-                                            <td class="py-5">Big Banana</td>
-                                            <td class="py-5">$69.00</td>
-                                            <td class="py-5">2</td>
-                                            <td class="py-5">$138.00</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                            </th>
-                                            <td class="py-5"></td>
-                                            <td class="py-5"></td>
-                                            <td class="py-5">
-                                                <p class="mb-0 text-dark py-3">Subtotal</p>
-                                            </td>
-                                            <td class="py-5">
-                                                <div class="py-3 border-bottom border-top">
-                                                    <p class="mb-0 text-dark">$414.00</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                            </th>
-                                            <td class="py-5">
-                                                <p class="mb-0 text-dark py-4">Shipping</p>
-                                            </td>
-                                            <td colspan="3" class="py-5">
-                                                <div class="form-check text-start">
-                                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-1" name="Shipping-1" value="Shipping">
-                                                    <label class="form-check-label" for="Shipping-1">Free Shipping</label>
-                                                </div>
-                                                <div class="form-check text-start">
-                                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-2" name="Shipping-1" value="Shipping">
-                                                    <label class="form-check-label" for="Shipping-2">Flat rate: $15.00</label>
-                                                </div>
-                                                <div class="form-check text-start">
-                                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-3" name="Shipping-1" value="Shipping">
-                                                    <label class="form-check-label" for="Shipping-3">Local Pickup: $8.00</label>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                            </th>
-                                            <td class="py-5">
-                                                <p class="mb-0 text-dark text-uppercase py-3">TOTAL</p>
-                                            </td>
-                                            <td class="py-5"></td>
-                                            <td class="py-5"></td>
-                                            <td class="py-5">
-                                                <div class="py-3 border-bottom border-top">
-                                                    <p class="mb-0 text-dark">$135.00</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                                <div class="col-12">
-                                    <div class="form-check text-start my-3">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Transfer-1" name="Transfer" value="Transfer">
-                                        <label class="form-check-label" for="Transfer-1">Direct Bank Transfer</label>
-                                    </div>
-                                    <p class="text-start text-dark">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
-                                </div>
-                            </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                                <div class="col-12">
-                                    <div class="form-check text-start my-3">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Payments-1" name="Payments" value="Payments">
-                                        <label class="form-check-label" for="Payments-1">Check Payments</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                                <div class="col-12">
-                                    <div class="form-check text-start my-3">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Delivery-1" name="Delivery" value="Delivery">
-                                        <label class="form-check-label" for="Delivery-1">Cash On Delivery</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                                <div class="col-12">
-                                    <div class="form-check text-start my-3">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Paypal-1" name="Paypal" value="Paypal">
-                                        <label class="form-check-label" for="Paypal-1">Paypal</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center pt-4">
-                                <button type="button" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+        <div
+          class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full"
+        >
+          <!-- Close button -->
+          <button
+            id="closeAddressModalButton"
+            class="absolute top-0 right-0 m-4 text-gray-600 hover:text-gray-800 focus:outline-none"
+          >
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+
+          <!-- Modal content goes here -->
+          <div class="p-6">
+            <h2 class="text-xl font-semibold mb-4">Address Modal</h2>
+            <!-- Address list goes here -->
+            <!-- Add address form goes here -->
+            <div id="addressList">
+              <p class="relative z-10 text-red-600 hidden" id="errorpopup"></p>
+              <!-- Address item -->
+              <% for( let i=0; i < address.length; i++ ) { %>
+
+              <div class="flex items-center mb-4">
+                <span class="mr-2">
+                  <%= address[i].name %>,<%= address[i].phonenumber %>,<%=
+                  address[i].locality %>,<%= address[i].district %>,<%=
+                  address[i].pincode %>
+                </span>
+                <button
+                  class="select-address-button bg-blue-500 hover:bg-blue-600 px-3 py-2 text-white font-semibold rounded-md"
+                >
+                  Select
+                </button>
+              </div>
+              <% } %>
+
+              <!-- Add more address items here -->
             </div>
+            <a href="/addaddress"
+              ><button
+                class="bg-green-500 hover:bg-green-600 px-3 py-2 text-white font-semibold rounded-md"
+              >
+                Add Address
+              </button>
+            </a>
+          </div>
         </div>
-        <!-- Checkout Page End -->
+      </div>
+    </div>
 
-        <%- include('include/_footer') %>
+    <!-- Payment Methods -->
+    <div class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">Select Payment Method</h2>
+      <form class="space-y-4">
+        <div class="relative">
+          <input
+            class="peer hidden"
+            id="payment_cod"
+            type="radio"
+            name="payment_method"
+            value="COD"
+          />
+          <label
+            for="payment_cod"
+            class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out"
+          >
+            <div class="ml-5">
+              <span class="font-semibold">Cash on Delivery (COD)</span>
+              <p class="text-gray-600 text-sm">Pay upon delivery</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="relative">
+          <input
+            class="peer hidden"
+            id="payment_razorpay"
+            type="radio"
+            name="payment_method"
+            value="Razorpay"
+          />
+          <label
+            for="payment_razorpay"
+            class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out"
+          >
+            <div class="ml-5">
+              <span class="font-semibold">Razorpay</span>
+              <p class="text-gray-600 text-sm">Secure online payment</p>
+            </div>
+          </label>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Order Summary -->
+  <div class="mt-8 bg-white shadow-md rounded-lg p-6">
+    <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+    <!-- Coupon Section -->
+    <div class="mb-4">
+      <label for="couponCode" class="block text-sm font-medium text-gray-700"
+        >Coupon Code</label
+      >
+      <div class="mt-1 flex rounded-md shadow-sm">
+        <input
+          type="text"
+          id="couponCode"
+          name="couponCode"
+          class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300"
+          placeholder="Enter coupon code..."
+        />
+        <button
+          id="applyCouponButton"
+          type="button"
+          class="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          Apply
+        </button>
+      </div>
+    </div>
+    <!-- End Coupon Section -->
+    <div class="border-t border-b py-2">
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-medium text-gray-700">Subtotal</p>
+        <p class="font-semibold text-gray-700">INR &nbsp;<%= sum %></p>
+      </div>
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-medium text-gray-700">Shipping</p>
+        <p class="font-semibold text-blue-700">Free Shipping</p>
+      </div>
+      <!-- Coupon Discount Display -->
+      <div id="couponDiscount" class="flex items-center justify-between hidden">
+        <p class="text-sm font-medium text-gray-700">Coupon Discount</p>
+        <p id="couponDiscountValue" class="font-semibold text-green-500"></p>
+      </div>
+    </div>
+    <div class="flex items-center justify-between">
+      <p class="text-sm font-medium text-gray-700">Total</p>
+      <p id="totalSum" class="text-2xl font-semibold text-gray-700">
+        INR &nbsp;<%= sum %>
+      </p>
+    </div>
+
+    <button
+      id="placeOrderButton"
+      onclick="placeOrder('<%= sum %>')"
+      class="mt-4 w-full rounded-md bg-blue-500 hover:bg-blue-600 px-6 py-3 font-medium text-white transition duration-300 ease-in-out"
+    >
+      Place Order
+    </button>
+  </div>
+</div>
+<script src="https://cdn.tailwindcss.com"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
+  integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async function () {
+    const openAddressModalButton = document.getElementById("openAddressModalButton");
+    const addressModal = document.getElementById("addressModal");
+
+    openAddressModalButton.addEventListener("click", async function () {
+      try {
+        // Make a GET request to fetch address data
+        const response = await axios.get("/checkaddress");
+        const address = response.data;
+        // console.log(address, "res");
+        // Show the modal
+        addressModal.classList.remove("hidden");
+      } catch (error) {
+        addressModal.classList.remove("hidden");
+        if (error?.response?.data) {
+          let errorModal = document.getElementById("errorpopup");
+          errorModal.innerText = error.response.data.message;
+          return errorModal.classList.remove("hidden");
+        }
+      }
+    });
+  });
+</script>
+<%- include('include/_footer') %>
