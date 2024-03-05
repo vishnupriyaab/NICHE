@@ -65,3 +65,21 @@ export async function checkout(req:Request, res:Response) {
       res.status(500).send("Internal Server Error");
     }
   }
+
+  
+export async function checkaddress(req:Request, res:Response):Promise<void> {
+  try {
+    // Fetch address data from the database
+    const address = await Addressdb.findOne({ userId: req.session.userId });
+
+    if (!address) {
+      res.status(404).json({ message: "No address found" })
+      return;
+    }
+
+    res.json(address);
+  } catch (error) {
+    console.error("Error fetching address:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}

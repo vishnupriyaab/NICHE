@@ -1,111 +1,309 @@
 <%- include('include/_header') %>
 
-<div class="px-4 pt-44 mt-3" style="margin: 0 auto; max-width: 600px;">
-    <p class="text-xl font-medium">Address Details</p>
-    <p class="text-gray-400">Select Address or Enter Address</p>
+<style>
+    
+/*---------- main COntent ----------*/
+.main {
+  padding: 3% 4%;
+}
+.mainContainer {
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  margin-top: 165px;
+}
+.cartHead {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+.cartHead h2 {
+  color: #000;
+  font-family: Ubuntu;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.cartBody {
+  padding: 1.25rem;
+}
+.cartHead svg {
+  width: 35px;
+  height: 35px;
+}
+.orderSummary {
+  margin-left: auto;
+  width: 80%;
+  background: #fff;
+  margin-bottom: 2rem;
+}
+.orderHeading {
+  padding: 1.2rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+.orderHeading h2 {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.5);
+  font-family: Ubuntu;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: capitalize;
+}
+.orderContent {
+  padding: 1.2rem;
+  border-bottom: 1px solid #e0e0e0;
+  font-family: Ubuntu;
+  font-style: normal;
+  line-height: normal;
+}
+.orderContent div {
+  margin-bottom: 1.75rem;
+}
+.orderContent div:last-child {
+  margin-bottom: 0;
+}
+.commonText {
+  color: rgba(0, 0, 0, 0.75);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+.commonSub {
+  color: #000;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.ship p:nth-child(2) {
+  color: #3cb77c;
+}
+.tPrice {
+  padding: 1.2rem;
+}
+.tPrice p {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+.deleviryContent {
+  padding: 2rem;
+}
+.chooseAdd {
+  border: 1px solid #e0e0e0;
+  padding: 2rem 1.5rem;
+}
+.existingAddress {
+  width: 65%;
+}
+.existingAddress p {
+  color: rgba(0, 0, 0, 0.75);
+  font-family: Ubuntu;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.button {
+  color: #000;
+  font-family: Ubuntu;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  border: transparent;
+  outline: none;
+  background-color: #0f0;
+  padding: 0.4rem 1.25rem;
+  top: 20px;
+  right: 20px;
+}
+.phone {
+  width: max-content;
+}
+.checkOut {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+  height: 12vh;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 2rem;
+  padding: 0 3%;
+}
+.pInfo{
+    padding: 1rem;
+    border-radius: 9px;
+    border: 1px solid #e0e0e0;
+}
+.editBody h2{
+    color: #000;
+    font-family: Ubuntu;
+    font-size: 0.9rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 0.75rem;
+}
+.pInfo p{
+    color: #000;
+    font-family: Ubuntu;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-bottom: 0.5rem;
+}
+.pInfo span{
+    font-weight: 400;
+}
+.pInfo{
+    margin-bottom: 1.25rem;
+}
+.saveBtn{
+    margin-top: 0.65rem;
+    border: transparent;
+    outline: transparent;
+    background-color: rgb(0, 0, 0);
+    color: #ffffff;
+    font-family: Ubuntu;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    width: 6.5rem;
+    height: 2rem;
+    border-radius: 4px;
+}
+.cardOptions{
+    border-radius: 9px;
+    width: 8rem;
+    border: 1px solid #e0e0e0;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+}
+.cardOptions svg{
+    width: 42px;
+    height: 42px;
+    margin-bottom: 0.2rem;
+}
+.cardOptions p{
+    color: #000;
+    font-family: Ubuntu;
+    font-size: 0.8rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+.editBody{
+    padding: 2.25rem;
+}
+.editBody label{
+    color: #000;
+    font-family: Ubuntu;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-bottom: 0.65rem;
+}
+.editBody input{
+    outline: transparent;
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: 1px solid #E0E0E0;
+    background: #FFF;
+    margin-bottom: 0.65rem;
+    font-family: Ubuntu;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.left{
+    min-width: fit-content;
+    margin-left: auto;
+}
+.twoBtn{
+    display: none;
+}
+.sides{
+    width: 50%;
+}
+/*---------- end of main COntent ----------*/
 
-    <div class="flex gap-5">
+</style>
 
-        <div class="relative w-6/12">
-            <label for="name" class="mt-4 mb-2 block text-sm font-medium">Name</label>
-            <input type="text" id="name" name="name"
-                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Your Name" />
-            <span id="nameError"
-                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg hidden"></span>
+<!-- main -->
+<main>
+    <div class="container-fluid main">
+      <div class="row justify-content-center">
+        <div class="col-6 mainContainer">
+          <div class="cartHead">
+            <div class="d-flex align-items-center gap-2">
+              <svg viewBox="0 0 69 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_395_60)">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M55.0401 52.279C63.5259 54.6811 68.9764 58.5193 68.9764 62.847C68.9764 70.1122 53.5388 76 34.4915 76C15.4441 76 0 70.1122 0 62.847C0 58.4148 5.7377 54.4983 14.5368 52.1158L15.5029 53.4213C16.1556 54.3156 16.8932 55.2033 17.6308 56.0715C11.4754 57.5597 7.53277 59.8574 7.53277 62.4358C7.53277 66.9267 19.4716 70.5691 34.2042 70.5691C48.9369 70.5691 60.8757 66.9267 60.8757 62.4358C60.8757 60.0402 57.4553 57.8665 52.0244 56.3913C53.0949 55.0858 54.1001 53.6889 55.0401 52.279Z" fill="black"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M45.8175 54.0349C42.9344 57.2115 39.6133 59.9611 35.9544 62.2008C35.7259 62.3684 35.4518 62.4626 35.1684 62.4708C34.8851 62.4789 34.606 62.4007 34.3682 62.2465C29.1499 58.9551 24.5171 54.8165 20.6604 50.0009C15.6669 43.7344 12.488 36.7761 11.4109 30.0723C10.3339 23.3685 11.3391 16.7431 14.7204 11.4297C16.0944 9.2679 17.8222 7.35256 19.8314 5.76381C24.5965 1.95826 30.0274 -0.0391647 35.4714 5.10248e-07C39.265 0.104301 42.9723 1.15493 46.2566 3.05641C49.5409 4.95789 52.2979 7.64994 54.2772 10.8879C57.913 16.8737 58.6963 24.5109 57.1036 32.246C55.3363 40.374 51.4414 47.8867 45.8175 54.0153V54.0349ZM34.44 12.0825C36.7487 12.0825 39.0054 12.7671 40.9249 14.0499C42.8444 15.3326 44.3403 17.1558 45.2235 19.2888C46.1066 21.4218 46.3374 23.7688 45.8865 26.033C45.4356 28.2972 44.3234 30.3768 42.6905 32.0088C41.0576 33.6408 38.9774 34.7518 36.713 35.2014C34.4485 35.651 32.1016 35.419 29.9691 34.5346C27.8366 33.6502 26.0143 32.1533 24.7326 30.2331C23.4509 28.3129 22.7675 26.0558 22.7688 23.7471C22.7688 22.2148 23.0707 20.6974 23.6574 19.2818C24.244 17.8661 25.1038 16.5799 26.1876 15.4967C27.2715 14.4134 28.5582 13.5543 29.9741 12.9685C31.3901 12.3827 32.9077 12.0816 34.44 12.0825Z" fill="black"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_395_60">
+                <rect width="68.9764" height="76" fill="white"/>
+                </clipPath>
+                </defs>
+              </svg>                                             
+              <h2 class="m-0 p-0 text-capitalize">Add Address</h2>
+            </div>
+          </div>
+          <form action="/userUpdateAccount/id" method="post">
+              <div class="editBody">
+                  <div class="d-flex uAcc">
+                      <div class="sides">
+                          <div>
+                              <label for="locality">Locality</label>
+                              <input name="locality" class="d-block text-capitalize" type="text">
+                              <label for="country">Country</label>
+                              <input name="country" class="d-block" type="text">
+                              <label for="district">District</label>
+                              <input name="district" class="d-block" type="text">
+                              <label for="state">State</label>
+                              <input name="state" class="d-block" type="text">
+                          </div>
+                          <button type="submit" class="saveBtn oneBtn">Add Address</button>
+                      </div>
+                      <div class="sides">
+                          <div class="left">
+                              <label for="city">City</label>
+                              <input name="city" class="d-block text-capitalize" type="text">
+                              <label for="hNo">House NO</label>
+                              <input name="hNo" class="d-block" type="number">
+                              <label for="pin">PIN Code</label>
+                              <input name="pin" class="d-block" type="number">
+                          </div>
+                          <button type="submit" class="saveBtn twoBtn">Save Changes</button>
+                      </div>
+                  </div>
+              </div>
+          </form>
         </div>
-        <div class="relative w-6/12">
-            <label for="phonenumber" class="mt-4 mb-2 block text-sm font-medium">Phone Number</label>
-            <input type="number" id="phonenumber" name="phonenumber"
-                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Phone Number" />
-            <span id="phoneError"
-                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
-        </div>
+      </div>
     </div>
+  </main>
+  <!-- end of main -->
 
-    <div class="flex gap-5">
-        <div class="relative w-6/12">
-            <label for="pincode" class="mt-4 mb-2 block text-sm font-medium">Pincode</label>
-            <input type="number" id="pincode" name="pincode"
-                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Enter Pincode" />
-            <span id="pincodeError"
-                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
-        </div>
-        <div class="relative w-6/12">
-            <label for="locality" class="mt-4 mb-2 block text-sm font-medium">Locality</label> <input type="text"
-                id="locality" name="locality"
-                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Locality" />
-            <span id="localityError"
-                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
-        </div>
-    </div>
+<script>
+    const hamburgerBtn = document.querySelector(".hamburger");
+const mobilenavigationList = document.querySelector(".mobilenavigationList");
+const mobilenavigation = document.querySelector(".mobilenavigation");
+const logo = document.querySelector(".logo");
 
-    <div class="flex gap-5 mb-4">
-        <div class="relative w-6/12">
-            <label for="district" class="mt-4 mb-2 block text-sm font-medium">District</label>
-            <input type="text" id="district" name="district"
-                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Enter District" />
-            <span id="districtError"
-                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
-        </div>
-        <div class="relative w-6/12">
-            <label for="state" class="mt-4 mb-2 block text-sm font-medium">State</label> <input type="text"
-                id="state" name="state"
-                class="mb-3 w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Enter State" />
-            <span id="stateError"
-                class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
-        </div>
-    </div>
-    <div>
+hamburgerBtn.addEventListener("click", () => {
+  hamburgerBtn.classList.toggle("active");
+  mobilenavigationList.classList.toggle("active");
+  mobilenavigation.classList.toggle("active");
+  logo.classList.toggle("active");
+});
+</script>
 
-        <div class="flex flex-wrap gap-x-4 mb-4">
-            <p class="text-sm font-medium mb-2">Address Type : </p> <label class="inline-flex items-center">
-                <input type="radio" id="home" name="address_type" value="home"
-                    class="rounded-full appearance-none h-4 w-4 border border-gray-300 checked:bg-blue-500 checked:border-blue-500 focus:ring-blue-500 focus:outline-none" />
-                <span class="ml-2 text-sm text-gray-600">Home Address</span>
-            </label>
-            <label class="inline-flex items-center">
-                <input type="radio" id="office" name="address_type" value="office"
-                    class="rounded-full appearance-none h-4 w-4 border border-gray-300 checked:bg-blue-500 checked:border-blue-500 focus:ring-blue-500 focus:outline-none" />
-                <span class="ml-2 text-sm text-gray-600">Office Address</span>
-            </label>
-        </div>
-        <span id="selectedAddressTypeError"
-            class="text-center text-red-600 position-relative z-10 top-5 py-1.5 px-3 rounded-lg  hidden"></span>
 
-    </div>
-
-    <!-- <div class="text-center bg-red-600 relative z-10  top-5 py-1.5 px-3 rounded-lg text-white hidden transition duration-300 ease-in-out animate-bounce"
-        id="errorpopup"></div> -->
-
-    <div class="mt-8 flex justify-between items-center mb-8">
-        <!-- Back button -->
-        <a href="#" onclick="goBack()"
-            class="inline-flex items-center px-4 py-2 text-base font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Back
-        </a>
-        <div class="mt-8 flex justify-center mb-8">
-            <button type="submit" onclick="addAddress()"
-                class="inline-flex items-center px-4 py-2 text-base font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                Add Address
-            </button>
-        </div>
-    </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
-        integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <%- include('include/_footer') %>

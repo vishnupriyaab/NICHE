@@ -4,7 +4,7 @@ import { getsingleProduct } from "../controller/userController/productCtrl";
 import {_404page,contact,getHome,getLogin,getShop,getuserLogout,otpSnd,postLogin,resendOtp,testimonial,userProfile,userRegister,} from "../controller/userController/userCtrl";
 import { isLoggedIn, isLoggedout } from "../middleware/sessionAuth";
 import { addTocart, cart, reloadTotalAmount, removeproductfromcart, updatequantity } from "../controller/userController/cartCtrl";
-import { addaddress, checkout } from "../controller/userController/orderCtrl";
+import { addaddress, checkaddress, checkout } from "../controller/userController/orderCtrl";
 
 const userRoute: Router = Router();
 
@@ -15,6 +15,7 @@ userRoute.get("/", getHome);
 userRoute.get("/shop", getShop);
 userRoute.get("/cart",isLoggedIn,checkBlocked, cart);
 userRoute.get("/checkout", checkout);
+userRoute.get("/checkaddress", checkaddress);
 userRoute.get("/testimonial", testimonial);
 userRoute.get("/_404page", _404page);
 userRoute.get("/contact", contact);

@@ -326,50 +326,6 @@
       });
   }
 
-  //   toastr.options = {
-  //     closeButton: false,
-  //     debug: false,
-  //     newestOnTop: false,
-  //     progressBar: false,
-  //     positionClass: "toast-top-right",
-  //     preventDuplicates: false,
-  //     onclick: null,
-  //     showDuration: "300",
-  //     hideDuration: "1000",
-  //     timeOut: "5000",
-  //     extendedTimeOut: "1000",
-  //     showEasing: "swing",
-  //     hideEasing: "linear",
-  //     showMethod: "fadeIn",
-  //     hideMethod: "fadeOut",
-  //   };
-
-  //   async function updateQuantity(change, productId) {
-  //     try {
-  //       const quantityInput = document.getElementById("quantityInput");
-  //       const currentQnty = parseInt(quantityInput.value);
-  //       const errMesg = document.getElementById("errMesg");
-  //       console.log(currentQnty, "asdfghj");
-
-  //       if (currentQnty + change < 1) {
-  //         toastr.info("Quantity can't be less than One", "Info!");
-  //         return;
-  //       }
-  //       const response = await fetch("/cart/updateQuantity", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           productId: productId,
-  //           quantity: change,
-  //         }),
-  //       });
-  //       const data = await response.json();
-  //       if (data.success) {
-  //       }
-  //     } catch (error) {}
-  //   }
 </script>
 
 <%- include('include/_footer') %>
