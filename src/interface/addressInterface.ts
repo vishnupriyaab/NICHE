@@ -1,13 +1,14 @@
-import { Document, Types } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 interface Address extends Document {
-  userId: Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   name: string;
-  phonenumber: number;
-  pincode: number;
-  locality: string;
+  hNo: number;
   district: string;
   state: string;
+  country: string;
+  pin: number;
+  phonenumber: number;
   addressType: string;
   defaultaddress: boolean;
   createdAt: Date;

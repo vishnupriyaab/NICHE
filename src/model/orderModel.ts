@@ -1,65 +1,61 @@
-import mongoose, { Schema} from "mongoose";
-import Order from "../interface/orderInterface";
+import mongoose from "mongoose";
+import { IOrder } from "../interface/orderInterface";
 
-
-const orderSchema = new Schema<Order>(
-  {
-    products: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "productdb",
-        },
-        quantity: Number,
-        price: Number,
-        offer: {
-          type: String,
-          default: false,
-        },
-      },
-    ],
-    orderId: {
-      type: String,
-    },
-    payment: {},
-    cancleReason: {
-      type: String,
-      default: "Not Processed",
-    },
-    orderStatus: {
-      type: String,
-      default: "Not Processed",
-      enum: [
-        "Not Processed",
-        "Processing",
-        "Dispatched",
-        "Cancelled",
-        "Delivered",
-        "Returned",
-      ],
-    },
-    address: {
-      type: [String],
-    },
-    orderTotal: {
-      type: Number,
-    },
-    orderedDate: {
-      type: String,
-    },
-    orderBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "userdb",
-    },
-    expectedDelivery: {
-      type: String,
-    },
+const orderSchema = new mongoose.Schema<IOrder>({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "userdb",
+    required: true,
   },
-  {
-    timestamps: true,
-  }
-);
+  orderDetails: [
+    {
+      pName: {
+        type: String,
+        required: true,
+      },
+      pImage: {
+        type: String,
+        required: true,
+      },
+      price: {
+        type: Number,
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+      address: {
+        type: String,
+        required: true,
+      },
+      paymentMethod: {
+        type: String,
+        required: true,
+      },
+      productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "productdb",
+        required: true,
+      },
+     
+      orderStatus: {
+        type: String,
+        default: "Ordered",
+        required: true,
+      },
+      orderDate: {
+        type: Date,
+        default: Date.now(),
+      },
+    },
+  ],
+  totalsum: {
+    type: Number,
+    required: true,
+  },
+});
 
-const orderDb = mongoose.model<Order>("Order", orderSchema);
+const Orderdb = mongoose.model<IOrder>("orderdb", orderSchema);
 
-export default orderDb;
+export default Orderdb;

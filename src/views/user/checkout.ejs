@@ -98,8 +98,7 @@
               <div class="flex items-center mb-4">
                 <span class="mr-2">
                   <%= address[i].name %>,<%= address[i].phonenumber %>,<%=
-                  address[i].locality %>,<%= address[i].district %>,<%=
-                  address[i].pincode %>
+                  address[i].pin %>
                 </span>
                 <button
                   class="select-address-button bg-blue-500 hover:bg-blue-600 px-3 py-2 text-white font-semibold rounded-md"
@@ -146,7 +145,7 @@
           </label>
         </div>
 
-        <div class="relative">
+        <!-- <div class="relative">
           <input
             class="peer hidden"
             id="payment_razorpay"
@@ -163,7 +162,7 @@
               <p class="text-gray-600 text-sm">Secure online payment</p>
             </div>
           </label>
-        </div>
+        </div> -->
       </form>
     </div>
   </div>
@@ -256,5 +255,109 @@
       }
     });
   });
+
+  
+  const closeButton = document.getElementById("closeAddressModalButton");
+        const addressModal = document.getElementById("addressModal");
+
+        // Close the modal when clicking outside of it or pressing ESC key
+        function handleWindowClick(event) {
+          if (event.target === addressModal) {
+            closeModal();
+          }
+        }
+
+        function handleKeyDown(event) {
+          if (event.key === "Escape") {
+            closeModal();
+          }
+        }
+
+        window.addEventListener("click", handleWindowClick);
+        window.addEventListener("keydown", handleKeyDown);
+
+        // Function to close the modal
+        function closeModal() {
+          addressModal.classList.add("hidden");
+          // Remove event listeners to prevent memory leaks
+          window.removeEventListener("click", handleWindowClick);
+          window.removeEventListener("keydown", handleKeyDown);
+        }
+
+        // Add event listener to close button
+        closeButton.addEventListener("click", closeModal);
+
+        function showSelectedAddress(selectedAddress) {
+          const selectedAddressElement =
+            document.getElementById("selectedAddress");
+          selectedAddressElement.textContent = selectedAddress;
+          document
+            .getElementById("selectedAddressSection")
+            .classList.remove("hidden");
+        }
+
+        const selectButtons = document.querySelectorAll(
+          ".select-address-button"
+        );
+        selectButtons.forEach(function (button) {
+          button.addEventListener("click", function () {
+            // Get the selected address from the button's parent element
+            const selectedAddress =
+              button.previousElementSibling.textContent.trim();
+            // Show the selected address
+            showSelectedAddress(selectedAddress);
+            // Close the modal
+            closeModal();
+          });
+        });
+
+
+        function placeOrder(sum) {
+          const selectedPaymentMethod = document.querySelector(
+            'input[name="payment_method"]:checked'
+          ).value;
+          const totalSum = sum;
+          const selectedAddress =
+            document.getElementById("selectedAddress").innerText;
+          const image = document.getElementById("imageproduct").src;
+
+          const name = document.getElementById("prdname").innerText;
+
+          const price = document.getElementById("prdsum").innerText;
+
+          const quantity = document.getElementById("prdquantity").innerText;
+
+          if (selectedPaymentMethod) {
+            var paymentMethod = selectedPaymentMethod;
+            var cod = "COD";
+
+            if (paymentMethod === cod) {
+              axios
+                .post("/placeorder", {
+                  address: selectedAddress,
+                  totalsum: totalSum,
+                  paymentMethod: paymentMethod,
+                  name: name,
+                  price: price,
+                  quantity: quantity,
+                  image: image,
+                })
+                .then(function (response) {                
+
+                 console.log(response);
+                    window.location.href = "/successpage";
+                  
+                })
+                .catch(function (error) {
+                  console.error("Error:", error);
+                });
+            } else {
+              console.log("Payment method selected:", paymentMethod);
+            }
+          } else {
+            console.log("No payment method selected");
+          }
+        }
+
 </script>
 <%- include('include/_footer') %>

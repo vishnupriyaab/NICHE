@@ -14,5 +14,6 @@ declare module "express-session" {
     adminId: string
     Email: string
     otp:string
+    addressId:string;
   }
 }

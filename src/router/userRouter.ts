@@ -1,10 +1,10 @@
 import { NextFunction, Router } from "express";
 import {checkBlocked,userRegistrationValidation,userloginValidation,validateUserRegistration,validateUserlogin,} from "../middleware/userAuth";
 import { getsingleProduct } from "../controller/userController/productCtrl";
-import {_404page,contact,getHome,getLogin,getShop,getuserLogout,otpSnd,postLogin,resendOtp,testimonial,userProfile,userRegister,} from "../controller/userController/userCtrl";
+import {_404page,addAddressss,contact,deleteaddress,getHome,getLogin,getShop,getuserLogout,otpSnd,postLogin,productlist,resendOtp,testimonial,updateaddress,userProfile,userRegister,} from "../controller/userController/userCtrl";
 import { isLoggedIn, isLoggedout } from "../middleware/sessionAuth";
 import { addTocart, cart, reloadTotalAmount, removeproductfromcart, updatequantity } from "../controller/userController/cartCtrl";
-import { addaddress, checkaddress, checkout } from "../controller/userController/orderCtrl";
+import { addaddress, cancelOrder, checkaddress, checkout,  editaddress,  orderinfo,  orderslist,  placeorder,  showaddress, successpage } from "../controller/userController/orderCtrl";
 
 const userRoute: Router = Router();
 
@@ -22,17 +22,32 @@ userRoute.get("/contact", contact);
 userRoute.get("/singleProductpage/:id",isLoggedIn,checkBlocked,getsingleProduct);
 userRoute.get("/resendotp", resendOtp);
 userRoute.get("/userProfile", isLoggedIn, userProfile);
-userRoute.get("/addaddress",checkBlocked, addaddress)
+userRoute.get("/address",checkBlocked, showaddress);
+userRoute.get("/addaddress",checkBlocked, addaddress);
+userRoute.get("/editaddress/:id",checkBlocked, editaddress);
+userRoute.get("/successpage", checkBlocked, successpage);
+userRoute.get("/orders",checkBlocked, orderslist);
+userRoute.get("/orderinformation/:id",checkBlocked, orderinfo);
+userRoute.get("/products", productlist);
 
 
+userRoute.post("/placeorder",placeorder);
+userRoute.post("/cancelOrder",cancelOrder);
 userRoute.post("/userLogin",isLoggedout,userloginValidation,validateUserlogin,postLogin);
 userRoute.post("/registerValue", isLoggedout, userRegister);
 userRoute.post("/otpSend",userRegistrationValidation,validateUserRegistration,otpSnd);
 userRoute.post("/addTocart", addTocart);
 userRoute.post("/updateQuantity", updatequantity);
 userRoute.post("/getUpdatedTotalAmount/:productId", reloadTotalAmount);
+userRoute.post("/addAddressss",  addAddressss);
+
 
 userRoute.patch("/removeFromCart", removeproductfromcart);
+
+userRoute.delete("/deleteaddress/:id",deleteaddress)
+
+userRoute.put("/updateaddress", updateaddress)
+
 
 
 export default userRoute;

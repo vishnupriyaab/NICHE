@@ -1,31 +1,17 @@
-import { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-interface Product {
-  product: Schema.Types.ObjectId;
-  quantity: number;
-  price: number;
-  offer: string | false;
+export interface IOrder extends Document {
+  userId: mongoose.Schema.Types.ObjectId;
+  orderDetails: {
+    pName: string;
+    pImage: string;
+    price: number;
+    quantity: number;
+    address: string;
+    paymentMethod: string;
+    productId: mongoose.Schema.Types.ObjectId;
+    orderStatus: string;
+    orderDate: Date;
+  }[];
+  totalsum: number;
 }
-
-interface Order extends Document {
-  products: Product[];
-  orderId: string;
-  payment: any; // Define the type for payment object accordingly
-  cancleReason: string;
-  orderStatus:
-    | "Not Processed"
-    | "Processing"
-    | "Dispatched"
-    | "Cancelled"
-    | "Delivered"
-    | "Returned";
-  address: string[]; // Define the type for address array accordingly
-  orderTotal: number;
-  orderedDate: string;
-  orderBy: Schema.Types.ObjectId;
-  expectedDelivery: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export default Order;

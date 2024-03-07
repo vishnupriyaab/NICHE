@@ -25,6 +25,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
+                                <th>Id</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Status</th>
@@ -33,6 +34,12 @@
                         </thead>
                         <% for(let i=0;i<user.length;i++){ %>
                             <tbody>
+                                <td>
+                                    <p>
+                                        <%= i+1 %>
+                                    </p>
+                                </td>
+
                                 <td>
                                     <p>
                                         <%= user[i].username %>

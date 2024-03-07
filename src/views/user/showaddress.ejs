@@ -1,0 +1,135 @@
+
+<%- include('include/_header') %>
+
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* Hide the arrow icon for number input */
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+    </style>
+  </head>
+
+
+    <div
+      class="bg-gray-100 font-sans max-w-2xl mx-auto p-8 bg-white mt-10 rounded-md shadow-md"
+    >
+      <a
+        href="#"
+        onclick="goBack()"
+        class="inline-flex items-center mb-5 px-4 py-2 text-base font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+      >
+        <svg
+          class="h-4 w-4 mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          ></path>
+        </svg>
+        Back
+      </a>
+      <h2 class="text-2xl font-semibold mb-4">Shipping Address</h2>
+      <a href="/addaddress">
+        <button
+          class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+        >
+          Add Address
+        </button>
+      </a>
+      <% for( let i=0; i < address.length; i++ ) { %>
+
+      <div
+        class="max-w-2xl mx-auto justify-center p-8 bg-white mt-10 rounded-md shadow-md"
+      >
+        <div class="mb-4">
+          <p class="text-gray-600">Name: <%= address[i].name %></p>
+          <p class="text-gray-600">House number: <%= address[i].hNo %></p>
+          <p class="text-gray-600">District: <%= address[i].district %></p>
+          <p class="text-gray-600">State: <%= address[i].state %></p>
+          <p class="text-gray-600">Country: <%= address[i].country %></p>
+          <p class="text-gray-600">Pin: <%= address[i].pin %></p>
+          <p class="text-gray-600">Phone Number: <%= address[i].phonenumber %></p>
+          <p class="text-gray-600">
+            Address Type: <%= address[i].addressType %>
+          </p>
+        </div>
+
+        <div class="flex justify-between items-center mt-4">
+          <button
+            class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+            onclick="deleteAddress('<%= address[i]._id %>')"
+          >
+            Delete Address
+          </button>
+          <a href="/editaddress/<%= address[i]._id %>">
+            <button
+              class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+            >
+              Edit Address
+            </button></a
+          >
+        </div>
+      </div>
+      <% } %>
+    </div>
+    
+    <%- include('include/_footer') %>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
+      integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      function goBack() {
+        window.history.back();
+      }
+
+      function deleteAddress(addressId) {
+        axios
+          .delete(`/deleteaddress/${addressId}`)
+          .then((response) => {
+            if (response) {
+              Swal.fire(
+                "Address Successfully Deleted",
+                "Click the button",
+                "success"
+              ).then(() => {
+                window.location.reload();
+              });
+            }
+
+          })
+          .catch((error) => {
+            console.error("error while deleting", error);
+          });
+      }
+    </script>
+  </body>
+</html>

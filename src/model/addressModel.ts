@@ -10,24 +10,28 @@ const addressSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  phonenumber: {
-    type: Number,
-    required: true,
-  },
-  pincode: {
-    type: Number,
-    required: true,
-  },
-  locality: {
-    type: String,
-    required: true,
-  },
   district: {
     type: String,
     required: true,
   },
+  country: {
+    type: String,
+    required: true,
+  },
+  phonenumber: {
+    type: Number,
+    required: true,
+  },
+  hNo: {
+    type: Number, // Assuming this is for house number
+    required: true,
+  },
   state: {
     type: String,
+    required: true,
+  },
+  pin: {
+    type: Number,
     required: true,
   },
   addressType: {

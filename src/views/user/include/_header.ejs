@@ -27,7 +27,10 @@
 
     <!-- Libraries Stylesheet -->
     <link href="/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
-    <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+    <link
+      href="/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
@@ -76,7 +79,6 @@
             >
           </div>
           <div class="top-link pe-2">
-            
             <a href="#" class="text-white"
               ><small class="text-white mx-2">Contact</small></a
             >
@@ -99,8 +101,8 @@
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
               <a href="/" class="nav-item nav-link active">Home</a>
-              <a href="/shop" class="nav-item nav-link">Shop</a>
-              
+              <!-- <a href="/shop" class="nav-item nav-link">Shop</a> -->
+
               <div class="nav-item dropdown">
                 <a
                   href="#"
@@ -111,8 +113,7 @@
                 <div class="dropdown-menu m-0 bg-secondary rounded-0">
                   <a href="/cart" class="dropdown-item">Cart</a>
                   <a href="/checkout" class="dropdown-item">Checkout</a>
-                  <a href="/testimonial" class="dropdown-item"
-                    >Reviews</a>
+                  <a href="/testimonial" class="dropdown-item">Reviews</a>
                 </div>
               </div>
               <a href="/contact" class="nav-item nav-link">Contact</a>
@@ -126,47 +127,57 @@
                 <i class="fas fa-search text-primary"></i>
               </button>
               <% if(user) { %>
-                <div class="site-cart">
-                  <a href="/cart" class="position-relative me-4 my-auto">
-                    <i class="fa fa-shopping-bag fa-2x" ></i>
-                    <% let sum = 0
-                if(cart && cart.products ){ 
-                  cart.products.forEach(product => {
-                    sum+=product.quantity;
-                  })
-                }%>
-                <span id="CartCount"
-                class="position-absolute bg-orange rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
-                style="top: -5px; left: 15px; height: 20px; min-width: 20px"
-                ><%= cart && sum>0? sum:'0' %></span>
-              </a>
-            </div>
-              <% } %>
-              <% if (user) { %>
-                <ul class="navbar-nav list-none">
+              <div class="site-cart">
+                <a href="/cart" class="position-relative me-4 my-auto">
+                  <i class="fa fa-shopping-bag fa-2x"></i>
+                  <% let sum = 0 if(cart && cart.products ){
+                  cart.products.forEach(product => { sum+=product.quantity; })
+                  }%>
+                  <span
+                    id="CartCount"
+                    class="position-absolute bg-orange rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
+                    style="top: -5px; left: 15px; height: 20px; min-width: 20px"
+                    ><%= cart && sum>0? sum:'0' %></span
+                  >
+                </a>
+              </div>
+              <% } %> <% if (user) { %>
+              <ul class="navbar-nav list-none">
                 <li class="relative dropdown nav-item">
-                  <a href="#" class="flex items-center dropdown-toggle my-auto" aria-expanded="false">
+                  <a
+                    href="#"
+                    class="flex items-center dropdown-toggle my-auto"
+                    aria-expanded="false"
+                  >
                     <i class="fas fa-user fa-2x"></i>
                   </a>
-                  <div class="dropdown-menu dropdown-menu-end absolute hidden text-base shadow-lg py-1 bg-white rounded-md w-50" aria-labelledby="dropdownAccount">
-                    <a href="/userProfile" class="block px-4 py-1 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md">
-                        <i class="material-icons md-account_circle mr-2"></i> Profile
+                  <div
+                    class="dropdown-menu dropdown-menu-end absolute text-base shadow-lg py-1 bg-white rounded-md"
+                    aria-labelledby="dropdownAccount"
+                  >
+                    <a
+                      href="/userProfile"
+                      class="block px-4 py-1 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
+                    >
+                      <i class="material-icons md-account_circle mr-2"></i>
+                      Profile
                     </a>
-                    <a href="/userLogout" class="block px-4 py-1 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md">
-                        <i class="material-icons md-exit_to_app mr-2"></i>Logout
+                    <a
+                      href="/userLogout"
+                      class="block px-4 py-1 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
+                    >
+                      <i class="material-icons md-exit_to_app mr-2"></i>Logout
                     </a>
-                </div>
-                
+                  </div>
                 </li>
-                </ul>
-                
-                <% } else { %>
-                  <a href="/userLogin" class="my-auto">
-                    <i class="fas fa-user fa-2x"></i> 
-                  </a>
-               
+              </ul>
+
+              <% } else { %>
+              <a href="/userLogin" class="my-auto">
+                <i class="fas fa-user fa-2x"></i>
+              </a>
+
               <% } %>
-              
             </div>
           </div>
         </nav>
@@ -212,3 +223,5 @@
       </div>
     </div>
     <!-- Modal Search End -->
+  </body>
+</html>

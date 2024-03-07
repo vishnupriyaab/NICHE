@@ -524,7 +524,7 @@ b {
   list-style: none;
   margin: 1rem;
   padding: 0;
-}
+ }
 
 .menu-aside a {
   display: block;
@@ -3674,7 +3674,10 @@ body.offcanvas-active {
           box-shadow: none;
   z-index: 10;
   border-right: 1px solid #eee;
+ 
 }
+
+
 
 .navbar-aside .aside-top {
   padding: 12px .5rem;
@@ -4301,3 +4304,18 @@ body.dark .dropdown-menu .dropdown-item.text-danger {
   }
 }
 /*# sourceMappingURL=main.css.map */
+
+
+
+.navbar-aside .menu-link:hover {
+  transform: translateX(10px); /* Move the menu link to the right */
+  transition: transform 0.3s ease; /* Add smooth transition effect */
+}
+
+.navbar-aside .menu-link {
+  transition: transform 0.3s ease; /* Add smooth transition effect */
+}
+
+.navbar-aside .menu-link {
+  transform: translateX(0); /* Set initial position */
+}

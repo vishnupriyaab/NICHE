@@ -4,13 +4,12 @@ import userDb from "../model/userModel";
 
 
 export const userloginValidation =  [
-  body('email')
-    .exists().isEmail().normalizeEmail().withMessage('Email is required')
-    ,
+  body('email').notEmpty().withMessage("asdfghj")
+    .exists().isEmail().normalizeEmail().withMessage('Email is required'),
   body('password')
     .exists()
     .trim()
-    .isLength({ min: 4 }).withMessage('Password must be 4 characters'),
+    .isLength({ min: 4 }).withMessage('Password is Required'),
 ]
 
 export const validateUserlogin = (

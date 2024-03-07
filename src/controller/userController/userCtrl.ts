@@ -9,7 +9,9 @@ import {
 import bcrypt from "bcrypt";
 import productDb from "../../model/productModel";
 import CartDb from "../../model/cartModel";
-import orderDb from "../../model/orderModel";
+import Addressdb from "../../model/addressModel";
+import Orderdb from "../../model/orderModel";
+import mongoose from "mongoose";
 import categoryDb from "../../model/categoryModel";
 
 interface body {
@@ -37,7 +39,9 @@ export async function getHome(
 ): Promise<void> {
   try {
     const user = req.session.userId;
-    const product = await productDb.find({isHidden: false}).populate("category");
+    const product = await productDb
+      .find({ isHidden: false })
+      .populate("category");
     const cart = await CartDb.findOne({ userId: user }).populate("products");
 
     res.render("user/home", { loginError, user, product, cart });
@@ -223,3 +227,101 @@ export async function getuserLogout(req: Request, res: Response) {
   }
 }
 
+export async function addAddressss(req: Request, res: Response): Promise<void> {
+  try {
+    let { name, district, country, phonenumber, hNo, state, pin, addressType } =
+      req.body;
+    (phonenumber = parseInt(phonenumber)), (pin = parseInt(pin));
+
+    if (
+      !name ||
+      !district ||
+      !country ||
+      !phonenumber ||
+      !hNo ||
+      !state ||
+      !pin ||
+      !addressType
+    ) {
+      res
+        .status(401)
+        .json({ errStatus: true, message: "Content cannot be empty" });
+      return;
+    }
+
+    let user = req.session.userId;
+
+    const userId = await userDb.findById(user);
+
+    const newAddress = new Addressdb({
+      userId: user,
+      name,
+      district,
+      country,
+      phonenumber,
+      hNo,
+      state,
+      pin,
+      addressType,
+    });
+    const saved = await newAddress.save();
+
+    // if (saved) res.status(200).send(true);
+    if (saved) {
+      res.status(201).json({ message: "Address Added" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+export async function deleteaddress(req: Request, res: Response) {
+  try {
+    const id = req.params.id;
+    await Addressdb.findByIdAndDelete(id);
+    res.status(200).json({ message: "Address deleted successfully" });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function updateaddress(req:Request, res:Response) {
+  try {
+    let { name, district, country, phonenumber, hNo, state, pin, addressType } =
+      req.body;
+
+    const newAdd = await Addressdb.updateOne(
+      { _id: req.session.addressId },
+      {
+        $set: {
+          name,
+          district,
+          country,
+          phonenumber,
+          hNo,
+          state,
+          pin,
+          addressType,
+        },
+      }
+    );
+
+    res.status(200).send(true);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+
+export async function productlist(req:Request, res:Response) {
+  try {
+    const products = await productDb.find();
+    const category = await categoryDb.find();
+    res.render("/productlist", { products, category });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}

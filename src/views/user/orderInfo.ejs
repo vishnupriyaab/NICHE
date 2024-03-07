@@ -1,0 +1,153 @@
+<%- include('include/_header') %>
+
+
+    <div class="flex-grow mt-20 ">
+        <div class="container mx-auto my-8 p-8 bg-white rounded-lg shadow-md">
+            <!-- Back button -->
+            <a href="#" onclick="goBack()"
+                class="inline-flex items-center mb-4 mt-12 px-4 py-2 text-base font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back
+            </a>
+            <!-- Order Information Header -->
+            <div class="flex justify-between items-center mb-8">
+
+                <h1 class="text-3xl font-semibold">Order Information</h1>
+                <!-- Add your logo or navigation links here -->
+            </div>
+
+            <!-- Order Summary and Shipping Information -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="w-full">
+                    <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+                    <!-- Add order summary details here -->
+                    <!-- Example: -->
+                    <p>Order ID: <%= details._id.toString().split('').slice(18,24).join('') %>
+                    </p>
+                    <p>Total Items: <%= details.orderDetails[0].quantity %>
+                    </p>
+                    <p>Subtotal: <%= details.orderDetails[0].price %>
+                    </p>
+                    <!-- <p>Discount: -$10.00</p> -->
+                    <p class="text-xl font-semibold mt-4">Order Total: <%= details.orderDetails[0].quantity *
+                            details.orderDetails[0].price %>
+                    </p>
+                </div>
+                <div class="w-full">
+                    <h2 class="text-xl font-semibold mb-4">Shipping Information</h2>
+                    <!-- Add shipping information details here -->
+                    <!-- Example: -->
+                    <p style="word-wrap: break-word;">
+                        <%= details.orderDetails[0].address %>
+                    </p>
+                </div>
+                <div class="w-full">
+                    <h2 class="text-xl font-semibold mb-4">Billing Information</h2>
+                    <!-- Add billing information details here -->
+                    <!-- Example: -->
+                    <p style="word-wrap: break-word;">
+                        <%= details.orderDetails[0].address %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Order Status with Progress Bar -->
+            <div class="mt-8">
+                <h2 class="text-xl font-semibold mb-4">Order Status</h2>
+                <p class="text-lg">
+                    Status:
+                    <span id="orderStatus" class="text-blue-500 font-semibold">
+                        <%= details.orderDetails[0].orderStatus %>
+                    </span>
+                    <!-- You can dynamically change the status color based on the order status -->
+                </p>
+
+                <!-- Progress Bar -->
+                <progress id="orderProgressBar" class="w-full h-5 mt-2 bg-green-500" value="0" max="100"></progress>
+            </div>
+
+            <!-- Order Status -->
+            <!-- <div class="mt-8" id="orderStatusContainer">
+            <h2 class="text-xl font-semibold mb-4">Order Status</h2>
+            <p class="text-lg" id="orderStatus">
+                Status: <span class="text-blue-500 font-semibold">Ordered</span> -->
+            <!-- You can dynamically change the status color based on the order status -->
+            <!-- </p>
+        </div> -->
+
+            <!-- Order Items -->
+            <div class="mt-8">
+                <h2 class="text-xl font-semibold mb-4">Order Items</h2>
+                <!-- Add a loop for each item in the order -->
+                <!-- Example for a single product -->
+                <div class="flex items-center justify-between border-b border-gray-300 py-4">
+                    <div class="flex items-center">
+                        <img src=" <%= details.orderDetails[0].pImage %>" alt="Product Image"
+                            class="w-16 h-16 object-cover rounded-md mr-4">
+                        <div>
+                            <p class="text-lg font-semibold">
+                                <%= details.orderDetails[0].pName %>
+                            </p>
+                            <p class="text-gray-600">Quantity: <%= details.orderDetails[0].quantity %>
+                            </p>
+                        </div>
+                    </div>
+                    <p class="text-lg font-semibold">
+                        <%= details.orderDetails[0].price %>
+                    </p>
+                </div>
+                <!-- Repeat the above block for each item in the order -->
+
+                <!-- Order Total -->
+                <div class="flex justify-end mt-8">
+                    <p class="text-2xl font-semibold">Order Total: <%= details.orderDetails[0].price *
+                            details.orderDetails[0].quantity %>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <%- include('include/_footer') %>
+
+            <script>
+                const orderStatusElement = document.getElementById('orderStatus').innerText;
+                function goBack() {
+                    window.history.back();
+                }
+
+                if (orderStatusElement === 'Cancelled') {
+                    updateOrderStatus({ text: 'Cancelled', color: 'red' }, 100);
+                }
+                if (orderStatusElement === 'Delivered') {
+                    updateOrderStatus({ text: 'Delivered', color: 'purple' }, 100);
+                }
+                if (orderStatusElement === 'Shipped') {
+                    updateOrderStatus({ text: 'Shipped', color: 'green' }, 66);
+                }
+                if (orderStatusElement === 'Ordered') {
+                    updateOrderStatus({ text: 'Ordered', color: 'blue' }, 33);
+                }
+
+                function updateOrderStatus(status, progress) {
+                    const progressBar = document.querySelector('#orderProgressBar');
+                    progressBar.value = progress;
+
+                    // Conditionally set the color based on the status
+                    if (status.text === 'Cancelled') {
+                        progressBar.classList.remove('bg-green-500');
+                        progressBar.classList.add('bg-red-500');
+                    }
+                }
+
+
+            </script>
+
+    </div>
+    <script src="https://cdn.tailwindcss.com"></script>
+    </body>
+
+    </html>

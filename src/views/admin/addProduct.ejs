@@ -223,32 +223,31 @@
                 event.preventDefault();
             }
 
-            if (!name) {
+            if (!name.trim()) {
                 errorName.innerHTML = '<p>Product Name is required</p>';
                 event.preventDefault();
             }
-
-            if (!desc) {
+            if (!desc.trim()) {
                 errorDescription.innerHTML = '<p>Description is required</p>';
                 event.preventDefault();
             }
 
-            if (!pricevalue) {
+            if (!pricevalue.trim()) {
                 errorPrice.innerHTML = '<p>Price is required</p>';
                 event.preventDefault();
             }
 
-            if (!stockvalue) {
+            if (!stockvalue.trim()) {
                 errorStock.innerHTML = '<p>Stock is required</p>';
                 event.preventDefault();
             }
 
-            if (!cat) {
+            if (!cat.trim()) {
                 errorCategory.innerHTML = '<p>Category is required</p>';
                 event.preventDefault();
             }
 
-            if (!images) {
+            if (!images.trim()) {
                 errorImage.innerHTML = '<p>Image is required</p>';
                 event.preventDefault();
             }
