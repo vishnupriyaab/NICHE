@@ -140,7 +140,7 @@
                         <a href="#" class="btn btn-warning shadow-0"> Buy now </a>
                         <a onclick="addTocart('<%- product._id %>')" class="btn btn-primary border shadow-0 icon-hover "> <i class="me-1 fa fa-shopping-basket"></i> Add to
                             cart </a>
-                        <a href="#" class="btn btn-light border icon-hover px-3"> <i
+                        <a onclick="addToWishlist( '<%- product._id %>')" class="btn btn-light border icon-hover px-3"> <i
                                 class="me-1 fa fa-heart fa-lg"></i> Wishlist </a>
                     </div>
                 </main>
@@ -152,6 +152,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
     integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     function addTocart(id){
         axios.post('/addtocart',{id})
@@ -170,6 +172,55 @@
             console.log("Error:",error);
         });
     }
+
+    function addToWishlist(productId) {
+        axios
+          .post("/addToWishlist", { productId })
+          .then((response) => {
+            // console.log(response);
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+            });
+            Toast.fire({
+              icon: "success",
+              title: "Product Added To Wishlist",
+            });
+            // Check if the product was successfully added or already exists
+            if (response.data.message === "Product already in wishlist") {
+              const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+            });
+            Toast.fire({
+              icon: "success",
+              title: "Product Already in Wishlist",
+            });
+            } else {
+              console.log(response.data.message);
+            }
+          })
+          .catch((error) => {
+            // Handle error, log to console for simplicity
+            console.error("Error:", error);
+          });
+      } 
+
+
 </script>
 
 

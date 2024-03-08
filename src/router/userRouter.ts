@@ -5,6 +5,7 @@ import {_404page,addAddressss,contact,deleteaddress,getHome,getLogin,getShop,get
 import { isLoggedIn, isLoggedout } from "../middleware/sessionAuth";
 import { addTocart, cart, reloadTotalAmount, removeproductfromcart, updatequantity } from "../controller/userController/cartCtrl";
 import { addaddress, cancelOrder, checkaddress, checkout,  editaddress,  orderinfo,  orderslist,  placeorder,  showaddress, successpage } from "../controller/userController/orderCtrl";
+import { addToWishlist, removeFromWishlist, wishlist } from "../controller/userController/wishlishctrl";
 
 const userRoute: Router = Router();
 
@@ -29,7 +30,7 @@ userRoute.get("/successpage", checkBlocked, successpage);
 userRoute.get("/orders",checkBlocked, orderslist);
 userRoute.get("/orderinformation/:id",checkBlocked, orderinfo);
 userRoute.get("/products", productlist);
-userRoute.get("/wishlist", );
+userRoute.get("/wishlist", wishlist);
 
 
 userRoute.post("/placeorder",placeorder);
@@ -41,11 +42,12 @@ userRoute.post("/addTocart", addTocart);
 userRoute.post("/updateQuantity", updatequantity);
 userRoute.post("/getUpdatedTotalAmount/:productId", reloadTotalAmount);
 userRoute.post("/addAddressss",  addAddressss);
-
+userRoute.post("/addToWishlist", addToWishlist);
 
 userRoute.patch("/removeFromCart", removeproductfromcart);
 
 userRoute.delete("/deleteaddress/:id",deleteaddress)
+userRoute.delete("/removeFromWishlist/:id", removeFromWishlist)
 
 userRoute.put("/updateaddress", updateaddress)
 
