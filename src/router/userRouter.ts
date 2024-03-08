@@ -29,6 +29,7 @@ userRoute.get("/successpage", checkBlocked, successpage);
 userRoute.get("/orders",checkBlocked, orderslist);
 userRoute.get("/orderinformation/:id",checkBlocked, orderinfo);
 userRoute.get("/products", productlist);
+userRoute.get("/wishlist", );
 
 
 userRoute.post("/placeorder",placeorder);

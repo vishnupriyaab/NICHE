@@ -31,7 +31,7 @@
     <!-- Hero End -->
 
     <!-- Featurs Section Start -->
-    <div class="container-fluid featurs py-5">
+    <div class="container-fluid featurs py-3">
       <div class="container py-5">
         <div class="row g-4">
           <div class="col-md-6 col-lg-3">
@@ -93,7 +93,7 @@
 
     <!--Shop Start-->
     <div class="container-fluid fruite py-5">
-      <div class="container py-5">
+      <div class="container">
         <div class="tab-class text-center">
           <div class="row g-4">
             <div class="col-lg-4 text-start">
@@ -150,12 +150,12 @@
               <div class="row g-4">
                 <div class="col-lg-12">
                   <div class="row g-4">
-                  
-                    <% for( let i = 0; i < product.length; i++ ) { %>
+                     <% for( let i = 0; i < product.length; i++ ) { %>
                       <div class="col-md-6 col-lg-4 col-xl-3">
                           <a href="/singleProductpage/<%= product[i]._id %>">
-                          
+
                           <div class="rounded position-relative fruite-item">
+                            
                             <div class="fruite-img">
                               <img
                               src="<%= product[i].imgArr[0] %>"
@@ -490,8 +490,8 @@
 
 
     <!-- Vesitable Shop Start-->
-    <div class="container-fluid vesitable py-5">
-      <div class="container py-5">
+    <div class="container-fluid vesitable py-2">
+      <div class="container py-2">
         <h1 class="mb-0">Newly Launched</h1>
         <div class="owl-carousel vegetable-carousel justify-content-center">
 
@@ -567,7 +567,7 @@
     <!-- Banner Section End -->
 
     <!-- Bestsaler Product Start -->
-    <div class="container-fluid py-5">
+    <div class="container-fluid">
       <div class="container py-5">
         <div class="text-center mx-auto mb-5" style="max-width: 700px">
           <h1 class="display-4">Bestseller Products</h1>
