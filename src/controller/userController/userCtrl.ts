@@ -276,7 +276,7 @@ export async function addAddressss(req: Request, res: Response): Promise<void> {
   }
 }
 
-export async function deleteaddress(req: Request, res: Response) {
+export async function deleteAddress(req: Request, res: Response) {
   try {
     const id = req.params.id;
     await Addressdb.findByIdAndDelete(id);
@@ -286,7 +286,7 @@ export async function deleteaddress(req: Request, res: Response) {
   }
 }
 
-export async function updateaddress(req:Request, res:Response) {
+export async function updateAddress(req:Request, res:Response) {
   try {
     let { name, district, country, phonenumber, hNo, state, pin, addressType } =
       req.body;

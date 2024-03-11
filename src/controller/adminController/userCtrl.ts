@@ -20,7 +20,7 @@ export async function getUsers(req: Request, res: Response) {
   }
 }
 
-export async function blockuser(req: Request, res: Response) {
+export async function blockUser(req: Request, res: Response) {
   try {
     const data = await userDb.updateOne(
       { _id: req.query.userid },
@@ -33,7 +33,7 @@ export async function blockuser(req: Request, res: Response) {
   }
 }
 
-export async function unblockuser(req: Request, res: Response) {
+export async function unblockUser(req: Request, res: Response) {
   try {
     const data = await userDb.updateOne(
       { _id: req.query.userid },

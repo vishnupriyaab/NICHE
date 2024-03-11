@@ -67,7 +67,7 @@ export async function checkout(req: Request, res: Response) {
   }
 }
 
-export async function addaddress(req: Request, res: Response) {
+export async function addAddress(req: Request, res: Response) {
   try {
     const user = req.session.userId;
     const cart = await CartDb.findOne({ userId: user }).populate("products");
@@ -79,7 +79,7 @@ export async function addaddress(req: Request, res: Response) {
   }
 }
 
-export async function showaddress(req: Request, res: Response) {
+export async function showAddress(req: Request, res: Response) {
   try {
     let user = req.session.userId;
     const address = await Addressdb.find({ userId: user });
@@ -92,7 +92,7 @@ export async function showaddress(req: Request, res: Response) {
   }
 }
 
-export async function editaddress(req: Request, res: Response) {
+export async function editAddress(req: Request, res: Response) {
   try {
     // Type casting req.session to MySessionData
     (req.session as SessionData).addressId = req.params.id;
@@ -106,7 +106,7 @@ export async function editaddress(req: Request, res: Response) {
   }
 }
 
-export async function checkaddress(req: Request, res: Response): Promise<void> {
+export async function checkAddress(req: Request, res: Response): Promise<void> {
   try {
     // Fetch address data from the database
     const address = await Addressdb.findOne({ userId: req.session.userId });
@@ -123,7 +123,7 @@ export async function checkaddress(req: Request, res: Response): Promise<void> {
   }
 }
 
-export async function placeorder(req: Request, res: Response) {
+export async function placeOrder(req: Request, res: Response) {
   try {
     const { paymentMethod, address, totalsum, name, price, quantity, image } =
       req.body;
@@ -284,7 +284,7 @@ export async function cancelOrder(req: Request, res: Response) {
   }
 }
 
-export async function successpage(req: Request, res: Response) {
+export async function successPage(req: Request, res: Response) {
   try {
     const userid = req.session.userId;
     const user = await userDb.findById(userid);
@@ -338,7 +338,7 @@ export async function orderslist(req: Request, res: Response) {
   }
 }
 
-export async function orderinfo(req: Request, res: Response) {
+export async function orderInfo(req: Request, res: Response) {
   try {
     const user = await userDb.findOne({ _id: req.session.userId });
     const cart = await CartDb.findOne({ userId: user }).populate("products");

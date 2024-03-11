@@ -31,7 +31,7 @@ export async function adminOrder(req:Request, res:Response) {
 
 
   
-export async function updateorder(req:Request,res:Response) {
+export async function updateOrder(req:Request,res:Response) {
     try {
   
       const { orderId, orderStatus } = req.body;

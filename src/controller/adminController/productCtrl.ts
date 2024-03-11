@@ -44,7 +44,7 @@ export async function getunlistedProduct(req: Request, res: Response) {
   }
 }
 
-export async function updateproduct(req: Request, res: Response) {
+export async function updateProduct(req: Request, res: Response) {
   try {
     let { productname, description, price, stock, imgArr, category } = req.body;
     const categoryname = await categoryDb.findOne({ name: category });
@@ -116,7 +116,7 @@ export async function getaddProduct(req: Request, res: Response) {
   }
 }
 
-export async function addproduct(req: Request<{}, {}, Product>, res: Response) {
+export async function addProduct(req: Request<{}, {}, Product>, res: Response) {
   try {
     const { name, description, price, stock, imgArr, category } = req.body;
     const catID = await categoryDb.findById(category);

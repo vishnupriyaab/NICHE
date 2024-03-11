@@ -90,7 +90,7 @@ export async function addTocart(req: Request, res: Response): Promise<void> {
   }
 }
 
-export async function updatequantity(
+export async function updateQuantity(
   req: Request,
   res: Response
 ): Promise<void> {
@@ -196,7 +196,7 @@ export async function reloadTotalAmount(req: Request, res: Response) {
   }
 }
 
-export async function removeproductfromcart(req: Request, res: Response) {
+export async function removeProductfromcart(req: Request, res: Response) {
   try {
     const { userId, productId } = req.body;
     console.log(req.body);
