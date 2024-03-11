@@ -27,21 +27,35 @@
           <div class="card-body">
             <h2 class="card-title mb-4 mt-40 text-center">Admin Login</h2>
             <!-- <form method="post"> -->
-              <p class="text-danger" id="emailErr"><%= loginError %></p>
-              <div class="mb-3 mb-20">
-                <p class="text-left">Email</p>
-                <input class="form-control" id="email" type="email" name="email" />
-              </div>
-              <div class="mb-3">
-                <p class="text-left">Password</p>
-                <input class="form-control" id="password" name="password" type="password"  />  
-              </div>
+            <p class="text-danger" id="emailErr"><%= loginError %></p>
+            <div class="mb-3 mb-20">
+              <p class="text-left">Email</p>
+              <input
+                class="form-control"
+                id="email"
+                type="email"
+                name="email"
+              />
+            </div>
+            <div class="mb-3">
+              <p class="text-left">Password</p>
+              <input
+                class="form-control"
+                id="password"
+                name="password"
+                type="password"
+              />
+            </div>
 
-              <div class="mb-4 text-center mt-50">
-                <button onclick="adminLogin()" type="submit" class="btn btn-primary w-70">
-                  Login
-                </button>
-              </div>
+            <div class="mb-4 text-center mt-50">
+              <button
+                onclick="adminLogin()"
+                type="submit"
+                class="btn btn-primary w-70"
+              >
+                Login
+              </button>
+            </div>
             <!-- </form> -->
           </div>
         </div>
@@ -50,38 +64,38 @@
     <script src="/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/js/vendors/jquery.fullscreen.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
-    integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
+      integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <!-- Main Script -->
     <script src="/js/main.js?v=1.1" type="text/javascript"></script>
     <script>
-      
-      
-      function adminLogin(){
+      function adminLogin() {
         const adminEmail = document.querySelector("#email");
-    
+
         const adminPassword = document.querySelector("#password");
         const adminemailErr = document.querySelector("#emailErr");
         try {
-          
-    
-          axios.post('/adminlogin',{
-          email: adminEmail.value,
-          password: adminPassword.value,
-        }).then((res)=>{
-console.log(res);
-        }).catch((error)=>{
-            if (error) {
-              adminemailErr.innerText = error.response.data.errors[0].msg;
-            }
-        })
-      } catch (error) {
+          axios
+            .post("/adminlogin", {
+              email: adminEmail.value,
+              password: adminPassword.value,
+            })
+            .then((res) => {
+              return (location.href = "/dashboard");
+            })
+            .catch((error) => {
+              if (error) {
+                adminemailErr.innerText = error.response.data.errors[0].msg;
+              }
+            });
+        } catch (error) {
           console.log(error);
         }
-        
       }
     </script>
-
   </body>
 </html>

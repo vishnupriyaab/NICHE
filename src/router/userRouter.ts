@@ -1,10 +1,10 @@
 import { NextFunction, Router } from "express";
 import {checkBlocked,userRegistrationValidation,userloginValidation,validateUserRegistration,validateUserlogin,} from "../middleware/userAuth";
 import { getsingleProduct } from "../controller/userController/productCtrl";
-import {_404page,addAddressss,contact,deleteaddress,getHome,getLogin,getShop,getuserLogout,otpSnd,postLogin,productlist,resendOtp,testimonial,updateaddress,userProfile,userRegister,} from "../controller/userController/userCtrl";
+import {_404page,addAddressss,contact,deleteaddress,getHome,getLogin,getShop,getuserLogout,otpSnd,postLogin,resendOtp,testimonial,updateaddress,userProfile,userRegister,} from "../controller/userController/userCtrl";
 import { isLoggedIn, isLoggedout } from "../middleware/sessionAuth";
 import { addTocart, cart, reloadTotalAmount, removeproductfromcart, updatequantity } from "../controller/userController/cartCtrl";
-import { addaddress, cancelOrder, checkaddress, checkout,  editaddress,  orderinfo,  orderslist,  placeorder,  showaddress, successpage } from "../controller/userController/orderCtrl";
+import { addaddress, cancelOrder, checkaddress, checkout,  editaddress,  orderinfo,  orderslist,  placeorder,  returnOrder,  showaddress, successpage } from "../controller/userController/orderCtrl";
 import { addToWishlist, removeFromWishlist, wishlist } from "../controller/userController/wishlishctrl";
 
 const userRoute: Router = Router();
@@ -29,7 +29,7 @@ userRoute.get("/editaddress/:id",checkBlocked, editaddress);
 userRoute.get("/successpage", checkBlocked, successpage);
 userRoute.get("/orders",checkBlocked, orderslist);
 userRoute.get("/orderinformation/:id",checkBlocked, orderinfo);
-userRoute.get("/products", productlist);
+// userRoute.get("/products", productlist);
 userRoute.get("/wishlist", wishlist);
 
 
@@ -43,7 +43,7 @@ userRoute.post("/updateQuantity", updatequantity);
 userRoute.post("/getUpdatedTotalAmount/:productId", reloadTotalAmount);
 userRoute.post("/addAddressss",  addAddressss);
 userRoute.post("/addToWishlist", addToWishlist);
-
+userRoute.post('/returnOrder',returnOrder)
 userRoute.patch("/removeFromCart", removeproductfromcart);
 
 userRoute.delete("/deleteaddress/:id",deleteaddress)

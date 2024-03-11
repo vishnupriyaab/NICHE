@@ -52,11 +52,89 @@
                           <button class="bg-red-500 text-white py-1 px-2 rounded"
                               onclick="openCancelModal()">Cancel</button>
                       </td>
+                      <div
+                  class="fixed z-50 inset-0 overflow-y-auto hidden"
+                  id="cancelModalBackdrop"
+                >
+                  <div class="flex items-center justify-center min-h-screen">
+                    <div
+                      class="bg-white rounded-lg shadow-xl p-4 mx-4 sm:max-w-lg sm:w-full"
+                    >
+                      <div class="mb-4">
+                        <h2 class="text-lg font-semibold">
+                          Enter Reason for Cancelling
+                        </h2>
+                      </div>
+
+                      <div>
+                        <textarea
+                          class="w-full border rounded-md p-2"
+                          rows="4"
+                          placeholder="Enter reason for cancellation..."
+                        ></textarea>
+                      </div>
+
+                      <div class="mt-4 flex justify-end">
+                        <button
+                          class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
+                          onclick="closeCancelModal()"
+                        >
+                          Close
+                        </button>
+                        <button
+                          class="bg-blue-500 text-white px-4 py-2 rounded-md"
+                          onclick="cancelOrder('<%= orders[i].orderDetails._id %>')"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                       <% } else if (orders[i].orderDetails.orderStatus === 'Delivered') { %>
                       <td class="py-2 px-4 border-b">
                           <button class="bg-red-500 text-white py-1 px-2 rounded"
                               onclick="openReturnModal()">Return</button>
                       </td>
+                      <div
+                  class="fixed z-50 inset-0 overflow-y-auto hidden"
+                  id="returnModalBackdrop"
+                >
+                  <div class="flex items-center justify-center min-h-screen">
+                    <div
+                      class="bg-white rounded-lg shadow-xl p-4 mx-4 sm:max-w-lg sm:w-full"
+                    >
+                      <div class="mb-4">
+                        <h2 class="text-lg font-semibold">
+                          Enter Reason for Returning
+                        </h2>
+                      </div>
+
+                      <div>
+                        <textarea
+                          class="w-full border rounded-md p-2"
+                          rows="4"
+                          placeholder="Enter reason for return..."
+                        ></textarea>
+                      </div>
+
+                      <div class="mt-4 flex justify-end">
+                        <button
+                          class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
+                          onclick="closeReturnModal()"
+                        >
+                          Close
+                        </button>
+                        <button
+                          class="bg-blue-500 text-white px-4 py-2 rounded-md"
+                          onclick="returnOrder('<%= orders[i].orderDetails._id %>')"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                       <% } %>
                   </tr>
                   <% } %>

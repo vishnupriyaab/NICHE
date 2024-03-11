@@ -32,7 +32,7 @@ export async function getAdminlogin(
 export async function getAdminlogout(req: Request, res: Response) {
   try {
     delete req.session.adminId;
-    res.redirect("/adminlogin")
+    res.redirect("/adminlogin");
     loginError = null;
     return;
   } catch (error: any) {
@@ -90,4 +90,3 @@ export async function adminRegister(
     }
   }
 }
-

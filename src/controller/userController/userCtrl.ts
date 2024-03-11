@@ -315,13 +315,13 @@ export async function updateaddress(req:Request, res:Response) {
 }
 
 
-export async function productlist(req:Request, res:Response) {
-  try {
-    const products = await productDb.find();
-    const category = await categoryDb.find();
-    res.render("/productlist", { products, category });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-}
+// export async function productlist(req:Request, res:Response) {
+//   try {
+//     const products = await productDb.find();
+//     const category = await categoryDb.find();
+//     res.render("user/productlist", { products, category });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// }

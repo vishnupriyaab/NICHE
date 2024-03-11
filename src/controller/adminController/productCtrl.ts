@@ -3,20 +3,30 @@ import productDb from "../../model/productModel";
 import categoryDb from "../../model/categoryModel";
 import cloudinaryUploadImage from "../../config/cloudinary";
 import { Product } from "../../interface/productInterface";
-
+import { getListedProducts } from "../../config/dbHelper";
+import userDb from "../../model/userModel";
 
 export async function getProducts(req: Request, res: Response) {
   try {
-    const product = await productDb.find().populate("category");
-    res.render("admin/products", { product });
+    const products = await productDb.find().populate("category");
+    const page: boolean | undefined =
+      req.query.page === "true" ? true : undefined;
+    const product = await getListedProducts(page);
+    const totalProducts = products.length;
+    res.render("admin/products", {
+      product,
+      totalProducts,
+      currentPage: Number(req.query.page),
+    });
   } catch (error: any) {
     console.error(error);
   }
 }
+
 export async function getEditproduct(req: Request, res: Response) {
   try {
-    const product = await productDb.findOne({ _id: req.params.id })
-    const category = await categoryDb.find()
+    const product = await productDb.findOne({ _id: req.params.id });
+    const category = await categoryDb.find();
 
     res.status(200).render("admin/editProduct", { product, category });
   } catch (error) {
@@ -37,7 +47,7 @@ export async function getunlistedProduct(req: Request, res: Response) {
 export async function updateproduct(req: Request, res: Response) {
   try {
     let { productname, description, price, stock, imgArr, category } = req.body;
-    const categoryname = await categoryDb.findOne({ name: category })
+    const categoryname = await categoryDb.findOne({ name: category });
     const url = await cloudinaryUploadImage(imgArr);
     await productDb.updateOne(
       { _id: req.params.id },
@@ -99,7 +109,7 @@ export async function deleteImage(req: Request, res: Response) {
 
 export async function getaddProduct(req: Request, res: Response) {
   try {
-    const category = await categoryDb.find({unlistStatus:true});
+    const category = await categoryDb.find({ unlistStatus: true });
     res.render("admin/addProduct", { category });
   } catch (error: any) {
     res.status(500).send("Internal Server Error");

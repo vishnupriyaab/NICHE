@@ -7,7 +7,7 @@
           <div class="col-md-12 col-lg-7">     
             <h6 class="mb-3 text-secondary">Give Wings To Your Dreams</h6>
             <h1 class="mb-5 display-3 text-primary">NICHE</h1>
-            <div class="position-relative mx-auto">
+            <!-- <div class="position-relative mx-auto">
               <input
                 class="form-control w-75 py-3 px-4 rounded-pill"
                 style="border-color: rgba(37, 34, 34, 0.479)"
@@ -21,7 +21,7 @@
               >
                  Submit now
               </button>
-            </div>
+            </div> -->
           </div>
           <div class="col-md-12 col-lg-5">
           </div>
@@ -490,19 +490,19 @@
 
 
     <!-- Vesitable Shop Start-->
-    <div class="container-fluid vesitable py-2">
+    <!-- <div class="container-fluid vesitable py-2">
       <div class="container py-2">
         <h1 class="mb-0">Newly Launched</h1>
         <div class="owl-carousel vegetable-carousel justify-content-center">
 
-          <% for( let i = 0; i < product.length; i++ ) { %>
+          <%# for( let i = 0; i < product.length; i++ ) { %>
           
             <div
             class="border border-primary rounded position-relative vesitable-item"
             >
             <div class="vesitable-img">
               <img
-              src="<%= product[i].imgArr[0] %>"
+              src="<%#= product[i].imgArr[0] %>"
               class="img-fluid w-100 rounded-top"
               alt=""
               />
@@ -511,16 +511,16 @@
             class="text-white bg-primary px-3 py-1 rounded position-absolute"
             style="top: 10px; right: 10px"
             >
-            <%= product[i].category.name %>
+            <%#= product[i].category.name %>
           </div>
           <div class="p-4 rounded-bottom">
-            <h4><%= product[i].name %></h4>
+            <h4><%#= product[i].name %></h4>
             <p class="text-dark">
-              FOR <%= product[i].category.name %>
+              FOR <%#= product[i].category.name %>
             </p>
             <div class="d-flex justify-content-between flex-lg-wrap">
-              <p class="text-dark fs-5 fw-bold mb-0">$<%= product[i].price %></p>
-              <button onclick="addTocart('<%- product[i]._id %>')"
+              <p class="text-dark fs-5 fw-bold mb-0">$<%#= product[i].price %></p>
+              <button onclick="addTocart('<%#- product[i]._id %>')"
               class="btn border border-secondary rounded-pill px-3 text-primary"
               ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
               cart</button
@@ -528,10 +528,10 @@
             </div>
           </div>
         </div>
-        <% } %>
+        <%# } %>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- Vesitable Shop End -->
 
     <!-- Banner Section Start-->
@@ -714,7 +714,7 @@
     <!-- Fact Start -->
 
     <!-- Tastimonial Start -->
-    <div class="container-fluid testimonial py-5">
+    <div class="container-fluid testimonial">
       <div class="container py-5">
         <div class="testimonial-header text-center">
           <h4 class="text-primary">Reviews</h4>

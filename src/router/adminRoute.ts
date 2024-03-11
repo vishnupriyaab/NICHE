@@ -21,7 +21,7 @@ adminRoute.get("/unlistedProduct", adminLoggedIn, getunlistedProduct);
 adminRoute.get("/editProduct/:id", adminLoggedIn, getEditproduct);
 adminRoute.get("/blockuser", adminLoggedIn, blockuser);
 adminRoute.get("/unblockuser", adminLoggedIn, unblockuser);
-adminRoute.get("/adminOrder", adminOrder); // checkAdmin,
+adminRoute.get("/adminOrder",adminLoggedIn, adminOrder); // checkAdmin,
 
 
 adminRoute.post("/adminlogin", adminLoginValidation, validateadminRegistration, isAdmin);

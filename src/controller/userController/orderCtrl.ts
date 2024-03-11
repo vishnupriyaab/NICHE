@@ -353,3 +353,52 @@ export async function orderinfo(req: Request, res: Response) {
     res.status(500).send("Internal Server Error");
   }
 }
+
+
+export async function returnOrder(req: Request, res: Response) {
+  const orderId = req.body.orderId;
+  try {
+    const order = await Orderdb.findOneAndUpdate(
+      { "orderDetails._id": orderId },
+      { $set: { "orderDetails.$.orderStatus": "Returned" } },
+      { projection: { "orderDetails.$": 1 } }
+    );
+
+    // Check if order is null
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
+    const product = await productDb.findOneAndUpdate(
+      { _id: order.orderDetails[0].productId },
+      { $inc: { quantity: order.orderDetails[0].quantity } }
+    );
+
+    if (order.orderDetails[0].orderStatus == "Delivered") {
+      const user = await userDb.findOne({ _id: req.session.userId });
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const refundorder = await Orderdb.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(req.session.userId),
+          },
+        },
+        {
+          $unwind: "$orderDetails",
+        },
+      ]);
+
+      const amount =
+        Number(refundorder[0].orderDetails.price) *
+        Number(refundorder[0].orderDetails.quantity);
+    }
+    res.status(200).send("Order returned successfully");
+  } catch (error) {
+    // If there's an error, send an error response
+    console.error("Error returning order:", error);
+    res.status(500).send("Error returning order");
+  }
+}

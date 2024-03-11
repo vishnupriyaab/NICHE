@@ -102,13 +102,61 @@
                                     <% } %>
                 </div>
                 <% } %>
-                    </tbody>
-                    </table>
-            </div>
+
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- card-body end// -->
+</div>
+</section>
+<% if (totalProducts !==0) { %>
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="text-center pagenationButton">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="/adminProducts?page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              <% for( let i=0; i < (Math.ceil(totalProducts/ 10)); i++ ) { %>
+              <li class="page-item">
+                <a class="page-link" href="/adminProducts?page=<%= (i + 1) %>">
+                  <%= (i + 1) %>
+                </a>
+              </li>
+              <% } %>
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="/adminProducts?page=<%= (((Math.ceil(totalProducts / 10)) === currentPage) || (Math.ceil(totalProducts / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>"
+                  aria-label="Next"
+                >
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
         </div>
-        <!-- card-body end// -->
+      </div>
+    </div>
+    <% } %>
+    <%  if ( totalProducts == 0 ) { %>
+     
+
+        <div>
+            <h3 class="text-center text-danger">No Data Available..!!</h3>
         </div>
-    </section>
+
+
+        <% } %>
     <!-- content-main end// -->
 
     <script>

@@ -1,4 +1,4 @@
-<%- include('include/_header') %>
+    <%- include('include/_header') %>
 
     <section class="content-main">
         <div class="content-header">
@@ -86,26 +86,43 @@
         </div>
         <!-- card end// -->
 
-        <% if (user.length!=0) { %>
-
-            <div class="pagination-area mt-30 mb-50">
-                <nav aria-label="Page navigation example">
+        <% if (totalUsers !==0) { %>
+            <div class="row mb-4">
+              <div class="col-12">
+                <div class="text-center pagenationButton">
+                  <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                        </li>
+                      <li class="page-item">
+                        <a
+                          class="page-link"
+                          href="/adminUsers?page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>"
+                          aria-label="Previous"
+                        >
+                          <span aria-hidden="true">&laquo;</span>
+                        </a>
+                      </li>
+                      <% for( let i=0; i < (Math.ceil(totalUsers/ 10)); i++ ) { %>
+                      <li class="page-item">
+                        <a class="page-link" href="/adminUsers?page=<%= (i + 1) %>">
+                          <%= (i + 1) %>
+                        </a>
+                      </li>
+                      <% } %>
+                      <li class="page-item">
+                        <a
+                          class="page-link"
+                          href="/adminUsers?page=<%= (((Math.ceil(totalUsers / 10)) === currentPage) || (Math.ceil(totalUsers / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>"
+                          aria-label="Next"
+                        >
+                          <span aria-hidden="true">&raquo;</span>
+                        </a>
+                      </li>
                     </ul>
-                </nav>
-            </div>
-            <% } else { %>
-
-                <div>
-                    <h3 class="text-center text-danger">No Data Available..!!</h3>
+                  </nav>
                 </div>
-
-
-                <% } %>
+              </div>
+            </div>
+            <% } %>
     </section>
 
 
