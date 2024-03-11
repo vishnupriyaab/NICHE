@@ -9,8 +9,8 @@ export const categoryValidation = [
     .withMessage("category must be 3 characters")
     .isLength({ max: 20 })
     .withMessage("Category must be at most 20 characters")
-    .matches(/^[a-zA-Z\s]+$/, "i")
-    .withMessage("Category must contain only letters and spaces. No special characters allowed"),
+    .matches(/^[a-zA-Z]+$/, "i")
+    .withMessage("Category must contain only letters. No spaces or special characters allowed"),
 ];
 export const validateCategory = (
   req: Request,

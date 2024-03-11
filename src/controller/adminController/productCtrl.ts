@@ -118,7 +118,7 @@ export async function getaddProduct(req: Request, res: Response) {
 
 export async function addproduct(req: Request<{}, {}, Product>, res: Response) {
   try {
-    let { name, description, price, stock, imgArr, category } = req.body;
+    const { name, description, price, stock, imgArr, category } = req.body;
     const catID = await categoryDb.findById(category);
     const url = await cloudinaryUploadImage(imgArr);
     const newCat = new productDb({
