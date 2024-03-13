@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export interface IOrder extends Document {
   userId: mongoose.Schema.Types.ObjectId;
   orderDetails: {
+    totalPrice: any;
     pName: string;
     pImage: string;
     price: number;

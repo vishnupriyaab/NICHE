@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Wallet</title>
+    <link rel="shortcut icon" href="/images/Vector.jpg" type="image/x-icon" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* Hide the arrow icon for number input */
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="bg-white border-gray-200 dark:bg-gray-900">
+      <div
+        class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+      >
+        <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+          <img
+            src="/images/electronic-store-logo.svg"
+            class="h-8"
+            alt="OtronMart Logo"
+          />
+        </a>
+
+        <div
+          class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+          id="navbar-search"
+        >
+          <ul
+            class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
+          >
+            <li>
+              <a
+                href="/"
+                class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
+                aria-current="page"
+                >Home</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                >Product</a
+              >
+            </li>
+
+            <li>
+              <a
+                href="/cart"
+                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                >Cart</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="bg-gray-100 flex flex-col min-h-screen">
+      <div class="max-w-lg mx-auto mt-10">
+        <h1 class="text-3xl font-semibold text-center mb-6">User Wallet</h1>
+
+        <!-- Add Transaction Form -->
+        <div class="bg-white p-4 rounded-md shadow-md mb-6">
+          <% if (wallet && wallet.length > 0) { %>
+            <h2 class="text-xl font-semibold mb-4">
+              Wallet Balance: ₹ <%= wallet[0].walletBalance %>
+            </h2>
+            <% } else { %>
+              <h2 class="text-xl font-semibold mb-4">
+                Wallet Balance: ₹ 0
+              </h2>
+          <% } %>
+          
+          <div class="flex items-center mb-2">
+            <label for="amount" class="mr-4">Amount:</label>
+
+            <input
+              type="number"
+              id="amount"
+              name="amount"
+              class="border border-gray-300 px-3 py-1 rounded-md"
+            />
+          </div>
+          <div
+            class="mb-4 text-center relative text-red-600 hidden"
+            id="errorpopup"
+          ></div>
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              onclick="addToWallet()"
+              class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            >
+              Add To Wallet
+            </button>
+          </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="bg-white p-4 rounded-md shadow-md">
+          <h2 class="text-xl font-semibold mb-4">Transaction History</h2>
+          <table class="w-full">
+            <% if (wallet && wallet.length > 0) { %>
+
+            <thead>
+              <tr>
+                <th class="py-2">Amount</th>
+                <th class="py-2">Type</th>
+                <th class="py-2">Date</th>
+              </tr>
+            </thead>
+             
+            
+            <tbody>
+              <% wallet[0].transactions.forEach(transaction => { %>
+              <tr class="border-b">
+                <td class="py-2">₹ <%= transaction.amount %></td>
+                <% if (transaction.type == '+ CREDIT') { %>
+                <td class="py-2 text-green-600"><%= transaction.type %></td>
+                <% } else if (transaction.type == '- DEBIT') { %>
+                <td class="py-2 text-red-600"><%= transaction.type %></td>
+                <% } %>
+
+                <td class="py-2">
+                  <%=
+                  transaction.transactionDate.toISOString().split('T')[0].split('-').reverse().join('-')
+                  %>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+            <% } else { %>
+              <h2 class="text-xl font-semibold mb-4">
+                No Transaction
+              </h2>
+            <% } %>
+          </table>
+        </div>
+      </div>
+    </div>
+    <footer class="bg-gray-800 text-white p-4 text-center">
+      <p>
+        &copy;
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+        OtronMart E-Commerce. All rights reserved.
+      </p>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
+      integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+      // console.log("<%=messages?.success%>");
+      if ("<%=messages?.success%>") {
+        Swal.fire(
+          "Successfully Added To Wallet",
+          "Click the button",
+          "success"
+        ).then(() => {
+          window.location.reload();
+        });
+      }
+    </script>
+    <script>
+      function addToWallet() {
+        const amount = document.getElementById("amount").value;
+
+        if (!amount) {
+          let errorModal = document.getElementById("errorpopup");
+          errorModal.innerText = "Enter Amount";
+          errorModal.classList.remove("hidden");
+        } else {
+          axios
+            .post("/addToWallet", {
+              amount,
+            })
+            .then(function (response) {
+              // console.log(response.data);
+              if (response.data?.order) {
+                var options = {
+                  key: "rzp_test_MfFcU2xZ3MrlD6",
+                  amount: response.data?.order.amount,
+                  currency: "INR",
+                  name: "Acme Corp",
+                  description: "Test Transaction",
+                  image: "https://example.com/your_logo",
+                  order_id: response.data?.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                  callback_url: "/walletRazorpay",
+                  prefill: {
+                    name: "Gaurav Kumar",
+                    email: "gaurav.kumar@example.com",
+                    contact: "9000090000",
+                  },
+                  notes: {
+                    address: "Razorpay Corporate Office",
+                  },
+                  theme: {
+                    color: "#3399cc",
+                  },
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+              }
+            })
+            .catch(function (error) {
+              console.error("Error:", error);
+              console.log(
+                // "Failed to adding amount to wallet. Please try again later."
+              );
+            });
+        }
+      }
+    </script>
+  </body>
+</html>

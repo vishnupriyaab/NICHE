@@ -1,17 +1,17 @@
 import { v2 as cloudinary } from 'cloudinary';
 
 // Ensure these environment variables are properly set
-const cloudName = process.env.cloud_name;
-const apiKey = process.env.cloud_api_key;
-const apiSecret = process.env.cloud_api_secret;
+const cloudName = process.env.CLOUD_NAME;
+const apiKey = process.env.CLOUD_API_KEY;
+const apiSecret = process.env.CLOUD_API_SECRET;
 
 // Check if environment variables are properly set
 if (!cloudName || !apiKey || !apiSecret) {
-  console.error("Cloudinary configuration error: cloud_name, cloud_api_key, and cloud_api_secret are required.");
+  console.error("Cloudinary configuration error: CLOUD_NAME, CLOUD_API_KEY, and CLOUD_API_SECRET are required.");
 }
 
 cloudinary.config({ 
-  cloud_name: cloudName, 
+  CLOUD_NAME: cloudName, 
   api_key: apiKey, 
   api_secret: apiSecret
 });

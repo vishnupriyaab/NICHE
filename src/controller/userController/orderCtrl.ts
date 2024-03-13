@@ -7,11 +7,10 @@ import { Session, SessionData } from "express-session";
 import userDb from "../../model/userModel";
 import orderDb from "../../model/orderModel";
 import Orderdb from "../../model/orderModel";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 
-// Extend the express-session's SessionData interface
-// interface MySessionData extends SessionData {
-//   addressId?: string; // Define addressId as an optional property
-// }
+
 
 export async function checkout(req: Request, res: Response) {
   try {
@@ -42,8 +41,6 @@ export async function checkout(req: Request, res: Response) {
         $unwind: "$productsDetails",
       },
     ]);
-
-    // console.log(products);
 
     const sum = products.reduce((total, product) => {
       // Ensure product and productDetails exist
@@ -123,90 +120,131 @@ export async function checkAddress(req: Request, res: Response): Promise<void> {
   }
 }
 
-export async function placeOrder(req: Request, res: Response) {
+export async function placeorder(req: Request, res: Response) {
   try {
-    const { paymentMethod, address, totalsum, name, price, quantity, image } =
-      req.body;
-    const sum = parseInt(totalsum);
-    const totalprice = parseInt(price);
-    const count = parseInt(quantity);
-
-    const priceMatch = price.match(/₹(\d+)/);
-    const quantityMatch = quantity.match(/(\d+)/);
-    const sumMatch = totalsum.match(/(\d+)/);
-
-    // Parse the matched values into numbers
-    const pricee = priceMatch ? parseInt(priceMatch[1]) : 0;
-    const quantityy = quantityMatch ? parseInt(quantityMatch[1]) : 0;
-    const summ = sumMatch ? parseInt(sumMatch[1]) : 0;
-
+    const { paymentMethod, address, price } = req.body;
+    const totalsum: any = price.split(" ")[1];
+    (req.session as any).sum = totalsum;
     // Check if address and paymentMethod are provided
-    if (!paymentMethod || !address || !totalsum) {
-      throw new Error("Payment method, address, and total sum are required.");
+    if (!paymentMethod || !address) {
+      throw new Error("Payment method and address are required.");
+    }
+    if (paymentMethod === "Razorpay") {
+
+      var instance = new Razorpay({
+        key_id: process.env.RZP_KEY_ID as string,
+        key_secret: process.env.RZP_KEY_SECRET as string,
+      });
+
+
+      (req.session as any).paymentMethod = paymentMethod;
+      (req.session as any).address = address;
+
+      var options = {
+        amount: totalsum * 100, // amount in the smallest currency unit
+        currency: "INR",
+        receipt: "order_rcptid_11",
+      };
+      instance.orders.create(options, function (err, order) {
+        return res.json({ order });
+      });
     }
 
-    let user = req.session.userId;
-
-    const userId = await userDb.findById(user);
-    const currentDate = new Date();
-    const dateWithoutTime = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      currentDate.getDate()
-    );
-
-    const cartItems = await CartDb.aggregate([
-      {
-        $match: { userId: new mongoose.Types.ObjectId(req.session.userId) },
-      },
-      {
-        $unwind: "$products",
-      },
-      {
-        $lookup: {
-          from: productDb.collection.name,
-          localField: "products.productId",
-          foreignField: "_id",
-          as: "productsDetails",
-        },
-      },
-      {
-        $unwind: "$productsDetails",
-      },
-    ]);
-
-    const orderItems = cartItems.map((element) => {
-      const orderItem = {
-        productId: element.products.productId,
-        pName: element.productsDetails.name,
-        price: element.productsDetails.price * quantityy,
-        pImage: element.productsDetails.imgArr[0],
-        quantity: quantityy,
-        address: address,
-        paymentMethod: paymentMethod,
-        orderStatus: "Ordered",
-        orderDate: dateWithoutTime,
-      };
-      return orderItem;
-    });
-
-    // Create a new order instance
-    const newOrder = new orderDb({
-      userId: userId,
-      orderDetails: orderItems,
-      totalsum: sum,
-    });
-
-    // Save the order to the database
-    await newOrder.save();
-
-    await clearUserCart(req.session.userId);
-    res.status(200).json({ message: "Order placed successfully!" });
+    if (paymentMethod !== "Razorpay") {
+      res.status(200).json({ message: "Order placed successfully!" });
+    }
   } catch (error: any) {
     console.error("Error saving order:", error);
     res.status(400).json({ error: error.message });
   }
 }
+
+
+export async function orderRazorpayVerification(req: Request, res: Response) {
+  try {
+    const instance = new Razorpay({
+      key_id: process.env.RZP_KEY_ID as string,
+      key_secret: process.env.RZP_KEY_SECRET as string,
+    });
+
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
+      req.body;
+
+    const body_data = razorpay_order_id + "|" + razorpay_payment_id;
+
+    const generated_signature = crypto
+      .createHmac("sha256", process.env.RZP_KEY_SECRET as string)
+      .update(body_data)
+      .digest("hex");
+
+    const isValid = generated_signature === razorpay_signature;
+
+    if (isValid) {
+      let user = req.session.userId;
+
+      const userId = await userDb.findById(user);
+      const currentDate = new Date();
+
+      const cartItems = await CartDb.aggregate([
+        {
+          $match: { userId: new mongoose.Types.ObjectId(req.session.userId) },
+        },
+        {
+          $unwind: "$products",
+        },
+        {
+          $lookup: {
+            from: productDb.collection.name,
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "productsDetails",
+          },
+        },
+        {
+          $unwind: "$productsDetails",
+        },
+      ]);
+
+      const orderItems = cartItems.map((element) => {
+        const orderItem = {
+          productId: element.products.productId,
+          pName: element.productsDetails.name,
+          price: element.productsDetails.price * element.products.quantity,
+          pImage: element.productsDetails.imgArr[0],
+          quantity: element.products.quantity,
+          address: (req.session as any).address,
+          paymentMethod: (req.session as any).paymentMethod,
+          orderStatus: "Ordered",
+          orderDate: currentDate,
+        };
+        return orderItem;
+      });
+
+      // Create a new order instance
+      const newOrder = new Orderdb({
+        userId: userId,
+        orderDetails: orderItems,
+        totalsum: (req.session as any).sum,
+      });
+
+      // Save the order to the database
+      await newOrder.save();
+
+      delete (req.session as any).address;
+      delete (req.session as any).sum;
+      delete (req.session as any).paymentMethod;
+
+      await clearUserCart(req.session.userId);
+
+      res.status(200).redirect("/successpage");
+    }
+  } catch (error) {
+    // If there's an error, send an error response
+    console.error("Error while verifying", error);
+    res.status(500).send("Error verifiying razorpay payment");
+  }
+}
+
 
 async function clearUserCart(userId: string | undefined) {
   try {
@@ -271,7 +309,7 @@ export async function cancelOrder(req: Request, res: Response) {
 
     // Add the quantity back to product stock
     if (order) {
-      const product = await productDb.findOneAndUpdate(
+      await productDb.findOneAndUpdate(
         { _id: order.orderDetails[0].productId },
         { $inc: { quantity: order.orderDetails[0].quantity } }
       );
@@ -353,7 +391,6 @@ export async function orderInfo(req: Request, res: Response) {
     res.status(500).send("Internal Server Error");
   }
 }
-
 
 export async function returnOrder(req: Request, res: Response) {
   const orderId = req.body.orderId;

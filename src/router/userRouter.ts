@@ -4,7 +4,7 @@ import { getsingleProduct } from "../controller/userController/productCtrl";
 import {_404page,addAddressss,contact,deleteAddress,getHome,getLogin,getShop,getuserLogout,otpSnd,postLogin,resendOtp,testimonial,updateAddress,userProfile,userRegister,} from "../controller/userController/userCtrl";
 import { isLoggedIn, isLoggedout } from "../middleware/sessionAuth";
 import { addTocart, cart, reloadTotalAmount, removeProductfromcart,  updateQuantity} from "../controller/userController/cartCtrl";
-import { addAddress, cancelOrder, checkAddress, checkout,  editAddress,   orderInfo,  orderslist,  placeOrder,  returnOrder,  showAddress,  successPage} from "../controller/userController/orderCtrl";
+import { addAddress, cancelOrder, checkAddress, checkout,  editAddress,   orderInfo,  orderRazorpayVerification,  orderslist,    placeorder,    returnOrder,  showAddress,  successPage} from "../controller/userController/orderCtrl";
 import { addToWishlist, removeFromWishlist, wishlist } from "../controller/userController/wishlishctrl";
 
 const userRoute: Router = Router();
@@ -30,9 +30,10 @@ userRoute.get("/successpage", checkBlocked, successPage);
 userRoute.get("/orders",checkBlocked, orderslist);
 userRoute.get("/orderinformation/:id",checkBlocked, orderInfo);
 userRoute.get("/wishlist", wishlist);
+userRoute.get("/wallet",checkBlocked, )
 
 
-userRoute.post("/placeorder",placeOrder);
+userRoute.post("/placeorder",placeorder);
 userRoute.post("/cancelOrder",cancelOrder);
 userRoute.post("/userLogin",isLoggedout,userloginValidation,validateUserlogin,postLogin);
 userRoute.post("/registerValue", isLoggedout, userRegister);
@@ -43,6 +44,9 @@ userRoute.post("/getUpdatedTotalAmount/:productId", reloadTotalAmount);
 userRoute.post("/addAddressss",  addAddressss);
 userRoute.post("/addToWishlist", addToWishlist);
 userRoute.post('/returnOrder',returnOrder)
+userRoute.post("/verifyrazorpay", orderRazorpayVerification)
+
+
 userRoute.patch("/removeFromCart", removeProductfromcart);
 
 userRoute.delete("/deleteaddress/:id",deleteAddress)

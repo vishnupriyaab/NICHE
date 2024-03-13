@@ -145,7 +145,7 @@
           </label>
         </div>
 
-        <!-- <div class="relative">
+        <div class="relative">
           <input
             class="peer hidden"
             id="payment_razorpay"
@@ -162,7 +162,7 @@
               <p class="text-gray-600 text-sm">Secure online payment</p>
             </div>
           </label>
-        </div> -->
+        </div>
       </form>
     </div>
   </div>
@@ -231,6 +231,8 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 ></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", async function () {
@@ -316,6 +318,7 @@
           const selectedPaymentMethod = document.querySelector(
             'input[name="payment_method"]:checked'
           ).value;
+
           const totalSum = sum;
           const selectedAddress =
             document.getElementById("selectedAddress").innerText;
@@ -323,15 +326,16 @@
 
           const name = document.getElementById("prdname").innerText;
 
-          const price = document.getElementById("prdsum").innerText;
+          const price = document.getElementById("totalSum").innerText;
 
           const quantity = document.getElementById("prdquantity").innerText;
 
           if (selectedPaymentMethod) {
             var paymentMethod = selectedPaymentMethod;
             var cod = "COD";
+            var razorpay = "Razorpay";
 
-            if (paymentMethod === cod) {
+            if (paymentMethod === cod || paymentMethod === razorpay) {
               axios
                 .post("/placeorder", {
                   address: selectedAddress,
@@ -344,8 +348,36 @@
                 })
                 .then(function (response) {                
 
-                 console.log(response);
-                    window.location.href = "/successpage";
+                  if (response.data?.order) {
+                    var options = {
+                      key: "rzp_test_wV96XGA4SLLOo7",
+                      amount: response.data?.order.amount,
+                      currency: "INR",
+                      name: "Niche",
+                      description: "Test Transaction",
+                      image: "https://example.com/your_logo",
+                      order_id: response.data?.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                      callback_url: "/verifyrazorpay",
+                      prefill: {
+                        name: "Gaurav Kumar",
+                        email: "gaurav.kumar@example.com",
+                        contact: "9000090000",
+                      },
+                      notes: {
+                        address: "Razorpay Corporate Office",
+                      },
+                      theme: {
+                        color: "#3399cc",
+                      },
+                    };
+                    var rzp1 = new Razorpay(options);
+                    rzp1.open();
+                  }
+
+                  
+                 if(paymentMethod === cod){
+                   window.location.href = "/successpage";
+                  }
                   
                 })
                 .catch(function (error) {
