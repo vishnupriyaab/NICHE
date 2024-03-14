@@ -9,8 +9,7 @@ import orderDb from "../../model/orderModel";
 import Orderdb from "../../model/orderModel";
 import Razorpay from "razorpay";
 import crypto from "crypto";
-
-
+import Walletdb from "../../model/walletModel";
 
 export async function checkout(req: Request, res: Response) {
   try {
@@ -130,12 +129,10 @@ export async function placeorder(req: Request, res: Response) {
       throw new Error("Payment method and address are required.");
     }
     if (paymentMethod === "Razorpay") {
-
       var instance = new Razorpay({
         key_id: process.env.RZP_KEY_ID as string,
         key_secret: process.env.RZP_KEY_SECRET as string,
       });
-
 
       (req.session as any).paymentMethod = paymentMethod;
       (req.session as any).address = address;
@@ -151,6 +148,61 @@ export async function placeorder(req: Request, res: Response) {
     }
 
     if (paymentMethod !== "Razorpay") {
+      let user = req.session.userId;
+
+      const userId = await userDb.findById(user);
+      const currentDate = new Date();
+
+      const cartItems = await CartDb.aggregate([
+        {
+          $match: { userId: new mongoose.Types.ObjectId(user) },
+        },
+        {
+          $unwind: "$products",
+        },
+        {
+          $lookup: {
+            from: productDb.collection.name,
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "productsDetails",
+          },
+        },
+        {
+          $unwind: "$productsDetails",
+        },
+      ]);
+
+      const orderItems = cartItems.map((element) => {
+        const orderItem = {
+          productId: element.products.productId,
+          pName: element.productsDetails.name,
+          price: element.productsDetails.price * element.products.quantity,
+          pImage: element.productsDetails.imgArr[0],
+          quantity: element.products.quantity,
+          address: address,
+          paymentMethod: paymentMethod,
+          orderStatus: "Ordered",
+          orderDate: currentDate,
+        };
+        return orderItem;
+      });
+
+      // Create a new order instance
+      const newOrder = new Orderdb({
+        userId: userId,
+        orderDetails: orderItems,
+        totalsum: (req.session as any).sum,
+      });
+
+      // Save the order to the database
+      await newOrder.save();
+
+      delete (req.session as any).address;
+      delete (req.session as any).sum;
+      delete (req.session as any).paymentMethod;
+
+      await clearUserCart(req.session.userId);
       res.status(200).json({ message: "Order placed successfully!" });
     }
   } catch (error: any) {
@@ -158,7 +210,6 @@ export async function placeorder(req: Request, res: Response) {
     res.status(400).json({ error: error.message });
   }
 }
-
 
 export async function orderRazorpayVerification(req: Request, res: Response) {
   try {
@@ -245,7 +296,6 @@ export async function orderRazorpayVerification(req: Request, res: Response) {
   }
 }
 
-
 async function clearUserCart(userId: string | undefined) {
   try {
     // Find all cart items associated with the user
@@ -256,9 +306,7 @@ async function clearUserCart(userId: string | undefined) {
       return; // Exit the function early if cartItems is null
     }
 
-    // Loop through each cart item
     for (const cartItem of cartItems.products) {
-      // Decrease the stock quantity of the product
       await decreaseProductStock(cartItem.productId, cartItem.quantity);
 
       // Delete the cart item
@@ -268,7 +316,6 @@ async function clearUserCart(userId: string | undefined) {
     console.log("User cart cleared successfully");
   } catch (error) {
     console.error("Error clearing user cart:", error);
-    // Handle error appropriately
   }
 }
 
@@ -276,7 +323,6 @@ async function decreaseProductStock(productId: any, quantity: number) {
   try {
     // Find the product by ID
     const product = await productDb.findOne({ _id: productId });
-    // console.log(productId, "asdfg");
 
     if (!product) {
       throw new Error(`Product with ID ${productId} not found`);
@@ -287,8 +333,6 @@ async function decreaseProductStock(productId: any, quantity: number) {
 
     // Save the updated product
     await product.save();
-
-    // console.log(`Stock quantity decreased for product ${productId}`);
   } catch (error) {
     console.error("Error decreasing product stock:", error);
     // Handle error appropriately
@@ -297,26 +341,51 @@ async function decreaseProductStock(productId: any, quantity: number) {
 
 export async function cancelOrder(req: Request, res: Response) {
   const orderId = req.body.orderId;
-  // console.log(orderId, "idd");
 
   try {
     // Find the order by ID
-    const order = await orderDb.findOneAndUpdate(
+    const order = await Orderdb.findOneAndUpdate(
       { "orderDetails._id": orderId },
       { $set: { "orderDetails.$.orderStatus": "Cancelled" } },
       { projection: { "orderDetails.$": 1 } }
     );
 
     // Add the quantity back to product stock
-    if (order) {
-      await productDb.findOneAndUpdate(
-        { _id: order.orderDetails[0].productId },
-        { $inc: { quantity: order.orderDetails[0].quantity } }
-      );
+    const product = await productDb.findOneAndUpdate(
+      { _id: order?.orderDetails[0].productId },
+      { $inc: { quantity: order?.orderDetails[0].quantity } }
+    );
+
+    if (
+      order?.orderDetails[0].orderStatus == "Ordered" ||
+      order?.orderDetails[0].orderStatus == "Cancelled"
+    ) {
+      if (
+        order?.orderDetails[0].paymentMethod == "Razorpay"
+      ) {
+        const user = await userDb.findOne({ _id: req.session.userId });
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        const amount =
+          Number(order.orderDetails[0].price) *
+          Number(order.orderDetails[0].quantity);
+
+        await Walletdb.updateOne(
+          { userId: req.session.userId },
+          {
+            $inc: { walletBalance: amount },
+            $push: { transactions: { amount: amount, type: "+ CREDIT" } },
+          },
+          { upsert: true }
+        );
+      }
     }
 
     res.status(200).send("Order cancelled successfully");
   } catch (error) {
+    // If there's an error, send an error response
     console.error("Error cancelling order:", error);
     res.status(500).send("Error cancelling order");
   }
@@ -431,6 +500,15 @@ export async function returnOrder(req: Request, res: Response) {
       const amount =
         Number(refundorder[0].orderDetails.price) *
         Number(refundorder[0].orderDetails.quantity);
+
+      await Walletdb.updateOne(
+        { userId: req.session.userId },
+        {
+          $inc: { walletBalance: amount },
+          $push: { transactions: { amount: amount, type: "+ CREDIT" } },
+        },
+        { upsert: true }
+      );
     }
     res.status(200).send("Order returned successfully");
   } catch (error) {

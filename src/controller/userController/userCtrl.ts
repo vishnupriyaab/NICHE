@@ -10,9 +10,10 @@ import bcrypt from "bcrypt";
 import productDb from "../../model/productModel";
 import CartDb from "../../model/cartModel";
 import Addressdb from "../../model/addressModel";
-import Orderdb from "../../model/orderModel";
+import Walletdb from "../../model/walletModel";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 import mongoose from "mongoose";
-import categoryDb from "../../model/categoryModel";
 
 interface body {
   email: string;
@@ -286,7 +287,7 @@ export async function deleteAddress(req: Request, res: Response) {
   }
 }
 
-export async function updateAddress(req:Request, res:Response) {
+export async function updateAddress(req: Request, res: Response) {
   try {
     let { name, district, country, phonenumber, hNo, state, pin, addressType } =
       req.body;
@@ -314,14 +315,107 @@ export async function updateAddress(req:Request, res:Response) {
   }
 }
 
+export async function wallet(req: Request, res: Response) {
+  try {
+    const user = req.session.userId;
+    const wallet = await Walletdb.find({ userId: req.session.userId });
+    // console.log(wallet);
 
-// export async function productlist(req:Request, res:Response) {
-//   try {
-//     const products = await productDb.find();
-//     const category = await categoryDb.find();
-//     res.render("user/productlist", { products, category });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// }
+    const wall = await Walletdb.aggregate([
+      { $match: {userId:new mongoose.Types.ObjectId(user)} },
+      { $unwind: "$transactions" },
+      { $sort: { "transactions.transactionDate": -1 } },
+      {
+        $group: {
+          _id: "null",
+          sortedArray: { $push: "$transactions" },
+        },
+      },
+      {
+        $unwind: "$sortedArray",
+      },
+    ]);
+
+    console.log(wall);
+
+    const cart = await CartDb.findOne({ userId: user }).populate("products");
+    res.render("user/wallet", { wallet, user, cart });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+export async function addToWallet(req: Request, res: Response) {
+  try {
+    const { amount } = req.body;
+
+    const money = Number(amount);
+    (req.session as any).amount = money;
+
+    var instance = new Razorpay({
+      key_id: process.env.RZP_KEY_ID as string,
+      key_secret: process.env.RZP_KEY_SECRET as string,
+    });
+
+    var options = {
+      amount: money * 100, // amount in the smallest currency unit
+      currency: "INR",
+      receipt: "order_rcptid_11",
+    };
+
+    instance.orders.create(options, function (err, order) {
+      return res.json({ order });
+    });
+
+    const walletdb = await Walletdb.find();
+  } catch (error) {
+    console.error("Error adding to wallet:", error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+export async function walletRazorpayVerification(req: Request, res: Response) {
+  try {
+    new Razorpay({
+      key_id: process.env.RZP_KEY_ID as string,
+      key_secret: process.env.RZP_KEY_SECRET as string,
+    });
+
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
+      req.body;
+
+    const body_data = razorpay_order_id + "|" + razorpay_payment_id;
+
+    const generated_signature = crypto
+      .createHmac("sha256", process.env.RZP_KEY_SECRET as string)
+      .update(body_data)
+      .digest("hex");
+
+    const isValid = generated_signature === razorpay_signature;
+    if (isValid) {
+      const newTransaction = {
+        amount: (req.session as any).amount,
+        type: "+ CREDIT",
+      };
+
+      const wallet = await Walletdb.updateOne(
+        { userId: req.session.userId },
+        {
+          $push: { transactions: newTransaction },
+          $inc: { walletBalance: (req.session as any).amount },
+        },
+        { upsert: true }
+      );
+
+      delete (req.session as any)?.amount;
+      // req.flash("success", true);
+      res.redirect("/wallet");
+    }
+  } catch (error) {
+    // If there's an error, send an error response
+    delete (req.session as any)?.amount;
+    console.error("Error while verifying", error);
+    res.status(500).send("Error verifiying razorpay payment");
+  }
+}

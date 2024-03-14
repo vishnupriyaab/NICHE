@@ -2,160 +2,140 @@
 
 
 
-<div class="flex-grow" style="margin-top: 120px;">
-  <div class="container mx-auto my-8 p-8 bg-white rounded shadow">
+  <div class="flex-grow" style="margin-top: 120px;">
+    <div class="container mx-auto my-8 p-8 bg-white rounded shadow">
       <!-- Back button -->
       <a href="#" onclick="goBack()"
-          class="inline-flex items-center mb-2 px-4 py-2 text-base font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-auto">
-          <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-          </svg>
-          Back
-    </a>
+        class="inline-flex items-center mb-2 px-4 py-2 text-base font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-auto">
+        <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back
+      </a>
       <h1 class="text-2xl font-bold mb-4">Your Orders</h1>
 
       <div class="overflow-x-auto">
-          <table class="w-full bg-white border border-gray-300">
-              <tbody>
-                  <!-- Replace the following block with your actual order data -->
-                  <% for (let i = 0; i < orders.length; i++) { %>
+        <table class="w-full bg-white border border-gray-300">
+         
+          <tbody>
+            <!-- Replace the following block with your actual order data -->
+            <% for (let i=0; i < orders.length; i++) { %>
 
-                  <tr class="hover:bg-gray-100">
-                      <td class="py-2 px-4 border-b cursor-pointer"
-                          onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
-                          <img src="<%= orders[i].orderDetails.pImage %>" alt="Product Image"
-                              class="h-16 w-16 object-cover rounded" />
-                      </td>
-                      <td class="py-2 px-4 border-b cursor-pointer"
-                          onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
-                          <%= orders[i].orderDetails.pName %>
-                      </td>
-                      <td class="py-2 px-4 border-b cursor-pointer"
-                          onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
-                          Quantity: <%= orders[i].orderDetails.quantity %>
-                      </td>
-                      <td class="py-2 px-4 border-b cursor-pointer"
-                          onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
-                          Total Price: ₹ <%= orders[i].orderDetails.quantity *
-                          orders[i].orderDetails.price %>
-                      </td>
-                      <td class="py-2 px-4 border-b cursor-pointer"
-                          onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
-                          <span
-                              class="bg-green-500 text-white py-1 px-2 rounded"><%= orders[i].orderDetails.orderStatus %></span>
-                      </td>
-                      <% if ((orders[i].orderDetails.orderStatus === 'Ordered') ||
-                      (orders[i].orderDetails.orderStatus === 'Shipped') ) { %>
-                      <td class="py-2 px-4 border-b">
-                          <button class="bg-red-500 text-white py-1 px-2 rounded"
-                              onclick="openCancelModal()">Cancel</button>
-                      </td>
-                      <div
-                  class="fixed z-50 inset-0 overflow-y-auto hidden"
-                  id="cancelModalBackdrop"
-                >
-                  <div class="flex items-center justify-center min-h-screen">
-                    <div
-                      class="bg-white rounded-lg shadow-xl p-4 mx-4 sm:max-w-lg sm:w-full"
-                    >
-                      <div class="mb-4">
-                        <h2 class="text-lg font-semibold">
-                          Enter Reason for Cancelling
-                        </h2>
-                      </div>
+              <tr class="hover:bg-gray-100">
+                <td>
+                  <%= i+1 %>
+                </td>
+                <td class="py-2 px-4 border-b cursor-pointer"
+                  onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
+                  <img src="<%= orders[i].orderDetails.pImage %>" alt="Product Image"
+                    class="h-16 w-16 object-cover rounded" />
+                </td>
+                <td class="py-2 px-4 border-b cursor-pointer"
+                  onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
+                  <%= orders[i].orderDetails.pName %>
+                </td>
+                <td class="py-2 px-4 border-b"
+                  onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
+                  Order Date: <%=
+                    orders[i].orderDetails.orderDate.toISOString().split("T")[0].split("-").reverse().join("-") %>
+                </td>
+                <td class="py-2 px-4 border-b cursor-pointer"
+                  onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
+                  Quantity: <%= orders[i].orderDetails.quantity %>
+                </td>
+                <td class="py-2 px-4 border-b cursor-pointer"
+                  onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
+                  Total Price: ₹ <%= orders[i].orderDetails.quantity * orders[i].orderDetails.price %>
+                </td>
+                <td class="py-2 px-4 border-b cursor-pointer"
+                  onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
+                  <span class="bg-green-500 text-white py-1 px-2 rounded">
+                    <%= orders[i].orderDetails.orderStatus %>
+                  </span>
+                </td>
+                <% if ((orders[i].orderDetails.orderStatus==='Ordered' ) ||
+                  (orders[i].orderDetails.orderStatus==='Shipped' ) ) { %>
+                  <td class="py-2 px-4 border-b">
+                    <button class="bg-red-500 text-white py-1 px-2 rounded" onclick="openCancelModal()">Cancel</button>
+                  </td>
+                  <div class="fixed z-50 inset-0 overflow-y-auto hidden" id="cancelModalBackdrop">
+                    <div class="flex items-center justify-center min-h-screen">
+                      <div class="bg-white rounded-lg shadow-xl p-4 mx-4 sm:max-w-lg sm:w-full">
+                        <div class="mb-4">
+                          <h2 class="text-lg font-semibold">
+                            Enter Reason for Cancelling
+                          </h2>
+                        </div>
 
-                      <div>
-                        <textarea
-                          class="w-full border rounded-md p-2"
-                          rows="4"
-                          placeholder="Enter reason for cancellation..."
-                        ></textarea>
-                      </div>
+                        <div>
+                          <textarea class="w-full border rounded-md p-2" rows="4"
+                            placeholder="Enter reason for cancellation..."></textarea>
+                        </div>
 
-                      <div class="mt-4 flex justify-end">
-                        <button
-                          class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
-                          onclick="closeCancelModal()"
-                        >
-                          Close
-                        </button>
-                        <button
-                          class="bg-blue-500 text-white px-4 py-2 rounded-md"
-                          onclick="cancelOrder('<%= orders[i].orderDetails._id %>')"
-                        >
-                          Submit
-                        </button>
+                        <div class="mt-4 flex justify-end">
+                          <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
+                            onclick="closeCancelModal()">
+                            Close
+                          </button>
+                          <button class="bg-blue-500 text-white px-4 py-2 rounded-md"
+                            onclick="cancelOrder('<%= orders[i].orderDetails._id %>')">
+                            Submit
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                      <% } else if (orders[i].orderDetails.orderStatus === 'Delivered') { %>
-                      <td class="py-2 px-4 border-b">
-                          <button class="bg-red-500 text-white py-1 px-2 rounded"
-                              onclick="openReturnModal()">Return</button>
-                      </td>
-                      <div
-                  class="fixed z-50 inset-0 overflow-y-auto hidden"
-                  id="returnModalBackdrop"
-                >
-                  <div class="flex items-center justify-center min-h-screen">
-                    <div
-                      class="bg-white rounded-lg shadow-xl p-4 mx-4 sm:max-w-lg sm:w-full"
-                    >
-                      <div class="mb-4">
-                        <h2 class="text-lg font-semibold">
-                          Enter Reason for Returning
-                        </h2>
-                      </div>
+                  <% } else if (orders[i].orderDetails.orderStatus==='Delivered' ) { %>
+                    <td class="py-2 px-4 border-b">
+                      <button class="bg-red-500 text-white py-1 px-2 rounded"
+                        onclick="openReturnModal()">Return</button>
+                    </td>
+                    <div class="fixed z-50 inset-0 overflow-y-auto hidden" id="returnModalBackdrop">
+                      <div class="flex items-center justify-center min-h-screen">
+                        <div class="bg-white rounded-lg shadow-xl p-4 mx-4 sm:max-w-lg sm:w-full">
+                          <div class="mb-4">
+                            <h2 class="text-lg font-semibold">
+                              Enter Reason for Returning
+                            </h2>
+                          </div>
 
-                      <div>
-                        <textarea
-                          class="w-full border rounded-md p-2"
-                          rows="4"
-                          placeholder="Enter reason for return..."
-                        ></textarea>
-                      </div>
+                          <div>
+                            <textarea class="w-full border rounded-md p-2" rows="4"
+                              placeholder="Enter reason for return..."></textarea>
+                          </div>
 
-                      <div class="mt-4 flex justify-end">
-                        <button
-                          class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
-                          onclick="closeReturnModal()"
-                        >
-                          Close
-                        </button>
-                        <button
-                          class="bg-blue-500 text-white px-4 py-2 rounded-md"
-                          onclick="returnOrder('<%= orders[i].orderDetails._id %>')"
-                        >
-                          Submit
-                        </button>
+                          <div class="mt-4 flex justify-end">
+                            <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
+                              onclick="closeReturnModal()">
+                              Close
+                            </button>
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-md"
+                              onclick="returnOrder('<%= orders[i].orderDetails._id %>')">
+                              Submit
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                      <% } %>
-                  </tr>
-                  <% } %>
-              </tbody>
-          </table>
+                    <% } %>
+              </tr>
+              <% } %>
+          </tbody>
+        </table>
       </div>
+    </div>
   </div>
-</div>
 
-   
-    <%- include('include/_footer') %>
+
+  <%- include('include/_footer') %>
 
 
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
       integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       function goBack() {
@@ -163,6 +143,7 @@
       }
 
       function cancelOrder(orderId) {
+        console.log(orderId);
         axios
           .post("/cancelOrder", { orderId })
           .then((data) => {
@@ -173,6 +154,7 @@
                 }
               );
             }
+            console.log("cancelled");
           })
           .catch((error) => {
             console.error("Error cancelling order:", error);
@@ -227,5 +209,6 @@
         closeModal();
       }
     </script>
-  </body>
-</html>
+    </body>
+
+    </html>
