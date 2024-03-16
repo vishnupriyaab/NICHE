@@ -1,0 +1,218 @@
+<%- include('include/_header') %>
+
+<link rel="stylesheet" href="/css/adminCoupon.css" />
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    /* Ensure the body fills the viewport height */
+    display: flex;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1;
+    /* Allow the main content to expand */
+  }
+
+  footer {
+    padding: 20px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    overflow: hidden;
+  }
+</style>
+<section>
+  <h1 style="margin-top: 20px; margin-bottom: 20px; color: #292f46">
+    COUPON MANAGEMENT
+  </h1>
+  <div class="manageOptions">
+    <a href="/adminAddCoupon">
+      <button>Add Coupon</button>
+    </a>
+    <a href="/adminDeletedCoupons">
+      <button>Deleted Coupons</button>
+    </a>
+  </div>
+
+  <div class="table-data justify-content-center">
+    <div class="order">
+      <% for( let i=0; i < coupons.length; i++ ) { %>
+      <div class="produts">
+        <div
+          class="productImg d-flex align-items-center justify-content-between"
+        >
+          <div class="proImg d-flex gap-3 align-items-center">
+            <div class="description d-flex align-items-center">
+              <div>
+                <p class="mb-1 p-0 text-capitalize">
+                  Coupon Code: <%= coupons[i].couponCode %>
+                </p>
+                <p class="mb-1 p-0 text-capitalize">
+                  Discount: <%= coupons[i].coupondiscount %>%
+                </p>
+                <p class="m-0 text-capitalize">
+                  Max uses: <%= coupons[i].maxUse %>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="dPrice">
+            <p class="mb-1 p-0">Category: <%= coupons[i].category %></p>
+            <p class="mb-1 p-0">Use Above: ₹<%= coupons[i].priceLimit %></p>
+            <p class="m-0 p-0">
+              Coupon Expiry: <%= coupons[i].expiry.toString().split('
+              ').slice(0, 4).join(' ') %>
+            </p>
+          </div>
+          <div class="actions d-flex align-items-center stop">
+            <a href="/editCoupon/<%= coupons[i]._id %>" title="Edit Coupon">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2 16H3.425L13.2 6.225L11.775 4.8L2 14.575V16ZM0 18V13.75L13.2 0.575C13.4 0.391667 13.6208 0.25 13.8625 0.15C14.1042 0.05 14.3583 0 14.625 0C14.8917 0 15.15 0.05 15.4 0.15C15.65 0.25 15.8667 0.4 16.05 0.6L17.425 2C17.625 2.18333 17.7708 2.4 17.8625 2.65C17.9542 2.9 18 3.15 18 3.4C18 3.66667 17.9542 3.92083 17.8625 4.1625C17.7708 4.40417 17.625 4.625 17.425 4.825L4.25 18H0ZM12.475 5.525L11.775 4.8L13.2 6.225L12.475 5.525Z"
+                  fill="black"
+                />
+              </svg>
+            </a>
+            <a
+              onclick="deleteCoupon('<%= coupons[i]._id %>')"
+              title="Delete Coupon"
+            >
+              <svg
+                width="15"
+                height="19"
+                viewBox="0 0 15 19"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.07143 16.8889C1.07143 18.05 2.03571 19 3.21429 19H11.7857C12.9643 19 13.9286 18.05 13.9286 16.8889V4.22222H1.07143V16.8889ZM15 1.05556H11.25L10.1786 0H4.82143L3.75 1.05556H0V3.16667H15V1.05556Z"
+                  fill="black"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <% } %> <% if (coupons.length===0) { %>
+      <div class="text-center">\(^Д^)/ <br />No Coupon.</div>
+      <% } %>
+    </div>
+  </div>
+  <% if (coupons.length !==0) { %>
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="text-center pagenationButton">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item">
+              <a
+                class="page-link"
+                href="/adminCoupon?page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>"
+                aria-label="Previous"
+              >
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <% for( let i=0; i < (Math.ceil(totalCoupons / 10)); i++ ) { %>
+            <li class="page-item">
+              <a class="page-link" href="/adminCoupon?page=<%= (i + 1) %>">
+                <%= (i + 1) %>
+              </a>
+            </li>
+            <% } %>
+            <li class="page-item">
+              <a
+                class="page-link"
+                href="/adminCoupon?page=<%= (((Math.ceil(totalCoupons / 10)) === currentPage) || (Math.ceil(totalCoupons / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>"
+                aria-label="Next"
+              >
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <% } %>
+  <!-- content-main end// -->
+
+  <!-- MAIN -->
+</section>
+<!-- CONTENT -->
+<script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
+  integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<!-- <script src="/js/adminCoupon.js"></script> -->
+
+<!-- fontawesome -->
+<script
+  src="https://kit.fontawesome.com/23d1247997.js"
+  crossorigin="anonymous"
+></script>
+<!-- end of fontawesome -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/vendors/select2.min.js"></script>
+<script src="/js/vendors/perfect-scrollbar.js"></script>
+<script src="/js/vendors/jquery.fullscreen.min.js"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
+  integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<!-- Bootstrap script file -->
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+  crossorigin="anonymous"
+></script>
+<!--end of Bootstrap script file -->
+<script src="/js/main.js?v=1.1" type="text/javascript"></script>
+<script>
+  function deleteCoupon(couponId) {
+    axios
+      .delete(`/deleteCoupon/${couponId}`)
+      .then((data) => {
+        if (data) {
+          Swal.fire({
+            title: "Coupon Deleted Successfully",
+            text: "Click the button",
+            icon: "success",
+          }).then(() => {
+            window.location.href = "/";
+          });
+        }
+        // let errorModal = document.getElementById("errorpopup");
+        // errorModal.innerText = data.data.message;
+        // errorModal.classList.remove("d-none");
+      })
+      .catch((error) => {
+        // if (error?.response?.data?.errStatus) {
+        // 	let errorModal = document.getElementById("errorpopup");
+        // 	errorModal.innerText = error.response.data.message;
+        // 	return errorModal.classList.remove("d-none");
+        // }
+        console.log(error);
+      });
+  }
+</script>
+
+<%- include('include/_footer') %>

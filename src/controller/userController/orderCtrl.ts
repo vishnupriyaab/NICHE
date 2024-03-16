@@ -15,6 +15,7 @@ export async function checkout(req: Request, res: Response) {
   try {
     const user = req.session.userId;
     const cart = await CartDb.findOne({ userId: user }).populate("products");
+    const wallet = await Walletdb.find({ userId: req.session.userId });
     const address = await Addressdb.find({ userId: user });
 
     const productid = await CartDb.findOne({
@@ -26,27 +27,29 @@ export async function checkout(req: Request, res: Response) {
         $match: { userId: new mongoose.Types.ObjectId(user) },
       },
       {
-        $unwind: "$products",
+        $unwind: {
+          path: "$products",
+        },
       },
       {
         $lookup: {
-          from: productDb.collection.name,
+          from: "productdbs",
           localField: "products.productId",
           foreignField: "_id",
           as: "productsDetails",
         },
       },
       {
-        $unwind: "$productsDetails",
+        $unwind: {
+          path: "$productsDetails",
+        },
       },
     ]);
 
     const sum = products.reduce((total, product) => {
       // Ensure product and productDetails exist
-      if (product.products && product.productsDetails) {
-        total += product.products.quantity * product.productsDetails.price;
-      }
-      return total;
+      return (total +=
+        product.products.quantity * product.productsDetails.price);
     }, 0);
 
     res.status(200).render("user/checkout", {
@@ -56,6 +59,7 @@ export async function checkout(req: Request, res: Response) {
       productid,
       user,
       cart,
+      wallet,
     });
   } catch (error) {
     console.error("Error during checkout:", error);
@@ -147,7 +151,7 @@ export async function placeorder(req: Request, res: Response) {
       });
     }
 
-    if (paymentMethod !== "Razorpay") {
+    if (paymentMethod === "COD") {
       let user = req.session.userId;
 
       const userId = await userDb.findById(user);
@@ -204,6 +208,44 @@ export async function placeorder(req: Request, res: Response) {
 
       await clearUserCart(req.session.userId);
       res.status(200).json({ message: "Order placed successfully!" });
+    }
+
+    if (paymentMethod === "Cwallet") {
+      const wallet = await Walletdb.findOne({ userId: req.session.userId });
+
+      const products = await CartDb.aggregate([
+        {
+          $match: { userId: new mongoose.Types.ObjectId(req.session.userId) },
+        },
+        {
+          $unwind: {
+            path: "$products",
+          },
+        },
+        {
+          $lookup: {
+            from: "productdbs",
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "productsDetails",
+          },
+        },
+        {
+          $unwind: {
+            path: "$productsDetails",
+          },
+        },
+      ]);
+
+      const sum = products.reduce((total, product) => {
+        // Ensure product and productDetails exist
+        return (total +=
+          product.products.quantity * product.productsDetails.price);
+      }, 0);
+
+      if( !wallet || (sum>wallet.walletBalance)){
+        res.json({ message: "You can't use this Wallet, bc'z your total amount is greater than your wallet amount" });
+      }
     }
   } catch (error: any) {
     console.error("Error saving order:", error);
@@ -360,9 +402,7 @@ export async function cancelOrder(req: Request, res: Response) {
       order?.orderDetails[0].orderStatus == "Ordered" ||
       order?.orderDetails[0].orderStatus == "Cancelled"
     ) {
-      if (
-        order?.orderDetails[0].paymentMethod == "Razorpay"
-      ) {
+      if (order?.orderDetails[0].paymentMethod == "Razorpay") {
         const user = await userDb.findOne({ _id: req.session.userId });
         if (!user) {
           throw new Error("User not found");

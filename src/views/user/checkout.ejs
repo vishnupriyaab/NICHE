@@ -126,24 +126,27 @@
     <div class="bg-white shadow-md rounded-lg p-6">
       <h2 class="text-xl font-semibold mb-4">Select Payment Method</h2>
       <form class="space-y-4">
+        
+        <p class="text-red-600 text-sm">Your Wallet Balance: ₹ <%= wallet[0].walletBalance %></p>
         <div class="relative">
           <input
             class="peer hidden"
-            id="payment_cod"
+            id="payment_wallet"
             type="radio"
             name="payment_method"
-            value="COD"
+            value="Cwallet"
           />
           <label
-            for="payment_cod"
+            for="payment_wallet"
             class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out"
           >
             <div class="ml-5">
-              <span class="font-semibold">Cash on Delivery (COD)</span>
-              <p class="text-gray-600 text-sm">Pay upon delivery</p>
+              <span class="font-semibold">Wallet</span>
+              <p class="text-gray-600 text-sm">Use your own wallet</p>
             </div>
           </label>
         </div>
+
 
         <div class="relative">
           <input
@@ -163,6 +166,27 @@
             </div>
           </label>
         </div>
+
+
+        <div class="relative">
+          <input
+            class="peer hidden"
+            id="payment_cod"
+            type="radio"
+            name="payment_method"
+            value="COD"
+          />
+          <label
+            for="payment_cod"
+            class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out"
+          >
+            <div class="ml-5">
+              <span class="font-semibold">Cash on Delivery (COD)</span>
+              <p class="text-gray-600 text-sm">Pay upon delivery</p>
+            </div>
+          </label>
+        </div>
+        
       </form>
     </div>
   </div>
@@ -224,7 +248,12 @@
     </button>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 <script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
   integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ=="
@@ -235,6 +264,27 @@
 
 
 <script>
+toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": true,
+    "progressBar": false,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  };
+
+
+
+
   document.addEventListener("DOMContentLoaded", async function () {
     const openAddressModalButton = document.getElementById("openAddressModalButton");
     const addressModal = document.getElementById("addressModal");
@@ -334,8 +384,9 @@
             var paymentMethod = selectedPaymentMethod;
             var cod = "COD";
             var razorpay = "Razorpay";
+            var wallet = "Cwallet";
 
-            if (paymentMethod === cod || paymentMethod === razorpay) {
+            if (paymentMethod === cod || paymentMethod === razorpay || paymentMethod === wallet) {
               axios
                 .post("/placeorder", {
                   address: selectedAddress,
@@ -356,7 +407,7 @@
                       name: "Niche",
                       description: "Test Transaction",
                       image: "https://example.com/your_logo",
-                      order_id: response.data?.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                      order_id: response.data?.order.id,
                       callback_url: "/verifyrazorpay",
                       prefill: {
                         name: "Gaurav Kumar",
@@ -372,11 +423,19 @@
                     };
                     var rzp1 = new Razorpay(options);
                     rzp1.open();
+                    return;
                   }
 
                   
                  if(paymentMethod === cod){
                    window.location.href = "/successpage";
+                   return;
+                  }
+
+                  if(paymentMethod === wallet){
+                    if(response?.data?.message){
+                      toastr.warning(response.data.message, "Warning!");
+                    }
                   }
                   
                 })

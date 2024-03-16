@@ -69,21 +69,21 @@
                 <th class="py-2">Date</th>
               </tr>
             </thead>
-             
             
             <tbody>
-              <% wallet[0].transactions.forEach(transaction => { %>
+             
+              <% wall.forEach(transaction => { %>
               <tr class="border-b">
-                <td class="py-2">₹ <%= transaction.amount %></td>
-                <% if (transaction.type == '+ CREDIT') { %>
-                <td class="py-2 text-green-600"><%= transaction.type %></td>
-                <% } else if (transaction.type == '- DEBIT') { %>
-                <td class="py-2 text-red-600"><%= transaction.type %></td>
+                <td class="py-2">₹  <%= transaction.sortedArray.amount %></td>
+                <% if (transaction.sortedArray.type == '+ CREDIT') { %>
+                <td class="py-2 text-green-600"><%= transaction.sortedArray.type %></td>
+                <% } else if (transaction.sortedArray.type == '- DEBIT') { %>
+                <td class="py-2 text-red-600"><%= transaction.sortedArray.type %></td>
                 <% } %>
 
                 <td class="py-2">
                   <%=
-                  transaction.transactionDate.toISOString().split('T')[0].split('-').reverse().join('-')
+                  transaction.sortedArray.transactionDate.toISOString().split('T')[0].split('-').reverse().join('-')
                   %>
                 </td>
               </tr>

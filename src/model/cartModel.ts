@@ -25,6 +25,7 @@ const cartSChema = new Schema<Cart>(
       },
     ],
     cartTotal:{
+      default:0,
       type: Number
     },
   },

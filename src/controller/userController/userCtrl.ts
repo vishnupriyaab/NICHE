@@ -319,8 +319,6 @@ export async function wallet(req: Request, res: Response) {
   try {
     const user = req.session.userId;
     const wallet = await Walletdb.find({ userId: req.session.userId });
-    // console.log(wallet);
-
     const wall = await Walletdb.aggregate([
       { $match: {userId:new mongoose.Types.ObjectId(user)} },
       { $unwind: "$transactions" },
@@ -332,14 +330,12 @@ export async function wallet(req: Request, res: Response) {
         },
       },
       {
-        $unwind: "$sortedArray",
+        $unwind: "$sortedArray"
       },
     ]);
-
-    console.log(wall);
-
+    console.log(wall,"wall");
     const cart = await CartDb.findOne({ userId: user }).populate("products");
-    res.render("user/wallet", { wallet, user, cart });
+    res.render("user/wallet", { wallet, user, cart,wall });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

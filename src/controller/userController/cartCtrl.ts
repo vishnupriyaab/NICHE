@@ -3,10 +3,14 @@ import mongoose, { isObjectIdOrHexString } from "mongoose";
 import productDb from "../../model/productModel";
 import CartDb from "../../model/cartModel";
 
+
+
+
+
 export async function cart(req: Request, res: Response) {
   try {
     const user = req.session.userId;
-    const cart = await CartDb.findOne({ userId: user }).populate("products");
+    const cart = await CartDb.findOne({ userId: user })
     const products = await CartDb.aggregate([
       {
         $match: { userId: new mongoose.Types.ObjectId(user) },
@@ -35,12 +39,14 @@ export async function cart(req: Request, res: Response) {
       }
       return total;
     }, 0);
-    res.status(200).render("user/cart", { products, sum, user, cart });
+    res.status(200).render("user/cart", { products, sum,user,cart });
   } catch (error) {
     console.error(error, "error");
     res.status(500).send("Internal Server Error");
   }
 }
+
+
 
 export async function addTocart(req: Request, res: Response): Promise<void> {
   try {
@@ -74,14 +80,20 @@ export async function addTocart(req: Request, res: Response): Promise<void> {
     const itemIndex = cart.products.findIndex((p) => p.productId === productId);
     if (itemIndex > -1) {
       cart.products[itemIndex].quantity += quantity;
+      console.log(typeof quantity,"quantity");
+      console.log(quantity,"567");
+      
+
     } else {
       cart.products.push({
         productId,
         quantity: quantity,
         price: product.price,
       });
+      // cart.cartTotal += quantity*product.price;
     }
-
+    // console.log(typeof cart.cartTotal,"cart.carttotal");
+    
     await cart.save();
     res.status(201).json({ message: "Product added to cart" });
   } catch (error) {
@@ -105,8 +117,6 @@ export async function updateQuantity(
       res.status(404).json({ message: "Product not found" });
       return;
     }
-    console.log(inventory);
-
     if (inventory.stock < quantity) {
       res.status(401).json({ stockErr: true, message: "Out of Stock" });
       return;

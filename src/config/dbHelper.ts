@@ -1,7 +1,8 @@
+import { isObjectIdOrHexString } from "mongoose";
 import categoryDb from "../model/categoryModel";
-import Orderdb from "../model/orderModel";
 import productDb from "../model/productModel";
 import userDb from "../model/userModel";
+import CouponDb from "../model/couponModel";
 
 export async function getAllUsers(page = 1) {
   try {
@@ -81,4 +82,23 @@ interface AggregationStage {
   };
   $skip?: number;
   $limit?: number;
+}
+
+
+export async function getAllCoupon(couponId: string | null = null, page?: number | null) {
+  try {
+    const skip = Number(page) ? Number(page) - 1 : 0;
+    // for updation of coupon we need details of the particular coupon
+    if (couponId) {
+      if (!isObjectIdOrHexString(couponId)) {
+        return null;
+      }
+      return await CouponDb.findOne({ _id: couponId,isDeleted:false });
+    }
+    return await CouponDb.find({isDeleted:false})
+      .skip(10 * skip)
+      .limit(10);
+  } catch (err) {
+    throw err;
+  }
 }

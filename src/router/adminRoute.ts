@@ -7,6 +7,7 @@ import { addCategory, editCategory, getCategory, getCategorySearch, listCategory
 import { addProduct, deleteImage, deleteProduct, getEditproduct, getProducts, getaddProduct, getunlistedProduct, restoreProduct, updateProduct } from "../controller/adminController/productCtrl";
 import { blockUser, getUsers, unblockUser} from "../controller/adminController/userCtrl";
 import { adminOrder, updateOrder} from "../controller/adminController/orderCtrl";
+import { adminCoupon } from "../controller/adminController/couponCtrl";
 
 
 const adminRoute: Router = Router();
@@ -22,6 +23,7 @@ adminRoute.get("/editProduct/:id", adminLoggedIn, getEditproduct);
 adminRoute.get("/blockuser", adminLoggedIn, blockUser);
 adminRoute.get("/unblockuser", adminLoggedIn, unblockUser);
 adminRoute.get("/adminOrder",adminLoggedIn, adminOrder); // checkAdmin,
+adminRoute.get("/adminCoupon", adminCoupon );
 
 
 adminRoute.post("/adminlogin", adminLoginValidation, validateadminRegistration, isAdmin);
