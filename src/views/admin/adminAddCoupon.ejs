@@ -1,0 +1,226 @@
+<%- include('include/_header') %>
+
+            <link rel="stylesheet" href="/css/adminAddCoupon.css">
+           
+
+            <section style="margin:3% 5%;">
+                <h2 style="padding: 0 0 0 60px;">Add Coupon</h2>
+                <div class="manageOptions mb-20" style="padding-left: 1000px;">
+                    <a href="/adminCoupon">
+                        <button>Go Back</button>
+                    </a>
+                </div>
+
+                <div class="table-data justify-content-center" >
+                    <div id="addProduct" class="order">
+                        <form class="addProductForm" id="form">
+                            <div class="d-flex align-items-center formRow">
+                                <div class="w-50">
+                                    <label for="code" class="d-block">Coupon Code</label>
+                                    <div class=" position-relative z-10 top-5 py-1.5 px-3 rounded-lg text-danger d-none"
+                                        id="errorpopup">
+                                    </div>
+                                    <input type="text" name="code" id="couponcode">
+                                    <p id="couponCodeErr" style="color: red">
+                                    </p>
+                                </div>
+                                <div class="w-50">
+                                    <label for="Category" class="d-block">Category</label>
+                                    <select name="category" id="category">
+                                        <option value="All">All</option>
+                                        <% for( let i=0; i < category.length; i++ ) { %>
+                                            <option class="text-capitalize" value="<%= category[i].name %>">
+                                                <%= category[i].name %>
+                                            </option>
+                                            <% } %>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center formRow">
+                                <div class="w-50">
+                                    <label for="discount" class="d-block">Coupon Discount</label>
+                                    <input type="number" name="discount" id="coupondiscount">
+                                    <p id="discountErr" style="color: red">
+                                    </p>
+                                </div>
+                                <div class="dheading w-50">
+                                    <label for="count" class="d-block">Max Use (per person)</label>
+                                    <input type="number" name="count" id="Maxuse">
+                                    <p id="maxUseErr" style="color: red">
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center formRow">
+                                <div class="w-50">
+                                    <label for="minPrice" class="d-block">Minimum Rate</label>
+                                    <input type="number" name="minPrice" id="pricelimit">
+                                    <p id="priceLimitErr" style="color: red">
+                                    </p>
+                                </div>
+                                <div class="w-50">
+                                    <label for="expiry" class="d-block">Coupon Expiry</label>
+                                    <input type="date" name="expiry" id="expiry">
+                                    <p id="expiryErr" style="color: red">
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="addBtn">Add Coupon</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- MAIN -->
+                
+
+                <%- include('include/_footer') %>
+
+                </main>
+
+            </section>
+            <!-- CONTENT -->
+
+            <!-- fontawesome -->
+            <script src="https://kit.fontawesome.com/23d1247997.js" crossorigin="anonymous"></script>
+            <!-- end of fontawesome -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
+                integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script src="/js/vendors/select2.min.js"></script>
+            <script src="/js/vendors/perfect-scrollbar.js"></script>
+            <script src="/js/vendors/jquery.fullscreen.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
+                integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <!-- Bootstrap script file -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+                crossorigin="anonymous"></script>
+            <!--end of Bootstrap script file -->
+            <script>
+                const form = document.querySelector("#form");
+
+                form.addEventListener("submit", function (e) {
+
+                    e.preventDefault();
+
+                    let flag = false;
+                    const couponCode = document.getElementById("couponcode").value;
+                    const category = document.getElementById("category").value;
+                    const maxUse = document.getElementById("Maxuse").value;
+                    const priceLimit = document.getElementById("pricelimit").value;
+                    const coupondiscount = document.getElementById("coupondiscount").value;
+                    const expiry = document.getElementById("expiry").value;
+
+
+                    // Clear previous error messages
+                    const couponCodeError = document.getElementById("couponCodeErr");
+                    const discountError = document.getElementById("discountErr");
+                    const maxUseError = document.getElementById("maxUseErr");
+                    const priceLimitError = document.getElementById("priceLimitErr");
+                    const expiryError = document.getElementById("expiryErr");
+                    couponCodeError.innerText = "";
+                    discountError.innerText = "";
+                    maxUseError.innerText = "";
+                    priceLimitError.innerText = "";
+                    expiryError.innerText = "";
+
+                    // Validate Coupon Code
+                    if (!couponCode) {
+
+                        couponCodeError.innerText = "Enter Coupon Code";
+                        flag = true;
+                    }
+
+                    if (!maxUse) {
+
+                        maxUseError.innerText = "Please enter usage limit.";
+                        flag = true;
+                    } else if (parseInt(maxUse) < 0) {
+                        maxUseError.innerText = "Usage limit must be a positive number.";
+                        flag = true;
+                    }
+
+                    // Validate Coupon Code
+                    if (!priceLimit) {
+
+                        priceLimitError.innerText = "Enter Price Limit";
+                        flag = true;
+                    } else if (parseInt(priceLimit) < 0) {
+                        priceLimitError.innerText = "Enter limit in positive number";
+                        flag = true;
+                    }
+
+                    // Validate Discount
+                    if (!coupondiscount) {
+
+                        discountError.innerText = "Please enter a discount.";
+                        flag = true;
+                    } else if (parseInt(coupondiscount) < 0) {
+                        discountError.innerText = "Discount must be a positive number.";
+                        flag = true;
+                    } else if (parseInt(coupondiscount) > 95) {
+                        discountError.innerText = "Discount must be less than 95";
+                        flag = true;
+                    }
+
+                    // Validate Expiry Date
+                    if (!expiry) {
+
+                        expiryError.innerText = "Please select an expiry date.";
+                        flag = true;
+                    } else {
+                        const currentDate = new Date();
+                        const selectedDate = new Date(expiry);
+                        if (selectedDate < currentDate) {
+                            expiryError.innerText = "Expiry Date must be in the future.";
+                            flag = true;
+                        }
+                    }
+
+                    if (flag) {
+
+                        return;
+                    }
+                    axios
+                        .post("/addCoupon", {
+                            couponCode,
+                            category,
+                            maxUse,
+                            priceLimit,
+                            coupondiscount,
+                            expiry
+                        })
+                        .then((data) => {
+
+                            if (data) {
+                                Swal.fire(
+                                    "Coupon Successfully Added",
+                                    "Click the button",
+                                    "success"
+                                ).then(() => {
+                                    window.location.href = "/adminCoupon";
+                                });
+                            }
+                            let errorModal = document.getElementById("errorpopup");
+                            errorModal.innerText = data.data.message;
+                            errorModal.classList.remove("d-none");
+                        })
+                        .catch((error) => {
+
+                            if (error?.response?.data?.errStatus) {
+                                let errorModal = document.getElementById("errorpopup");
+                                errorModal.innerText = error.response.data.message;
+                                return errorModal.classList.remove("d-none");
+                            }
+                            console.log(error);
+                        });
+                });
+            </script>
+            </body>
+
+            </html>

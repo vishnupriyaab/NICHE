@@ -54,6 +54,7 @@ import {
   removeFromWishlist,
   wishlist,
 } from "../controller/userController/wishlishctrl";
+import { checkCoupon } from "../controller/adminController/couponCtrl";
 
 const userRoute: Router = Router();
 
@@ -110,12 +111,17 @@ userRoute.post("/returnOrder", returnOrder);
 userRoute.post("/verifyrazorpay", orderRazorpayVerification);
 userRoute.post("/addTowallet", addToWallet);
 userRoute.post("/walletRazorpay", walletRazorpayVerification);
+userRoute.post("/api/checkCoupon", checkCoupon);
+
 
 userRoute.patch("/removeFromCart", removeProductfromcart);
+
 
 userRoute.delete("/deleteaddress/:id", deleteAddress);
 userRoute.delete("/removeFromWishlist/:id", removeFromWishlist);
 
+
 userRoute.put("/updateaddress", updateAddress);
+
 
 export default userRoute;

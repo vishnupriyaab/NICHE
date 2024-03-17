@@ -102,3 +102,21 @@ export async function getAllCoupon(couponId: string | null = null, page?: number
     throw err;
   }
 }
+
+export async function getAllDeletedCoupons(couponId = null, page = null) {
+  try {
+    const skip = Number(page) ? Number(page) - 1 : 0;
+    // for updation of coupon we need details of the particular coupon
+    if (couponId) {
+      if (!isObjectIdOrHexString(couponId)) {
+        return null;
+      }
+      return await CouponDb.findOne({ _id: couponId,isDeleted:true });
+    }
+    return await CouponDb.find({isDeleted:true})
+      .skip(10 * skip)
+      .limit(10);
+  } catch (err) {
+    throw err;
+  }
+}

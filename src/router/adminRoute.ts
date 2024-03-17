@@ -7,10 +7,12 @@ import { addCategory, editCategory, getCategory, getCategorySearch, listCategory
 import { addProduct, deleteImage, deleteProduct, getEditproduct, getProducts, getaddProduct, getunlistedProduct, restoreProduct, updateProduct } from "../controller/adminController/productCtrl";
 import { blockUser, getUsers, unblockUser} from "../controller/adminController/userCtrl";
 import { adminOrder, updateOrder} from "../controller/adminController/orderCtrl";
-import { adminCoupon } from "../controller/adminController/couponCtrl";
+import { addCoupon, adminAddCoupon, adminCoupon, adminDeletedCoupon, adminEditCoupon, deleteCoupon, updateCoupon } from "../controller/adminController/couponCtrl";
 
 
 const adminRoute: Router = Router();
+
+
 adminRoute.get("/dashboard", adminLoggedIn, getDashboard);
 adminRoute.get("/users", adminLoggedIn, getUsers);
 adminRoute.get("/category", adminLoggedIn, getCategory);
@@ -22,29 +24,37 @@ adminRoute.get("/unlistedProduct", adminLoggedIn, getunlistedProduct);
 adminRoute.get("/editProduct/:id", adminLoggedIn, getEditproduct);
 adminRoute.get("/blockuser", adminLoggedIn, blockUser);
 adminRoute.get("/unblockuser", adminLoggedIn, unblockUser);
-adminRoute.get("/adminOrder",adminLoggedIn, adminOrder); // checkAdmin,
+adminRoute.get("/adminOrder",adminLoggedIn, adminOrder);
 adminRoute.get("/adminCoupon", adminCoupon );
+adminRoute.get("/adminAddCoupon", adminAddCoupon );
+adminRoute.get("/editCoupon/:id", adminEditCoupon);
+adminRoute.get("/adminDeletedCoupons",checkAdmin, adminDeletedCoupon);
+
 
 
 adminRoute.post("/adminlogin", adminLoginValidation, validateadminRegistration, isAdmin);
 adminRoute.post("/adminRegister", adminRegister);
 adminRoute.post("/addcategory", categoryValidation, validateCategory, addCategory);
-adminRoute.post("/addProduct", addProduct)
-adminRoute.post("/deleteproduct", deleteProduct);
-adminRoute.post("/restoreproduct", restoreProduct);
-adminRoute.post('/getCategorySearch', getCategorySearch);
-adminRoute.post("/updateOrderStatus", updateOrder)
+adminRoute.post("/addProduct",checkAdmin, addProduct)
+adminRoute.post("/deleteproduct",checkAdmin, deleteProduct);
+adminRoute.post("/restoreproduct",checkAdmin, restoreProduct);
+adminRoute.post('/getCategorySearch',checkAdmin, getCategorySearch);
+adminRoute.post("/updateOrderStatus",checkAdmin, updateOrder)
+adminRoute.post('/addCoupon',checkAdmin, addCoupon)
+
 
 
 adminRoute.patch("/listCategory", listCategory);
 adminRoute.patch("/unlistCategory", unlistCategory);
 adminRoute.patch("/editcategory", editcategoryValidation, editvalidateCategory, editCategory);
+adminRoute.patch("/updateCoupon/:id", updateCoupon);
 
 
 adminRoute.put("/updateproduct/:id", updateProduct);
 
 
 adminRoute.delete("/deleteimage/:id/:productid", deleteImage)
+adminRoute.delete("/deleteCoupon/:id", deleteCoupon)
 
 
 export default adminRoute;

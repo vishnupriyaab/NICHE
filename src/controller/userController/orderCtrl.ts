@@ -10,6 +10,7 @@ import Orderdb from "../../model/orderModel";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import Walletdb from "../../model/walletModel";
+import CouponDb from "../../model/couponModel";
 
 export async function checkout(req: Request, res: Response) {
   try {
@@ -108,7 +109,6 @@ export async function editAddress(req: Request, res: Response) {
 
 export async function checkAddress(req: Request, res: Response): Promise<void> {
   try {
-    // Fetch address data from the database
     const address = await Addressdb.findOne({ userId: req.session.userId });
 
     if (!address) {

@@ -1,0 +1,241 @@
+<%- include('include/_header') %>
+
+    <link rel="stylesheet" href="/css/adminUpdateCoupon.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+ 
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>Edit Coupon</h1>
+          </div>
+        </div>
+
+        <div class="manageOptions">
+          <a href="/adminCoupon">
+            <button>Go Back</button>
+          </a>
+        </div>
+
+        <div class="table-data justify-content-center">
+          <div id="addProduct" class="order">
+            <form
+              class="addProductForm"
+              id="form"
+              action="/updateCoupon/<%= coupon._id %>"
+            >
+              <div class="d-flex align-items-center formRow">
+                <div class="w-50">
+                  <label for="code" class="d-block">Coupon Code</label>
+                  <div
+                    class="position-relative z-10 top-5 py-1.5 px-3 rounded-lg text-danger d-none"
+                    id="errorpopup"
+                  ></div>
+                  <input
+                    type="text"
+                    name="code"
+                    id="couponcode"
+                    value="<%= coupon.couponCode %>"
+                  />
+                  <p id="couponCodeErr" style="color: red"></p>
+                </div>
+                <div class="w-50">
+                  <label for="Category" class="d-block">Category</label>
+                  <select name="category" id="category">
+                    <option value="All">All</option>
+                    <% for( let i=0; i < category.length; i++ ) { %>
+                    <option
+                      class="text-capitalize"
+                      value="<%= category[i].name %>"
+                    >
+                      <%= category[i].name %>
+                    </option>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+              <div class="d-flex align-items-center formRow">
+                <div class="w-50">
+                  <label for="discount" class="d-block">Coupon Discount</label>
+                  <input
+                    type="number"
+                    name="discount"
+                    id="coupondiscount"
+                    value="<%= coupon.coupondiscount %>"
+                  />
+                  <p id="couponDiscountErr" style="color: red"></p>
+                </div>
+                <div class="dheading w-50">
+                  <label for="count" class="d-block">Max Use</label>
+                  <input
+                    type="number"
+                    name="count"
+                    id="Maxuse"
+                    value="<%= coupon.maxUse %>"
+                  />
+                  <p id="maxUseErr" style="color: red"></p>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center formRow">
+                <div class="w-50">
+                  <label for="minPrice" class="d-block">Use Above</label>
+                  <input
+                    type="number"
+                    name="minPrice"
+                    id="pricelimit"
+                    value="<%= coupon.priceLimit %>"
+                  />
+                  <p id="priceLimitErr" style="color: red"></p>
+                </div>
+                <div class="w-50">
+                  <label for="expiry" class="d-block">Coupon Expiry</label>
+                  <input type="date" name="expiry" id="expiry" value="<%=
+                  coupon.expiry.toISOString().split('T')[0].split("-").reverse().join("-")
+                  %>">
+                  <p id="couponExpiryErr" style="color: red"></p>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center">
+                <button type="submit" class="addBtn">Update Coupon</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+      <%- include('include/_footer') %>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
+      integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      const form = document.querySelector("#form");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        let flag = false;
+        const couponCode = document.getElementById("couponcode").value.trim();
+        const category = document.getElementById("category").value.trim();
+        const maxUse = document.getElementById("Maxuse").value.trim();
+        const priceLimit = document.getElementById("pricelimit").value.trim();
+        const coupondiscount = document
+          .getElementById("coupondiscount")
+          .value.trim();
+        const expiry = document.getElementById("expiry").value.trim();
+
+        // Clear previous error messages
+        const couponCodeErr = document.getElementById("couponCodeErr");
+        const couponDiscountErr = document.getElementById("couponDiscountErr");
+        const couponExpiryErr = document.getElementById("couponExpiryErr");
+        const maxUseErr = document.getElementById("maxUseErr");
+        const priceLimitErr = document.getElementById("priceLimitErr");
+        couponCodeErr.innerText = "";
+        couponDiscountErr.innerText = "";
+        couponExpiryErr.innerText = "";
+        maxUseErr.innerText = "";
+        priceLimitErr.innerText = "";
+
+        // Validate Coupon Code
+        if (!couponCode) {
+          couponCodeErr.innerText = "Enter Coupon Code";
+          flag = true;
+        }
+
+        if (!maxUse) {
+          maxUseErr.innerText = "Please enter usage limit.";
+          flag = true;
+        } else if (parseInt(maxUse) < 0) {
+          maxUseError.innerText = "Usage limit must be a positive number.";
+          flag = true;
+        }
+
+        // Validate Coupon Code
+        if (!priceLimit) {
+          priceLimitErr.innerText = "Enter Price Limit";
+          flag = true;
+        } else if (parseInt(priceLimit) < 0) {
+          priceLimitErr.innerText = "Enter limit in positive number";
+          flag = true;
+        }
+
+        // Validate Discount
+        if (!coupondiscount) {
+          couponDiscountErr.innerText = "Please enter a discount.";
+          flag = true;
+        } else if (parseInt(coupondiscount) < 0) {
+          couponDiscountErr.innerText = "Discount must be a positive number.";
+          flag = true;
+        } else if (parseInt(coupondiscount) > 95) {
+          couponDiscountErr.innerText = "Discount must be less than 95";
+          flag = true;
+        }
+
+        // Validate Expiry Date
+        if (!expiry) {
+          couponExpiryErr.innerText = "Please select an expiry date.";
+          flag = true;
+        } else {
+          const currentDate = new Date();
+          const selectedDate = new Date(expiry);
+          if (selectedDate < currentDate) {
+            couponExpiryErr.innerText = "Expiry Date must be in the future.";
+            flag = true;
+          }
+        }
+
+        if (flag) {
+          return;
+        }
+        axios
+          .patch(form.getAttribute("action"), {
+            couponCode,
+            category,
+            maxUse,
+            priceLimit,
+            coupondiscount,
+            expiry,
+          })
+          .then((data) => {
+            if (data) {
+              Swal.fire(
+                "Coupon Successfully Updated",
+                "Click the button",
+                "success"
+              ).then(() => {
+                window.location.href = "/adminCoupon";
+              });
+            }
+            let errorModal = document.getElementById("errorpopup");
+            errorModal.innerText = data.data.message;
+            errorModal.classList.remove("d-none");
+          })
+          .catch((error) => {
+            if (error?.response?.data?.errStatus) {
+              let errorModal = document.getElementById("errorpopup");
+              errorModal.innerText = error.response.data.message;
+              return errorModal.classList.remove("d-none");
+            }
+            console.log(error);
+          });
+      });
+    </script>
+ 

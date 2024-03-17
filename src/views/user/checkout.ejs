@@ -200,13 +200,19 @@
         >Coupon Code</label
       >
       <div class="mt-1 flex rounded-md shadow-sm">
-        <input
+        <select
           type="text"
           id="couponCode"
           name="couponCode"
           class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300"
           placeholder="Enter coupon code..."
-        />
+        >
+        <% for (let i of couponId) { %>
+          <option value="<%= i._id %>">
+              <%= i.couponCode %>
+          </option>
+          <% } %>
+        </select>
         <button
           id="applyCouponButton"
           type="button"
@@ -282,6 +288,41 @@ toastr.options = {
     "hideMethod": "fadeOut"
   };
 
+     document
+          .getElementById("applyCouponButton")
+          .addEventListener("click", async () => {
+            const couponCode = document.getElementById("couponCode").value;
+
+            try {
+              const response = await axios.post("/api/checkCoupon", {
+                couponCode,
+              });
+              const { isValid, discount } = response.data;
+
+              if (isValid) {
+                const totalPrice = document.querySelectorAll(".prdsum");
+                let total = 0
+                totalPrice.forEach(value => total += Number(value.innerHTML));
+                
+                console.log(total);
+                const discountedvalue = Math.floor(total / discount);
+
+                console.log(Number(discountedvalue));
+                // Update UI to show discount
+                document.getElementById("couponDiscountValue").textContent =
+                  discountedvalue;
+                  if(!discountedvalue){
+                    discountedvalue = 0;
+                  }
+                totalSum.innerHTML = total - Number(discountedvalue);
+                document
+                  .getElementById("couponDiscount")
+                  .classList.remove("hidden");
+              }
+            } catch (error) {
+              console.error("Error checking coupon:", error);
+            }
+          });
 
 
 
@@ -294,7 +335,7 @@ toastr.options = {
         // Make a GET request to fetch address data
         const response = await axios.get("/checkaddress");
         const address = response.data;
-        // console.log(address, "res");
+        console.log(address, "res");
         // Show the modal
         addressModal.classList.remove("hidden");
       } catch (error) {
