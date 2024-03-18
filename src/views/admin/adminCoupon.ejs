@@ -145,7 +145,6 @@
 
 
 				<%- include('include/_footer') %>
-					</main>
 					<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
@@ -175,6 +174,7 @@
 
 	<script>
 		function deleteCoupon(couponId) {
+			console.log(couponId);
 			axios.delete(`/deleteCoupon/${couponId}`)
 				.then((data) => {
 					if (data) {
@@ -192,5 +192,3 @@
 				});
 		}
 	</script>
-
-	</body>

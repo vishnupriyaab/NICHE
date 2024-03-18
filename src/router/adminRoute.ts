@@ -29,6 +29,7 @@ adminRoute.get("/adminCoupon", adminCoupon );
 adminRoute.get("/adminAddCoupon", adminAddCoupon );
 adminRoute.get("/editCoupon/:id", adminEditCoupon);
 adminRoute.get("/adminDeletedCoupons",checkAdmin, adminDeletedCoupon);
+adminRoute.get("/offer",checkAdmin, );
 
 
 

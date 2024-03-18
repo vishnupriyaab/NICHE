@@ -1,14 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
-
-interface User {
-    username: string;
-    email: string;
-    phone: number;
-    password: string;
-    block: Boolean;
-    liveStatus: Boolean;
-}
+import User from '../interface/userInterface';
 
 const userSchema = new Schema<User>({
     username: {

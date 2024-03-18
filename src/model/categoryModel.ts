@@ -1,10 +1,6 @@
 import mongoose, { Schema } from "mongoose";
+import Category from "../interface/categoryInterface";
 
-interface Category {
-  name: string;
-  unlistStatus: boolean;
-  edit: boolean;
-}
 
 const categorySchema = new Schema<Category>({
   name: {
@@ -14,6 +10,10 @@ const categorySchema = new Schema<Category>({
   unlistStatus: {
     type: Boolean,
     default: false,
+  },
+  offer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "offerdb",
   },
 });
 const categoryDb = mongoose.model<Category>("categorydb", categorySchema);

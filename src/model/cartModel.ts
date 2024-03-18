@@ -34,6 +34,6 @@ const cartSChema = new Schema<Cart>(
   }
 );
 
- const CartDb = mongoose.model<Cart>("cartdb", cartSChema);
+const CartDb = mongoose.model<Cart>("cartdb", cartSChema);
 
 export default CartDb;

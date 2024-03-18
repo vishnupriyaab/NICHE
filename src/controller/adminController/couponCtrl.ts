@@ -193,24 +193,24 @@ export async function adminDeletedCoupon(req: Request, res: Response) {
   }
 }
 
-export async function deleteCoupon(req: Request, res: Response): Promise<void> {
+export async function deleteCoupon(
+  req: Request,
+  res: Response
+): Promise<Response<any, Record<string, any>> | undefined> {
   try {
-    const couponId = req.params.id;
-    const data = await CouponDb.findByIdAndUpdate(
-      { _id: couponId },
-      { $set: { isDeleted: true } }
-    );
+    const couponId = req.params.id.trim(); // Trim any leading/trailing spaces
+    const data = await CouponDb.findByIdAndUpdate(couponId, {
+      $set: { isDeleted: true },
+    });
     console.log(data);
-    res.status(201).json({ message: "Coupon Deleted" });
+    return res.status(201).json({ message: "Coupon Deleted" });
   } catch (error) {
     console.error("Error deleting coupon:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-    return;
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 }
 
-
-export async function checkCoupon(req:Request, res:Response) {
+export async function checkCoupon(req: Request, res: Response) {
   const { couponCode, productPrice } = req.body;
   console.log(req.body);
 
@@ -228,7 +228,7 @@ export async function checkCoupon(req:Request, res:Response) {
     // Check if coupon is expired
     if (coupon.expiry.getTime() < Date.now()) {
       return res.json({ isValid: false, message: "Coupon has expired." });
-  }  
+    }
 
     // Check if product price is within the price limit defined by the coupon
     if (productPrice > coupon.priceLimit) {

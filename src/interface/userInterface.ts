@@ -17,3 +17,14 @@ declare module "express-session" {
     addressId:string;
   }
 }
+
+interface User {
+  username: string;
+  email: string;
+  phone: number;
+  password: string;
+  block: Boolean;
+  liveStatus: Boolean;
+}
+
+export default User

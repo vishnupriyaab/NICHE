@@ -18,6 +18,7 @@ export async function checkout(req: Request, res: Response) {
     const cart = await CartDb.findOne({ userId: user }).populate("products");
     const wallet = await Walletdb.find({ userId: req.session.userId });
     const address = await Addressdb.find({ userId: user });
+    const coupon = await CouponDb.find({ isDeleted: false });
 
     const productid = await CartDb.findOne({
       userId: new mongoose.Types.ObjectId(user),
@@ -61,6 +62,7 @@ export async function checkout(req: Request, res: Response) {
       user,
       cart,
       wallet,
+      coupon
     });
   } catch (error) {
     console.error("Error during checkout:", error);

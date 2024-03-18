@@ -29,6 +29,10 @@ const productSchema = new Schema<Product>({
     ref: "categorydb",
     required: true,
   },
+  offer:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'offerdb',
+  },
   isHidden: {
     type: Boolean,
     default: false,
