@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
+import IOffer from "../interface/offerInterface";
 
-const offerSchema = new mongoose.Schema({
+const offerSchema = new mongoose.Schema<IOffer>({
   name: {
     type: String,
     required: true,
   },
-  type: {
+  description: {
     type: String,
     required: true,
   },
@@ -27,6 +28,6 @@ const offerSchema = new mongoose.Schema({
   }
 });
 
-const Offerdb = mongoose.model("offerdb", offerSchema);
+const Offerdb = mongoose.model<IOffer>("offerdb", offerSchema);
 
 export default Offerdb;

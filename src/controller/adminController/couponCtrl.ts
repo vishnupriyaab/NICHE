@@ -11,7 +11,7 @@ export async function adminCoupon(req: Request, res: Response) {
     const coupons = await getAllCoupon(null, page);
 
     const totalCoupons = allcoupons.length;
-    console.log(coupons);
+    // console.log(coupons);
 
     res.render("admin/adminCoupon", {
       coupons,
@@ -40,13 +40,21 @@ export async function adminAddCoupon(
 
 export async function addCoupon(req: Request, res: Response): Promise<void> {
   try {
+    console.log("START");
+    
     const { couponCode, category, maxUse, priceLimit, coupondiscount, expiry } =
       req.body;
-    const regexCode = new RegExp(couponCode, "i");
-
-    const duplicate = await CouponDb.findOne({
-      couponCode: { $regex: regexCode },
-    });
+      console.log(req.body,"1");
+      
+      const regexCode = new RegExp(couponCode, "i");
+      
+      console.log(regexCode,"2");
+      
+      const duplicate = await CouponDb.findOne({
+        couponCode: { $regex: regexCode },
+      });
+      
+      console.log(duplicate,"3");
 
     if (
       !couponCode ||
@@ -110,7 +118,7 @@ export async function updateCoupon(req: Request, res: Response): Promise<void> {
 
     const duplicate = await CouponDb.findOne({
       couponCode: { $regex: new RegExp("^" + couponCode + "$", "i") },
-      _id: { $ne: req.params.id }, // Exclude the current coupon being updated
+      _id: { $ne: req.params.id }, 
     });
 
     if (!couponCode) {

@@ -8,7 +8,7 @@ import { addProduct, deleteImage, deleteProduct, getEditproduct, getProducts, ge
 import { blockUser, getUsers, unblockUser} from "../controller/adminController/userCtrl";
 import { adminOrder, updateOrder} from "../controller/adminController/orderCtrl";
 import { addCoupon, adminAddCoupon, adminCoupon, adminDeletedCoupon, adminEditCoupon, deleteCoupon, updateCoupon } from "../controller/adminController/couponCtrl";
-import { offer } from "../controller/adminController/offerCtrl";
+import { addCategoryOffer, offer } from "../controller/adminController/offerCtrl";
 
 
 const adminRoute: Router = Router();
@@ -31,6 +31,7 @@ adminRoute.get("/adminAddCoupon",adminLoggedIn, adminAddCoupon );
 adminRoute.get("/editCoupon/:id",adminLoggedIn, adminEditCoupon);
 adminRoute.get("/adminDeletedCoupons",adminLoggedIn, adminDeletedCoupon);
 adminRoute.get("/adminOffer",adminLoggedIn, offer);
+adminRoute.get("/addCategoryOffer",adminLoggedIn, addCategoryOffer);
 
 
 
@@ -42,7 +43,7 @@ adminRoute.post("/deleteproduct",checkAdmin, deleteProduct);
 adminRoute.post("/restoreproduct",checkAdmin, restoreProduct);
 adminRoute.post('/getCategorySearch',checkAdmin, getCategorySearch);
 adminRoute.post("/updateOrderStatus",checkAdmin, updateOrder)
-adminRoute.post('/addCoupon',checkAdmin, addCoupon)
+adminRoute.post('/addCoupon', addCoupon)
 
 
 

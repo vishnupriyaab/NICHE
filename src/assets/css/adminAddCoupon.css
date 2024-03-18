@@ -46,10 +46,6 @@ body {
 	overflow-x: hidden;
 }
 
-
-
-
-
 /* SIDEBAR */
 #sidebar {
 	position: fixed;
@@ -161,10 +157,6 @@ body {
 	justify-content: center;
 }
 /* SIDEBAR */
-
-
-
-
 
 /* CONTENT */
 #content {
@@ -306,10 +298,6 @@ body {
 }
 /* NAVBAR */
 
-
-
-
-
 /* MAIN */
 #content main {
 	width: 100%;
@@ -360,9 +348,6 @@ body {
 	font-weight: 500;
 }
 
-
-
-
 #content main .box-info {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -406,10 +391,6 @@ body {
 #content main .box-info li .text p {
 	color: var(--dark);	
 }
-
-
-
-
 
 #content main .table-data {
 	display: flex;
@@ -541,7 +522,7 @@ input{
 	line-height: normal;
 	width: 7.9375rem;
 	height: 2.3125rem;
-	background: #1C1C1C;
+	background: #3bb77e;
 	border-radius: 9px;
 }
 .newlyLauch input{
@@ -607,7 +588,7 @@ input::-webkit-inner-spin-button {
 	min-width: 8.375rem;
 	height: 2.1875rem;
 	border: transparent;
-	background-color: #000;
+	background-color: #3bb77e;
 	color: #FFF;
 	font-family: Ubuntu;
 	font-size: 0.875rem;

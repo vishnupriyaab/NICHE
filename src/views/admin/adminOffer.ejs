@@ -1,112 +1,149 @@
 <%- include('include/_header') %>
 
-      <section>
+<section>
+  <h1
+    style="
+      margin-top: 20px;
+      margin-bottom: 20px;
+      color: #292f46;
+      margin-left: 128px;
+    "
+  >
+    OFFER MANAGEMENT
+  </h1>
 
-        <h1 style="
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color:#292f46;
-  ">
-          OFFER MANAGEMENT
-        </h1>
+  <div>
+    <a style="margin-left: 175px" href="/addCategoryOffer"
+      ><button
+        style="
+          background-color: #3bb77e;
+          border: none;
+          color: white;
+          height: 35px;
+          border-radius: 8px;
+        "
+      >
+        Add Category Offer
+      </button></a
+    >
+    <a href="/addProductOffer"
+      ><button
+        style="
+          margin-left: 37px;
+          background-color: #3bb77e;
+          border: none;
+          color: white;
+          height: 35px;
+          border-radius: 8px;
+        "
+      >
+        Add Product Offer
+      </button></a
+    >
+  </div>
 
-        <div>
-          <a href="/addCategoryOffer"><button class="btn1">
-              Add Category Offer
-            </button></a>
-          <a href="/addProductOffer"><button class="btn2">
-              Add Product Offer
-            </button></a>
-        </div>
+  <table style="width: 100%; margin-top: 20px; border-collapse: collapse">
+    <thead
+      style="
+        background-color: rgba(0, 0, 0, 0.256);
+        color: #f5f5f5;
+        max-width: 100%;
+      "
+    >
+      <tr>
+        <th style="padding: 10px; text-align: center; padding-left: 20px">
+          Name
+        </th>
+        <th style="padding: 10px; text-align: center">Discount</th>
+        <th style="padding: 10px; text-align: center">Type</th>
+        <th style="padding: 10px; text-align: center">Expiry Date</th>
+        <th style="padding: 10px; text-align: center">Status</th>
+        <th style="padding: 10px; text-align: center">Delete</th>
+        <th style="padding: 10px; text-align: center">Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for( let i=0; i < offer.length; i++ ) { %>
+      <tr style="border-bottom: 1px solid black; background-color: white">
+        <td style="padding: 10px"><%= offer[i].name %></td>
+        <td style="padding: 10px"><%= offer[i].discount %> %</td>
+        <td style="padding: 10px"><%= offer[i].type %></td>
+        <td style="padding: 10px">
+          <%=
+          offer[i].expiryDate.toISOString().split('T')[0].split('-').reverse().join('-');
+          %>
+        </td>
+        <td style="padding: 10px">
+          <% if (offer[i].isActive === true) { %>
+          <p style="color: green">Active</p>
 
-        <table style="
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-  ">
-          <thead style="background-color: rgba(0, 0, 0, 0.256); color: #f5f5f5;">
-            <tr>
-              <th style="padding: 10px; text-align: left">Name</th>
-              <th style="padding: 10px; text-align: left">Discount</th>
-              <th style="padding: 10px; text-align: left">Type</th>
-              <th style="padding: 10px; text-align: left">Expiry Date</th>
-              <th style="padding: 10px; text-align: left">Delete</th>
-              <th style="padding: 10px; text-align: left">Edit</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for( let i=0; i < offer.length; i++ ) { %>
-              <tr style="border-bottom: 1px solid black; background-color: white">
-                <td style="padding: 10px">
-                  <%= offer[i].name %>
-                </td>
-                <td style="padding: 10px">
-                  <%= offer[i].discount %> %
-                </td>
-                <td style="padding: 10px">
-                  <%= offer[i].type %>
-                </td>
-                <td style="padding: 10px">
-                  <%= offer[i].expiry.toISOString().split('T')[0].split('-').reverse().join('-'); %>
-                </td>
-                <td style="padding: 10px">
-                  <button onclick="deleteOffer('<%= offer[i]._id %>')" class="deletebtn"> Delete </button> 
-                </td>
-                <td style="padding: 10px">
-                  <a href="/editOffer/<%= offer[i]._id %>"><button class="deletebtn"> Edit </button> </a>
-                </td>
-              </tr>
-              <% } %>
-          </tbody>
-        </table>
+          <% }else{ %>
+          <p style="color: red">inactive</p>
 
-      </section>
-      <!-- content-main end// -->
-      
-     
+          <% } %>
+        </td>
+        <td style="padding: 10px">
+          <button
+            onclick="deleteOffer('<%= offer[i]._id %>')"
+            class="deletebtn"
+          >
+            Delete
+          </button>
+        </td>
+        <td style="padding: 10px">
+          <a href="/editOffer/<%= offer[i]._id %>"
+            ><button class="deletebtn">Edit</button>
+          </a>
+        </td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</section>
+<!-- content-main end// -->
 
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.3/axios.min.js"
-        integrity="sha512-JWQFV6OCC2o2x8x46YrEeFEQtzoNV++r9im8O8stv91YwHNykzIS2TbvAlFdeH0GVlpnyd79W0ZGmffcRi++Bw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script src="/js/vendors/select2.min.js"></script>
-      <script src="/js/vendors/perfect-scrollbar.js"></script>
-      <script src="/js/vendors/jquery.fullscreen.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
-        integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.3/axios.min.js"
+  integrity="sha512-JWQFV6OCC2o2x8x46YrEeFEQtzoNV++r9im8O8stv91YwHNykzIS2TbvAlFdeH0GVlpnyd79W0ZGmffcRi++Bw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/vendors/select2.min.js"></script>
+<script src="/js/vendors/perfect-scrollbar.js"></script>
+<script src="/js/vendors/jquery.fullscreen.min.js"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
+  integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-      <!-- Main Script -->
-      <script src="/js/main.js?v=1.1" type="text/javascript"></script>
+<!-- Main Script -->
+<script src="/js/main.js?v=1.1" type="text/javascript"></script>
 
-      <script>
-        function deleteOffer(offerId) {
-        axios
-          .delete(`/deleteoffer/${offerId}`)
-          .then((response) => {
-            if (response) {
-              Swal.fire(
-                "Offer Successfully Deleted",
-                "Click the button",
-                "success"
-              ).then(() => {
-                window.location.reload();
-              });
-            }
-
-            // console.log("success", response.data);
-          })
-          .catch((error) => {
-            console.error("error while deleting", error);
+<script>
+  function deleteOffer(offerId) {
+    axios
+      .delete(`/deleteoffer/${offerId}`)
+      .then((response) => {
+        if (response) {
+          Swal.fire(
+            "Offer Successfully Deleted",
+            "Click the button",
+            "success"
+          ).then(() => {
+            window.location.reload();
           });
-      }
-      </script>
+        }
 
-
-
-
+        // console.log("success", response.data);
+      })
+      .catch((error) => {
+        console.error("error while deleting", error);
+      });
+  }
+</script>
 
 <%- include('include/_footer') %>
-
-

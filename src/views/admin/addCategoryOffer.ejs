@@ -1,0 +1,215 @@
+<%- include('include/_header') %>
+
+
+    <style>
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      input[type="number"] {
+        appearance: textfield;
+      }
+
+     
+
+      h1 {
+        text-align: center;
+      }
+
+      form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        margin-top: 100px;
+        margin-left: 640px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="date"],
+      button [type="submit"],
+      select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      button[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+        background-color: gray;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: rgb(53, 48, 48);
+      }
+
+      button[type="submit"]:hover {
+        background-color: #45a049;
+      }
+
+      #errorpopup{
+        background-color: red;
+        color: white;
+        margin-bottom: 5px;
+        width: fit-content;
+        margin-left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+  </head>
+  <body>
+    <h1 style="
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color:#292f46;
+  ">
+      OFFER MANAGEMENT
+    </h1>
+    <form id="form">
+      <label for="categoryName">Category Name</label>
+      <select
+        style="height: 40px"
+        class="form-control"
+        name="category"
+        id="categoryName"
+      >
+        <% for( let i = 0; i < category.length; i++ ) { %>
+
+        <option><%= category[i].name %></option>
+        <% } %>
+      </select>
+      <p id="categoryError" style="color: red"></p>
+
+      <label for="discount">Discount (%)</label>
+      <input type="number" id="discount" name="discount" />
+      <p id="discountError" style="color: red"></p>
+
+      <label for="expiryDate">Expiry Date</label>
+      <input type="date" id="expiryDate" name="expiryDate" />
+      <p id="expiryDateError" style="color: red"></p>
+      <div id="errorpopup" class="d-none" ></div>
+      <button type="submit">Add</button>
+      <!-- Back Button -->
+      <button type="button" onclick="window.history.back()">Back</button>
+    </form>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
+      integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      const form = document.querySelector("#form");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        let flag = false;
+        const name = document.getElementById("categoryName").value.trim();
+        const discount = document.getElementById("discount").value.trim();
+        const expiry = document.getElementById("expiryDate").value.trim();
+
+        // Clear previous error messages
+        const categoryError = document.getElementById("categoryError");
+        const discountError = document.getElementById("discountError");
+        const dateError = document.getElementById("expiryDateError");
+        discountError.innerText = "";
+        categoryError.innerText = "";
+        dateError.innerText = "";
+
+        // Validate Product Name
+        if (!name) {
+          categoryError.innerText = "Please select a category.";
+          flag = true;
+        }
+
+        // Validate Discount
+        if (!discount) {
+          discountError.innerText = "Please enter a discount.";
+          flag = true;
+        } else if (parseInt(discount) < 0) {
+          discountError.innerText = "Discount must be a positive number.";
+          flag = true;
+        } else if (parseInt(discount) > 95) {
+          discountError.innerText = "Discount must be less than 95";
+          flag = true;
+        }
+
+        // Validate Expiry Date
+        if (!expiry) {
+          dateError.innerText = "Please select an expiry date.";
+          flag = true;
+        } else {
+          const currentDate = new Date();
+          const selectedDate = new Date(expiry);
+          if (selectedDate < currentDate) {
+            dateError.innerText = "Expiry Date must be in the future.";
+            flag = true;
+          }
+        }
+
+        if (flag) {
+          return;
+        }
+        axios
+          .post("/addCategoryOffer", {
+            name,
+            discount,
+            expiry,
+          })
+          .then((data) => {
+            if (data) {
+              Swal.fire(
+                "Offer Successfully Added",
+                "Click the button",
+                "success"
+              ).then(() => {
+                window.location.href = "/offer";
+              });
+            }
+            let errorModal = document.getElementById("errorpopup");
+            errorModal.innerText = data.data.message;
+            errorModal.classList.remove("d-none");
+          })
+          .catch((error) => {
+            if (error?.response?.data?.errStatus) {
+              let errorModal = document.getElementById("errorpopup");
+              errorModal.innerText = error.response.data.message;
+              return errorModal.classList.remove("d-none");
+            }
+            console.log(error);
+          });
+      });
+    </script>
+
+
+<%- include('include/_footer') %>
