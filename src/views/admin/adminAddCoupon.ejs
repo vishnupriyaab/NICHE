@@ -22,18 +22,17 @@
                             </p>
                         </div>
                         <div class="w-50">
-                            <label for="code" class="d-block">Coupon Description</label>
-                            <div class=" position-relative z-10 top-5 py-1.5 px-3 rounded-lg text-danger d-none"
-                                id="errorpopup">
+                            <label for="description" class="d-block">Coupon Description</label>
+                            <div class=" position-relative z-10 top-5 py-1.5 px-3 rounded-lg text-danger d-none">
                             </div>
-                            <input type="text" name="description" id="descriptioncode">
+                            <input type="text" name="description" id="descriptionCode">
                             <p id="descriptionErr" style="color: red">
                             </p>
                         </div>
                     </div>
                     <div class="d-flex align-items-center formRow">
                         <div class="w-50">
-                            <label for="discount" class="d-block">Coupon Discount</label>
+                            <label for="ddiscountErriscount" class="d-block">Coupon Discount</label>
                             <input type="number" name="discount" id="coupondiscount">
                             <p id="discountErr" style="color: red">
                             </p>
@@ -47,7 +46,8 @@
                                         <%= category[i].name %>
                                     </option>
                                     <% } %>
-                            </select>
+                                </select>
+                                <p id="categoryErr" style="color: red"></p>
                         </div>
                     </div>
                     <div class="d-flex align-items-center formRow">
@@ -117,6 +117,7 @@
 
             let flag = false;
             const couponCode = document.getElementById("couponcode").value;
+            const descriptionCode = document.getElementById("descriptionCode").value;
             const category = document.getElementById("category").value;
             const maxUse = document.getElementById("Maxuse").value;
             const priceLimit = document.getElementById("pricelimit").value;
@@ -126,11 +127,15 @@
 
             // Clear previous error messages
             const couponCodeError = document.getElementById("couponCodeErr");
+            const categoryError = document.getElementById("categoryErr");
+            const descriptionError = document.getElementById("descriptionErr");
             const discountError = document.getElementById("discountErr");
             const maxUseError = document.getElementById("maxUseErr");
             const priceLimitError = document.getElementById("priceLimitErr");
             const expiryError = document.getElementById("expiryErr");
             couponCodeError.innerText = "";
+            categoryError.innerText = "";
+            descriptionError.innerText = "";
             discountError.innerText = "";
             maxUseError.innerText = "";
             priceLimitError.innerText = "";
@@ -138,8 +143,29 @@
 
             // Validate Coupon Code
             if (!couponCode) {
-
                 couponCodeError.innerText = "Enter Coupon Code";
+                flag = true;
+            }
+
+            if (!descriptionCode) {
+                descriptionError.innerText = "Enter Coupon Description";
+                flag = true;
+            }
+
+            // Validate Discount
+            if (!coupondiscount) {
+                discountError.innerText = "Please enter a discount.";
+                flag = true;
+            } else if (parseInt(coupondiscount) < 0) {
+                discountError.innerText = "Discount must be a positive number.";
+                flag = true;
+            } else if (parseInt(coupondiscount) > 95) {
+                discountError.innerText = "Discount must be less than 95";
+                flag = true;
+            }
+
+            if (!category) {
+                categoryError.innerText = "Choose any Category";
                 flag = true;
             }
 
@@ -152,6 +178,7 @@
                 flag = true;
             }
 
+
             // Validate Coupon Code
             if (!priceLimit) {
 
@@ -159,19 +186,6 @@
                 flag = true;
             } else if (parseInt(priceLimit) < 0) {
                 priceLimitError.innerText = "Enter limit in positive number";
-                flag = true;
-            }
-
-            // Validate Discount
-            if (!coupondiscount) {
-
-                discountError.innerText = "Please enter a discount.";
-                flag = true;
-            } else if (parseInt(coupondiscount) < 0) {
-                discountError.innerText = "Discount must be a positive number.";
-                flag = true;
-            } else if (parseInt(coupondiscount) > 95) {
-                discountError.innerText = "Discount must be less than 95";
                 flag = true;
             }
 
@@ -193,9 +207,12 @@
 
                 return;
             }
+
+
             axios
                 .post("/addCoupon", {
                     couponCode,
+                    descriptionCode,
                     category,
                     maxUse,
                     priceLimit,

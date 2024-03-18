@@ -42,7 +42,7 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
   try {
     console.log("START");
     
-    const { couponCode, category, maxUse, priceLimit, coupondiscount, expiry } =
+    const { couponCode, descriptionCode, category, maxUse, priceLimit, coupondiscount, expiry } =
       req.body;
       console.log(req.body,"1");
       
@@ -58,6 +58,7 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
 
     if (
       !couponCode ||
+      !descriptionCode||
       !category ||
       !maxUse ||
       !priceLimit ||
@@ -79,6 +80,7 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
 
     const newCoupon = new CouponDb({
       couponCode,
+      descriptionCode,
       category,
       maxUse,
       priceLimit,
@@ -109,7 +111,7 @@ export async function adminEditCoupon(req: Request, res: Response) {
 
 export async function updateCoupon(req: Request, res: Response): Promise<void> {
   try {
-    let { couponCode, category, maxUse, priceLimit, coupondiscount, expiry } =
+    let { couponCode,descriptionCode, category, maxUse, priceLimit, coupondiscount, expiry } =
       req.body;
     const regexCode = new RegExp(couponCode, "i");
     // const duplicate = await Coupondb.findOne({
@@ -122,6 +124,11 @@ export async function updateCoupon(req: Request, res: Response): Promise<void> {
     });
 
     if (!couponCode) {
+      res.status(401).json({ errStatus: true, message: "Field is Required" });
+      return;
+    }
+
+    if (!descriptionCode) {
       res.status(401).json({ errStatus: true, message: "Field is Required" });
       return;
     }
@@ -163,6 +170,7 @@ export async function updateCoupon(req: Request, res: Response): Promise<void> {
       {
         $set: {
           couponCode,
+          descriptionCode,
           category,
           maxUse,
           priceLimit,
