@@ -19,9 +19,7 @@
 			<a href="/adminDeletedCoupons">
 				<button>Deleted Coupons</button>
 			</a>
-			<!-- <a href="/adminUnlistedCoupon">
-	  <button>Go To Unlisted Coupon</button>
-	</a> -->
+			
 		</div>
 
 		<div class="table-data justify-content-center">
@@ -57,21 +55,24 @@
 	  </div> -->
 				<% for( let i=0; i < coupons.length; i++ ) { %>
 					<div class="produts">
-						<div class="productImg d-flex align-items-center justify-content-between">
+						<div class="productImg d-flex align-items-center justify-content-between">						
 							<div class="proImg d-flex gap-3 align-items-center">
+								<p class="mb-1 p-0 text-capitalize"><%= i+1 %></p>
 								<div class="description d-flex align-items-center">
 									<div>
 										<p class="mb-1 p-0 text-capitalize">Coupon Code: <%= coupons[i].couponCode %>
 										</p>
-										<p class="mb-1 p-0 text-capitalize">Discount: <%= coupons[i].coupondiscount %>%
+										<p class="mb-1 p-0 text-capitalize">Coupon Description: <%= coupons[i].couponDescription %>
 										</p>
-										<p class="m-0 text-capitalize">Max uses: <%= coupons[i].maxUse %>
+										<p class="mb-1 p-0 text-capitalize">Discount: <%= coupons[i].coupondiscount %>%
 										</p>
 									</div>
 								</div>
 							</div>
 							<div class="dPrice">
 								<p class="mb-1 p-0">Category: <%= coupons[i].category %>
+								</p>
+								<p class="mb-1 p-0">Max uses: <%= coupons[i].maxUse %>
 								</p>
 								<p class="mb-1 p-0">Use Above: ₹<%= coupons[i].priceLimit %>
 								</p>

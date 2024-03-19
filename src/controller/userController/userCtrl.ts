@@ -92,13 +92,13 @@ export async function contact(req: Request, res: Response) {
 }
 export async function userProfile(req: Request, res: Response) {
   try {
-    console.log("deffrev", req.session.userId);
+    // console.log("deffrev", req.session.userId);
 
     const user = await userDb.findOne({ _id: req.session.userId });
-    console.log(user, "user");
-
+    // console.log(user, "user");
+    const address = await Addressdb.find()
     const cart = await CartDb.findOne({ userId: user }).populate("products");
-    res.render("user/userProfile", { user, cart });
+    res.render("user/userProfile", { user, cart, address });
   } catch (error: any) {
     console.error(error);
   }

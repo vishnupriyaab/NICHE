@@ -6,10 +6,11 @@ const couponSchema = new mongoose.Schema<Coupon>({
       type: String,
       required: true,
     },
-    description: {
+    couponDescription: {
       type: String,
       required: true,
     },
+    
     category: {
       type: String,
       required: true,

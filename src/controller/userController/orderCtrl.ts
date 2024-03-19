@@ -98,11 +98,13 @@ export async function showAddress(req: Request, res: Response) {
 export async function editAddress(req: Request, res: Response) {
   try {
     // Type casting req.session to MySessionData
+    const user = req.session.userId;
+    const cart  = await CartDb.find();
     (req.session as SessionData).addressId = req.params.id;
     const address = await Addressdb.findOne({
       _id: (req.session as SessionData).addressId,
     });
-    res.status(200).render("user/editAddress", { address });
+    res.status(200).render("user/editAddress", { address, user, cart});
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

@@ -3,7 +3,7 @@ import { Document } from "mongoose";
 
 interface Coupon extends Document {
     couponCode: string;
-    description: string,
+    couponDescription:string;
     category: string;
     coupondiscount: number;
     maxUse: number;

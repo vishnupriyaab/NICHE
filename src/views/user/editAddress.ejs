@@ -634,6 +634,13 @@
       height: 4em;
     }
   }
+  .back{
+    /* padding-left: 23.5rem; */
+    margin-left: 369px;
+    border: none;
+    border-radius: 8px 
+  }
+  /*---------- end of media query ----------*/
   /*---------- end of main COntent ----------*/
 </style>
 
@@ -670,6 +677,10 @@
               </defs>
             </svg>
             <h2 class="m-0 p-0 text-capitalize">Edit Address</h2>
+            <button href="#" onclick="goBack()"
+                class="inline-flex items-center back py-2 text-base font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500" style="width: 71px;">
+                Back
+            </button>
           </div>
         </div>
         <!-- <form action="/userUpdateAccount/id" method="post"> -->
@@ -679,7 +690,7 @@
               <div>
                 <div class="Aname">
                   <label for="name">Name</label>
-                  <input name="name" class="d-block" type="text" id="name" value="<%= address.name %>"/>
+                  <input name="name" class="d-block" type="text" id="name" placeholder="Your Name" value="<%= address.name %>"/>
                   <p
                     id="nameError"
                     style="line-height: 1px"
@@ -694,14 +705,14 @@
                     class="d-block"
                     type="text"
                     id="district"
-                    value="<%= address.district %>"
+                    placeholder="Enter District" value="<%= address.district %>"
                   />
                   <p
                     id="districtError"
                     style="line-height: 1px"
                     class="text-red-600 text-xs hidden"
                   >
-                    sfaf
+                   
                   </p>
                 </div>
 
@@ -712,14 +723,13 @@
                     class="d-block"
                     type="text"
                     id="country"
-                    value="<%= address.country %>"
-                  />
+                    placeholder="Enter Country" value="<%= address.country %>"
                   <p
                     id="countryError"
                     style="line-height: 1px"
                     class="text-red-600 text-xs hidden"
                   >
-                    sfaf
+                  
                   </p>
                 </div>
                 <div class="Aphonenumber">
@@ -729,7 +739,7 @@
                     class="d-block text-capitalize"
                     type="number"
                     id="phonenumber"
-                    value="<%= address.phonenumber %>"
+                    placeholder="Enter Phone Number" value="<%= address.phonenumber %>"
                   />
                   <p
                     id="phonenumberError"
@@ -749,7 +759,7 @@
                       name="address_type"
                       value="home"
                       class="rounded-full appearance-none h-4 w-4 border border-gray-300 checked:bg-blue-500 checked:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                      <%=address.addressType==='home' ? 'checked' : '' %> />
+                      <%=address.addressType==='home' ? 'checked' : '' %>
                     />
                     <span class="ml-2 text-sm text-gray-600">Home Address</span>
                   </label>
@@ -759,8 +769,8 @@
                       id="office"
                       name="address_type"
                       value="office"
-                      class="rounded-full appearance-none h-4 w-4 border border-gray-300 checked:bg-blue-500 checked:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                      <%=address.addressType==='office' ? 'checked' : '' %> />
+                      class="rounded-full appearance-none h-4 w-4 border border-gray-300 checked:bg-blue-500 checked:border-blue-500 focus:ring-blue-500 focus:outline-none" 
+                      <%=address.addressType==='office' ? 'checked' : '' %>
                     />
                     <span class="ml-2 text-sm text-gray-600"
                       >Office Address</span
@@ -779,43 +789,41 @@
                 class="saveBtn oneBtn"
                 onclick="updateAddress()"
               >
-                Add Address
+                Update Address
               </button>
             </div>
             <div class="sides">
               <div class="left">
                 <div class="AhNo">
                   <label for="hNo text-xl">House No</label>
-                  <input name="hNo" class="d-block" type="number" id="hNo"  value="<%= address.hNo %>"/>
+                  <input name="hNo" class="d-block" type="number" id="hNo" required  placeholder="Enter House Number" value="<%= address.hNo %>"/>
                   <p
                     id="hNoError"
                     style="line-height: 1px"
                     class="text-red-600 text-xs hidden"
                   >
-                    shwedj
+        
                   </p>
                 </div>
 
                 <div class="Astate">
                   <label for="state">State</label>
-                  <input name="state" class="d-block" type="text" id="state" value="<%= address.state %>"/>
+                  <input name="state" class="d-block" type="text" id="state" placeholder="Enter State" value="<%= address.state %>"/>
                   <p
                     id="stateError"
                     style="line-height: 1px"
                     class="text-red-600 text-xs hidden"
                   >
-                    sfaf
                   </p>
                 </div>
                 <div class="Apin">
                   <label for="pin">PIN Code</label>
-                  <input name="pin" class="d-block" type="number" id="pin" value="<%= address.pin %>"/>
+                  <input name="pin" class="d-block" type="number" id="pin" placeholder="Enter Pincode" value="<%= address.pin %>"/>
                   <p
                     id="pinError"
                     style="line-height: 1px"
                     class="text-red-600 text-xs hidden"
                   >
-                    sfaf
                   </p>
                 </div>
               </div>
@@ -829,7 +837,6 @@
   </div>
 </main>
 <!-- end of main -->
-<!-- <script src="https://cdn.tailwindcss.com"></script>   -->
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
   integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
@@ -839,6 +846,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
+function goBack() {
+            window.history.back();
+        }
+
+
+
   function updateAddress() {
     const name = document.getElementById("name").value.trim();
     const district = document.getElementById("district").value.trim();
@@ -898,7 +912,7 @@
     }
 
     axios
-      .post("/updateaddress", {
+      .put("/updateaddress", {
         name,
         district,
         country,

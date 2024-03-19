@@ -3,16 +3,29 @@ import categoryDb from "../../model/categoryModel";
 import CouponDb from "../../model/couponModel";
 import { Request, Response } from "express";
 
+
+function generateCouponCode() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const length = 8;
+  let couponCode = '';
+
+
+  for (let i = 0; i < length; i++) {
+    couponCode += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return couponCode;
+}
+
 export async function adminCoupon(req: Request, res: Response) {
   try {
     const allcoupons = await CouponDb.find();
     const category = await categoryDb.find();
     const page = req.query.page ? parseInt(req.query.page as string, 10) : null;
     const coupons = await getAllCoupon(null, page);
-
+    
     const totalCoupons = allcoupons.length;
     // console.log(coupons);
-
+    
     res.render("admin/adminCoupon", {
       coupons,
       totalCoupons,
@@ -28,28 +41,34 @@ export async function adminCoupon(req: Request, res: Response) {
 export async function adminAddCoupon(
   req: Request,
   res: Response
-): Promise<void> {
-  try {
-    const category = await categoryDb.find();
-    res.render("admin/adminAddCoupon", { category });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+  ): Promise<void> {
+    try {
+      const category = await categoryDb.find();
+      res.render("admin/adminAddCoupon", { category });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
   }
-}
-
+  
 export async function addCoupon(req: Request, res: Response): Promise<void> {
   try {
     console.log("START");
     
-    const { couponCode, descriptionCode, category, maxUse, priceLimit, coupondiscount, expiry } =
-      req.body;
-      console.log(req.body,"1");
-      
-      const regexCode = new RegExp(couponCode, "i");
-      
-      console.log(regexCode,"2");
-      
+    const { couponDescription, category, maxUse, priceLimit, coupondiscount, expiry } =
+    req.body;
+    // console.log(req.body,"1");
+    
+    
+    
+    // console.log(regexCode,"2");
+    // Generate a random coupon code
+    const couponCode = generateCouponCode();
+
+    console.log("Generated Coupon Code:", couponCode);
+
+    const regexCode = new RegExp(couponCode, "i");
+
       const duplicate = await CouponDb.findOne({
         couponCode: { $regex: regexCode },
       });
@@ -57,8 +76,8 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
       console.log(duplicate,"3");
 
     if (
-      !couponCode ||
-      !descriptionCode||
+     
+      !couponDescription ||
       !category ||
       !maxUse ||
       !priceLimit ||
@@ -80,7 +99,7 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
 
     const newCoupon = new CouponDb({
       couponCode,
-      descriptionCode,
+      couponDescription,
       category,
       maxUse,
       priceLimit,
@@ -111,7 +130,7 @@ export async function adminEditCoupon(req: Request, res: Response) {
 
 export async function updateCoupon(req: Request, res: Response): Promise<void> {
   try {
-    let { couponCode,descriptionCode, category, maxUse, priceLimit, coupondiscount, expiry } =
+    const { couponCode,couponDescription, category, maxUse, priceLimit, coupondiscount, expiry } =
       req.body;
     const regexCode = new RegExp(couponCode, "i");
     // const duplicate = await Coupondb.findOne({
@@ -120,15 +139,14 @@ export async function updateCoupon(req: Request, res: Response): Promise<void> {
 
     const duplicate = await CouponDb.findOne({
       couponCode: { $regex: new RegExp("^" + couponCode + "$", "i") },
-      _id: { $ne: req.params.id }, 
+      _id: { $ne: req.params.id }, // Exclude the current coupon being updated
     });
 
     if (!couponCode) {
       res.status(401).json({ errStatus: true, message: "Field is Required" });
       return;
     }
-
-    if (!descriptionCode) {
+    if (!couponDescription) {
       res.status(401).json({ errStatus: true, message: "Field is Required" });
       return;
     }
@@ -170,7 +188,7 @@ export async function updateCoupon(req: Request, res: Response): Promise<void> {
       {
         $set: {
           couponCode,
-          descriptionCode,
+          couponDescription,
           category,
           maxUse,
           priceLimit,
