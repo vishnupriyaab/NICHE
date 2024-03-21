@@ -55,7 +55,7 @@
             href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big.webp"
           >
             <img
-            id="mainImage"
+              id="mainImage"
               style="max-width: 100%; max-height: 100vh; margin: auto"
               class="rounded-4 fit"
               src="<%= product.imgArr[0] %>"
@@ -96,13 +96,27 @@
               <i class="fas fa-star-half-alt"></i>
               <span class="ms-1"> 4.5 </span>
             </div>
-            <span class="text-muted"
-              ><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span
+            <% if (2 < product.stock) { %>
+            <span class="text-muted  text-danger"
+              ><i class="fas fa-shopping-basket fa-sm mx-1"></i><%=
+              product.stock %> orders</span
             >
-            <span class="text-success ms-2">In stock</span>
+
+            <% }else { %>
+            <p class="text-muted " 
+              ><i class="fas fa-shopping-basket fa-sm mx-1"></i><%=
+              product.stock %> orders</p
+            >
+
+           <% } %>
+            <% if (product.stock>0) { %>
+              <p class="text-success ms-2 fw-bold">In stock</p>
+            <% } else{%>
+              <p class="text-danger ms-2 fw-bold">Out of stock</p>
+              <% } %>
           </div>
           <div class="mb-3">
-            <span class="h5">$<%= product.price %></span>
+            <span class="h5">₹<%= product.price %></span>
           </div>
           <p><%= product.description %></p>
           <div class="row">
@@ -138,13 +152,22 @@
               </select>
             </div>
           </div>
-          <a href="#" class="btn btn-warning shadow-0"> Buy now </a>
-          <a
+          <button href="/checkout" class="btn btn-warning shadow-0">
+            Buy now
+          </button>
+          <% if (product.stock>0) { %>
+            <button
             onclick="addTocart('<%- product._id %>')"
             class="btn btn-primary border shadow-0 icon-hover"
           >
             <i class="me-1 fa fa-shopping-basket"></i> Add to cart
-          </a>
+          </button>
+          <% } else{%>
+            <button
+            class=" btn bg-danger border shadow-0 icon-hover"
+          ></i> Out of Stock
+          </button>
+            <% } %>
           <a
             onclick="addToWishlist( '<%- product._id %>')"
             class="btn btn-light border icon-hover px-3"
@@ -167,11 +190,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-
-function showMainImage(thumbnail) {
-        const mainImage = document.getElementById("mainImage");
-        mainImage.src = thumbnail.src;
-      }
+  function showMainImage(thumbnail) {
+    const mainImage = document.getElementById("mainImage");
+    mainImage.src = thumbnail.src;
+  }
 
   function addTocart(id) {
     axios

@@ -35,6 +35,10 @@ const couponSchema = new mongoose.Schema<Coupon>({
       type: Boolean,
       default: false,
     },
+    userUsed: [{
+      type: String,
+     
+    }],
   });
   
   const CouponDb = mongoose.model<Coupon>("coupondb", couponSchema);

@@ -19,7 +19,7 @@
                             <div class=" position-relative z-10 top-5 py-1.5 px-3 rounded-lg text-danger d-none"
                                 id="errorpopup">
                             </div>
-                            <label for="Cdescription" class="d-block">Coupon Description</label>
+                            <label for="Cdescription" class="d-block">Coupon Name & Description</label>
                             <input type="text" name="Cdescription" id="Cdescription">
                             <p id="descriptionErr" style="color: red">
                             </p>
@@ -182,9 +182,9 @@
             } else if (parseInt(coupondiscount) < 0) {
                 discountError.innerText = "Discount must be a positive number.";
                 flag = true;
-            } else if (parseInt(coupondiscount) > 95) {
-                discountError.innerText = "Discount must be less than 95";
-                flag = true;
+            // } else if (parseInt(coupondiscount) > 95) {
+            //     discountError.innerText = "Discount must be less than 95";
+            //     flag = true;
             }
 
             // Validate Expiry Date

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import Addressdb from "../../model/addressModel";
 import CartDb from "../../model/cartModel";
 import productDb from "../../model/productModel";
-import { Session, SessionData } from "express-session";
+import {  SessionData } from "express-session";
 import userDb from "../../model/userModel";
 import orderDb from "../../model/orderModel";
 import Orderdb from "../../model/orderModel";
@@ -129,6 +129,10 @@ export async function checkAddress(req: Request, res: Response): Promise<void> {
 
 export async function placeorder(req: Request, res: Response) {
   try {
+
+
+
+
     const { paymentMethod, address, price } = req.body;
     const totalsum: any = price.split(" ")[1];
     (req.session as any).sum = totalsum;
@@ -206,9 +210,15 @@ export async function placeorder(req: Request, res: Response) {
       // Save the order to the database
       await newOrder.save();
 
+      const a = await CouponDb.updateOne(
+        { couponCode: req.session.couponCode },
+        { $push: { userUsed: req.session.userId } }
+        );
+  
       delete (req.session as any).address;
       delete (req.session as any).sum;
       delete (req.session as any).paymentMethod;
+      delete (req.session as any).couponCode;
 
       await clearUserCart(req.session.userId);
       res.status(200).json({ message: "Order placed successfully!" });

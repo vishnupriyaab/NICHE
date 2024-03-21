@@ -66,12 +66,12 @@
               <p class="mb-0 mt-4"><%= element.productsDetails.name %></p>
             </td>
             <td>
-              <p class="mb-0 mt-4">$<%= element.productsDetails.price %></p>
+              <p class="mb-0 mt-4">₹<%= element.productsDetails.price %></p>
             </td>
             <td>
               <div class="input-group quantity mt-4" style="width: 100px">
                 <div class="input-group-btn">
-                  <button
+                  <button 
                     class="btn btn-sm btn-minus rounded-circle bg-light border decBtn"
                     onclick="updateQuantity(-1, '<%= element.products.productId %>', '<%= i %>')"
                   >
@@ -91,7 +91,7 @@
                   value="<%= element.products.quantity %>"
                 />
                 <div class="input-group-btn">
-                  <button
+                  <button  
                     class="btn btn-sm btn-plus rounded-circle bg-light border incBtn"
                     onclick="updateQuantity(1, '<%= element.products.productId %>', '<%= i %>')"
                   >
@@ -106,7 +106,7 @@
             </td>
             <td>
               <p class="mb-0 mt-4 snglTotalAmount">
-                $<%= element.productsDetails.price * element.products.quantity
+                ₹<%= element.productsDetails.price * element.products.quantity
                 %>
               </p>
             </td>
@@ -135,7 +135,7 @@
             <div class="d-flex justify-content-between mb-4">
               <h5 class="mb-0 me-4">Subtotal:</h5>
               <p class="mb-0 totalAmt">
-                $<%= products.reduce((total, element)=> { return total +=
+                ₹<%= products.reduce((total, element)=> { return total +=
                 (element.productsDetails.price * element.products.quantity); },
                 0) %>
               </p>
@@ -152,7 +152,7 @@
           >
             <h5 class="mb-0 ps-4 me-4">Total</h5>
             <p class="mb-0 pe-4 totalAmt">
-              $<%= products.reduce((total, element)=> { return total +=
+              ₹<%= products.reduce((total, element)=> { return total +=
               (element.productsDetails.price * element.products.quantity); }, 0)
               %>
             </p>
@@ -223,16 +223,21 @@
 
 
   async function updateQuantity(change, productId, index) {
+    console.log(change,"change");
     let quantityInput = document.getElementById(
       "quantityInput" + productId
     ).value;
+    console.log(quantityInput,"quantityInput1111");
 
     if (!isNaN(quantityInput)) {
-      console.log("in if");
+      console.log(quantityInput,"in if");
       quantityInput += change;
-      if (quantityInput < 0) {
-        currentValue = 1;
+      console.log(quantityInput,'quantityInput');
+      if (quantityInput <= 1) {
+       return alert('JHFKJHF')
+        // currentValue = 1;
       }
+      console.log(quantityInput,"quantityInput22222");
       await reloadContent(productId, change);
       // Reload total amount after updating the quantity
       reloadTotalAmount(index, productId, change);
@@ -243,7 +248,11 @@
     const errMesg = document.getElementById("errMesg" + productId);
     const quantity =
       Number(document.getElementById("quantityInput" + productId).value) +
-      change;
+      change;console.log(quantity,"quantity");
+      if(quantity<1){
+        document.getElementById("quantityInput" + productId).value=2
+        return alert('errrrrr');
+      }
     axios
       .post("/updatequantity", {
         productId,

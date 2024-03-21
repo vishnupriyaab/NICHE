@@ -126,7 +126,7 @@
       <h2 class="text-xl font-semibold mb-4">Select Payment Method</h2>
       <form class="space-y-4">
         <p class="text-red-600 text-sm">
-          Your Wallet Balance: ₹ <%= wallet[0].walletBalance %>
+          Your Wallet Balance: ₹ <%= wallet[0]?.walletBalance %>
         </p>
         <div class="relative">
           <input
@@ -176,8 +176,7 @@
           />
           <label
             for="payment_cod"
-            class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out"
-          >
+            class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out">
             <div class="ml-5">
               <span class="font-semibold">Cash on Delivery (COD)</span>
               <p class="text-gray-600 text-sm">Pay upon delivery</p>
@@ -187,35 +186,41 @@
       </form>
     </div>
   </div>
-
   <!-- Order Summary -->
   <div class="mt-8 bg-white shadow-md rounded-lg p-6">
     <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
-    <!-- Coupon Section -->
+    <!-- Coupon Section --> 
     <div class="mb-4">
       <label for="couponCode" class="block text-sm font-medium text-gray-700"
-        >Coupon Code</label
+      >Coupon Code</label
       >
+      <p class="text-red-500">wertghj</p>
       <div class="mt-1 flex rounded-md shadow-sm">
-        <select
+        <input
           type="text"
           id="couponCode"
           name="couponCode"
           class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300"
           placeholder="Enter coupon code..."
         >
-          <% for (let i of coupon) { %>
-          <option value="<%= i._id %>"><%= i.couponCode %></option>
-          <% } %>
-        </select>
         <button
           id="applyCouponButton"
           type="button"
-          class="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
+          class="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Apply
         </button>
       </div>
+      <div style="padding-top: 10px;">
+        <select
+        class="border-1 w-50" 
+          placeholder="Enter coupon code..."
+        >
+        <option value="">None</option>
+          <% for (let i of coupon) { %>
+          <option value="<%= i._id %>"><%= i.couponCode %> - <%= i.couponDescription %></option>
+          <% } %>
+        </select>
+        </div>
     </div>
     <!-- End Coupon Section -->
     <div class="border-t border-b py-2">
@@ -286,6 +291,12 @@
     hideMethod: "fadeOut",
   };
 
+
+
+
+
+
+
   document
     .getElementById("applyCouponButton")
     .addEventListener("click", async () => {
@@ -296,9 +307,10 @@
           couponCode,
         });
         const { isValid, discount } = response.data;
-
         if (isValid) {
           const totalPrice = document.querySelectorAll(".prdsum");
+          document.getElementById("totalSum").innerHTML = `INR  ${discount}`
+
           let total = 0;
           totalPrice.forEach((value) => (total += Number(value.innerHTML)));
 

@@ -1,17 +1,19 @@
+import { SessionData } from "express-session";
 import { getAllCoupon, getAllDeletedCoupons } from "../../config/dbHelper";
+import CartDb from "../../model/cartModel";
 import categoryDb from "../../model/categoryModel";
 import CouponDb from "../../model/couponModel";
 import { Request, Response } from "express";
 
-
 function generateCouponCode() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const length = 8;
-  let couponCode = '';
-
+  let couponCode = "";
 
   for (let i = 0; i < length; i++) {
-    couponCode += characters.charAt(Math.floor(Math.random() * characters.length));
+    couponCode += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
   }
   return couponCode;
 }
@@ -22,10 +24,10 @@ export async function adminCoupon(req: Request, res: Response) {
     const category = await categoryDb.find();
     const page = req.query.page ? parseInt(req.query.page as string, 10) : null;
     const coupons = await getAllCoupon(null, page);
-    
+
     const totalCoupons = allcoupons.length;
     // console.log(coupons);
-    
+
     res.render("admin/adminCoupon", {
       coupons,
       totalCoupons,
@@ -41,26 +43,30 @@ export async function adminCoupon(req: Request, res: Response) {
 export async function adminAddCoupon(
   req: Request,
   res: Response
-  ): Promise<void> {
-    try {
-      const category = await categoryDb.find();
-      res.render("admin/adminAddCoupon", { category });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    }
+): Promise<void> {
+  try {
+    const category = await categoryDb.find();
+    res.render("admin/adminAddCoupon", { category });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
-  
+}
+
 export async function addCoupon(req: Request, res: Response): Promise<void> {
   try {
     console.log("START");
-    
-    const { couponDescription, category, maxUse, priceLimit, coupondiscount, expiry } =
-    req.body;
+
+    const {
+      couponDescription,
+      category,
+      maxUse,
+      priceLimit,
+      coupondiscount,
+      expiry,
+    } = req.body;
     // console.log(req.body,"1");
-    
-    
-    
+
     // console.log(regexCode,"2");
     // Generate a random coupon code
     const couponCode = generateCouponCode();
@@ -69,14 +75,13 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
 
     const regexCode = new RegExp(couponCode, "i");
 
-      const duplicate = await CouponDb.findOne({
-        couponCode: { $regex: regexCode },
-      });
-      
-      console.log(duplicate,"3");
+    const duplicate = await CouponDb.findOne({
+      couponCode: { $regex: regexCode },
+    });
+
+    console.log(duplicate, "3");
 
     if (
-     
       !couponDescription ||
       !category ||
       !maxUse ||
@@ -130,8 +135,15 @@ export async function adminEditCoupon(req: Request, res: Response) {
 
 export async function updateCoupon(req: Request, res: Response): Promise<void> {
   try {
-    const { couponCode,couponDescription, category, maxUse, priceLimit, coupondiscount, expiry } =
-      req.body;
+    const {
+      couponCode,
+      couponDescription,
+      category,
+      maxUse,
+      priceLimit,
+      coupondiscount,
+      expiry,
+    } = req.body;
     const regexCode = new RegExp(couponCode, "i");
     // const duplicate = await Coupondb.findOne({
     //   couponCode: { $regex: regexCode },
@@ -245,48 +257,75 @@ export async function deleteCoupon(
 }
 
 export async function checkCoupon(req: Request, res: Response) {
-  const { couponCode, productPrice } = req.body;
-  console.log(req.body);
 
+  const { couponCode } = req.body;
+  console.log(req.body, "couponcode and productPric");
+
+  const cart = await CartDb.find({ userId: req.session.userId });
+  let sum: number = 0;
+
+  cart.forEach((cartItem) => {
+    cartItem.products.forEach((product) => {
+      sum += product.price * product.quantity;
+    });
+  });
   try {
     const coupon = await CouponDb.findOne({ couponCode: couponCode });
-
     if (!coupon) {
       // Coupon not found
-      return res.json({
+      return res.status(400).json({
         isValid: false,
         message: "Invalid coupon code. Please try again.",
       });
     }
 
+    const sample = req.session.userId;
+    const usedUser = await CouponDb.findOne({
+      couponCode: coupon.couponCode,
+      userUsed: { $in: [sample] },
+    });
+
+    if (usedUser) {
+      res
+        .status(400)
+        .json({ isValid: false, message: "Coupon is Already Applied.." });
+      return;
+    }
     // Check if coupon is expired
     if (coupon.expiry.getTime() < Date.now()) {
-      return res.json({ isValid: false, message: "Coupon has expired." });
+      return res
+        .status(400)
+        .json({ isValid: false, message: "Coupon has expired." });
     }
-
     // Check if product price is within the price limit defined by the coupon
-    if (productPrice > coupon.priceLimit) {
-      return res.json({
+    console.log(coupon.priceLimit);
+
+    if (sum < coupon.priceLimit) {
+      return res.status(400).json({
         isValid: false,
         message: "Product price exceeds coupon limit.",
       });
     }
-
     // Check if max use count has been exceeded
     if (coupon.maxUse <= 0) {
-      return res.json({
+      return res.status(400).json({
         isValid: false,
         message: "Coupon has reached its maximum usage limit.",
       });
     }
+    const b = await CouponDb.updateOne(
+      { couponCode: coupon.couponCode },
+      { $inc: { maxUse: -1 } }
+    );
 
-    // Update max use count and save coupon
-    coupon.maxUse--;
-    await coupon.save();
+    (req.session as SessionData).couponCode = coupon.couponCode;
 
-    // Calculate discount and send it back to the client
-    const discount = coupon.coupondiscount;
-    return res.json({ isValid: true, discount });
+    const discount = sum - coupon.coupondiscount;
+    return res.json({
+      isValid: true,
+      discount,
+      message: "coupon applied..!!!",
+    });
   } catch (error) {
     console.error("Error checking coupon:", error);
     return res.status(500).json({ error: "Internal Server Error" });

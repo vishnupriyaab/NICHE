@@ -1,5 +1,5 @@
 
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 interface Coupon extends Document {
     couponCode: string;
@@ -10,6 +10,7 @@ interface Coupon extends Document {
     priceLimit: number;
     expiry: Date;
     isDeleted: boolean;
+    userUsed: string;
   }
   
   export default Coupon;

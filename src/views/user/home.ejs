@@ -176,6 +176,11 @@
                         <p class="text-dark">
                           FOR <%= product[i].category.name %>
                         </p>
+                        <% if (product[i].stock>0) { %>
+                          <p class="text-success ms-2 fw-bold">In stock</p>
+                         <% } else{%>
+                          <p class="text-danger ms-2 fw-bold">Out of stock</p>
+                          <% } %>
                         <div
                         class="d-flex justify-content-between flex-lg-wrap"
                         >
@@ -184,13 +189,24 @@
                           <!-- <span class="Offer">20% </span>
                             <del class="org-price">₹4,990</del> -->
                           </p>
-                          <button onclick="addTocart('<%- product[i]._id %>')"
-                          class="btn border border-secondary rounded-pill px-3 text-primary"
-                          ><i
-                          class="fa fa-shopping-bag me-2 text-primary"
-                          ></i>
-                          Add to cart</button
-                          >
+                          
+                          <% if (product[i].stock>0) { %>
+                            <button onclick="addTocart('<%- product[i]._id %>')"
+                              class="btn border border-secondary rounded-pill px-3 text-primary"
+                              ><i
+                              class="fa fa-shopping-bag me-2 text-primary"
+                              ></i>
+                              Add to Cart </button
+                              >
+                          <% } else{%>
+                            <button
+                              class="btn bg-danger border-secondary rounded-pill px-3 text-primary"
+                              ><i
+                              class="fa fa-shopping-bag me-2 text-primary"
+                              ></i>
+                              Out of Stock</button
+                              >
+                            <% } %>
                         </div>
                       </div>
                     </div>
@@ -209,7 +225,7 @@
                     <% if (product[i].category.name=== 'MEN') { %>
                      
                       <div class="col-md-6 col-lg-4 col-xl-3">
-                        <div class="rounded position-relative fruite-item">
+                        <div class="rounded position-relative fruite-item w-500">
                           <div class="fruite-img">
                             <img
                             src="<%= product[i].imgArr[0] %>"
@@ -280,6 +296,7 @@
                         >
                         <h4><%= product[i].name %></h4></h4>
                         <p> FOR <%= product[i].category.name %></p>
+                        
                         <div
                         class="d-flex justify-content-between flex-lg-wrap"
                         >

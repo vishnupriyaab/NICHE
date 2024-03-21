@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IOrder } from "../interface/orderInterface";
+import CouponDb from "./couponModel";
 
 const orderSchema = new mongoose.Schema<IOrder>({
   userId: {
@@ -50,10 +51,14 @@ const orderSchema = new mongoose.Schema<IOrder>({
       },
     },
   ],
-  totalsum: {
+  totalsum: {                                                                                                                                               
     type: Number,
     required: true,
   },
+  couponApplied: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 const Orderdb = mongoose.model<IOrder>("orderdb", orderSchema);

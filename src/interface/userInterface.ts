@@ -15,6 +15,7 @@ declare module "express-session" {
     Email: string
     otp:string
     addressId:string;
+    couponCode: string
   }
 }
 

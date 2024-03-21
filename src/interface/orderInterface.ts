@@ -14,5 +14,6 @@ export interface IOrder extends Document {
     orderStatus: string;
     orderDate: Date;
   }[];
+  couponApplied: boolean;
   totalsum: number;
 }
