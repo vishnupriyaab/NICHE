@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import Addressdb from "../../model/addressModel";
 import CartDb from "../../model/cartModel";
 import productDb from "../../model/productModel";
-import {  SessionData } from "express-session";
+import { SessionData } from "express-session";
 import userDb from "../../model/userModel";
 import orderDb from "../../model/orderModel";
 import Orderdb from "../../model/orderModel";
@@ -62,7 +62,7 @@ export async function checkout(req: Request, res: Response) {
       user,
       cart,
       wallet,
-      coupon
+      coupon,
     });
   } catch (error) {
     console.error("Error during checkout:", error);
@@ -99,12 +99,12 @@ export async function editAddress(req: Request, res: Response) {
   try {
     // Type casting req.session to MySessionData
     const user = req.session.userId;
-    const cart  = await CartDb.find();
+    const cart = await CartDb.find();
     (req.session as SessionData).addressId = req.params.id;
     const address = await Addressdb.findOne({
       _id: (req.session as SessionData).addressId,
     });
-    res.status(200).render("user/editAddress", { address, user, cart});
+    res.status(200).render("user/editAddress", { address, user, cart });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -129,13 +129,16 @@ export async function checkAddress(req: Request, res: Response): Promise<void> {
 
 export async function placeorder(req: Request, res: Response) {
   try {
-
-
-
-
     const { paymentMethod, address, price } = req.body;
-    const totalsum: any = price.split(" ")[1];
+    // console.log(typeof price, price, req.body, "req.bodyyyyyyyyyyyyyyyyyyyy");
+
+    const priceWithoutCurrency = price.replace(/[^\d.]/g, "");
+
+    const totalsum = Number(priceWithoutCurrency);
+    // console.log(totalsum, "totalSummmmmmmmmmmmmmmmmmmmmmmmm");
+
     (req.session as any).sum = totalsum;
+
     // Check if address and paymentMethod are provided
     if (!paymentMethod || !address) {
       throw new Error("Payment method and address are required.");
@@ -213,8 +216,8 @@ export async function placeorder(req: Request, res: Response) {
       const a = await CouponDb.updateOne(
         { couponCode: req.session.couponCode },
         { $push: { userUsed: req.session.userId } }
-        );
-  
+      );
+
       delete (req.session as any).address;
       delete (req.session as any).sum;
       delete (req.session as any).paymentMethod;
@@ -257,8 +260,11 @@ export async function placeorder(req: Request, res: Response) {
           product.products.quantity * product.productsDetails.price);
       }, 0);
 
-      if( !wallet || (sum>wallet.walletBalance)){
-        res.json({ message: "You can't use this Wallet, bc'z your total amount is greater than your wallet amount" });
+      if (!wallet || sum > wallet.walletBalance) {
+        res.json({
+          message:
+            "You can't use this Wallet, bc'z your total amount is greater than your wallet amount",
+        });
       }
     }
   } catch (error: any) {
@@ -356,19 +362,16 @@ async function clearUserCart(userId: string | undefined) {
   try {
     // Find all cart items associated with the user
     const cartItems = await CartDb.findOne({ userId: userId });
-
     if (!cartItems) {
       console.log("User has no items in the cart");
       return; // Exit the function early if cartItems is null
     }
-
     for (const cartItem of cartItems.products) {
       await decreaseProductStock(cartItem.productId, cartItem.quantity);
 
       // Delete the cart item
       await CartDb.findByIdAndDelete(cartItems._id);
     }
-
     console.log("User cart cleared successfully");
   } catch (error) {
     console.error("Error clearing user cart:", error);

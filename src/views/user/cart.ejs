@@ -223,21 +223,16 @@
 
 
   async function updateQuantity(change, productId, index) {
-    console.log(change,"change");
     let quantityInput = document.getElementById(
       "quantityInput" + productId
     ).value;
-    console.log(quantityInput,"quantityInput1111");
 
     if (!isNaN(quantityInput)) {
-      console.log(quantityInput,"in if");
       quantityInput += change;
-      console.log(quantityInput,'quantityInput');
       if (quantityInput <= 1) {
        return alert('JHFKJHF')
         // currentValue = 1;
       }
-      console.log(quantityInput,"quantityInput22222");
       await reloadContent(productId, change);
       // Reload total amount after updating the quantity
       reloadTotalAmount(index, productId, change);

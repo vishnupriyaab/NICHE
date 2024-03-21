@@ -200,7 +200,7 @@
           type="text"
           id="couponCode"
           name="couponCode"
-          class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300"
+          class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm  border-1"
           placeholder="Enter coupon code..."
         >
         <button
@@ -210,14 +210,20 @@
           Apply
         </button>
       </div>
-      <div style="padding-top: 10px;">
+      <div style="padding-top: 15px;">
+        
+        <label for="couponCode" class="block text-sm font-medium text-gray-700 "
+      >Available coupons..!!</label
+      >
         <select
-        class="border-1 w-50" 
-          placeholder="Enter coupon code..."
+        class="border-2 w-50 rounded-md shadow-sm" 
+          style="height: 35px;"
         >
-        <option value="">None</option>
+        <option>Coupons here...</option>
           <% for (let i of coupon) { %>
-          <option value="<%= i._id %>"><%= i.couponCode %> - <%= i.couponDescription %></option>
+            <% if (i.priceLimit <= sum) { %>
+              <option value="<%= i._id %>"><%= i.couponCode %> - <%= i.couponDescription %></option>
+            <% } %>
           <% } %>
         </select>
         </div>
@@ -226,7 +232,7 @@
     <div class="border-t border-b py-2">
       <div class="flex items-center justify-between">
         <p class="text-sm font-medium text-gray-700">Subtotal</p>
-        <p class="font-semibold text-gray-700">INR &nbsp;<%= sum %></p>
+        <p class="font-semibold text-gray-700">₹ &nbsp;<%= sum %></p>
       </div>
       <div class="flex items-center justify-between">
         <p class="text-sm font-medium text-gray-700">Shipping</p>
@@ -241,7 +247,7 @@
     <div class="flex items-center justify-between">
       <p class="text-sm font-medium text-gray-700">Total</p>
       <p id="totalSum" class="text-2xl font-semibold text-gray-700">
-        INR &nbsp;<%= sum %>
+        ₹&nbsp;<%= sum %>
       </p>
     </div>
 
