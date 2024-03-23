@@ -39,6 +39,10 @@
                   onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
                   Order Date: <%=
                     orders[i].orderDetails.orderDate.toISOString().split("T")[0].split("-").reverse().join("-") %>
+                    <br>
+                      <% if (orders[i].couponDiscount) { %>
+                        Coupon Discount: ₹<%= orders[i].couponDiscount %>
+                      <% } %>                    
                 </td>
                 <td class="py-2 px-4 border-b cursor-pointer"
                   onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">

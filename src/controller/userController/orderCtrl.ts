@@ -128,21 +128,31 @@ export async function checkAddress(req: Request, res: Response): Promise<void> {
 }
 
 export async function placeorder(req: Request, res: Response) {
-  try {
-    const { paymentMethod, address, price } = req.body;
-    // console.log(typeof price, price, req.body, "req.bodyyyyyyyyyyyyyyyyyyyy");
+  try { 
+    const { paymentMethod, address, price, activeCoupon } = req.body;
+    console.log(paymentMethod, address, price,activeCoupon, "paymentMethod, address, price");
+    console.log(req.body,"req.body");
+    
+    
 
     const priceWithoutCurrency = price.replace(/[^\d.]/g, "");
 
     const totalsum = Number(priceWithoutCurrency);
-    // console.log(totalsum, "totalSummmmmmmmmmmmmmmmmmmmmmmmm");
 
     (req.session as any).sum = totalsum;
 
     // Check if address and paymentMethod are provided
     if (!paymentMethod || !address) {
       throw new Error("Payment method and address are required.");
+      // res
+      //   .status(200)
+      //   .json({message: "Payment method and address are required." });
+      // return;
+      // console.log("Payment method and address are required");
+      
     }
+    // res.render('your_template', { errorMessage: null });
+
     if (paymentMethod === "Razorpay") {
       var instance = new Razorpay({
         key_id: process.env.RZP_KEY_ID as string,
@@ -187,32 +197,39 @@ export async function placeorder(req: Request, res: Response) {
           $unwind: "$productsDetails",
         },
       ]);
+const usedCoupon = await CouponDb.findOne({couponCode:activeCoupon});
+console.log(usedCoupon,"usedCoupon");
+let couponAmount = 0;
+if(usedCoupon){
+  couponAmount = usedCoupon.coupondiscount
+}
+  
+  const orderItems = cartItems.map((element) => {
+    const orderItem = {
+      productId: element.products.productId,
+      pName: element.productsDetails.name,
+      price: element.productsDetails.price * element.products.quantity,
+      pImage: element.productsDetails.imgArr[0],
+      quantity: element.products.quantity,
+      address: address,
+      paymentMethod: paymentMethod,
+      orderStatus: "Ordered",
+      orderDate: currentDate,
+    }
 
-      const orderItems = cartItems.map((element) => {
-        const orderItem = {
-          productId: element.products.productId,
-          pName: element.productsDetails.name,
-          price: element.productsDetails.price * element.products.quantity,
-          pImage: element.productsDetails.imgArr[0],
-          quantity: element.products.quantity,
-          address: address,
-          paymentMethod: paymentMethod,
-          orderStatus: "Ordered",
-          orderDate: currentDate,
-        };
-        return orderItem;
-      });
-
-      // Create a new order instance
-      const newOrder = new Orderdb({
-        userId: userId,
-        orderDetails: orderItems,
-        totalsum: (req.session as any).sum,
-      });
+    return orderItem;
+  });
+        // Create a new order instance
+        const newOrder = new Orderdb({
+          userId: userId,
+          orderDetails: orderItems,
+          totalsum: (req.session as any).sum,
+          couponDiscount: couponAmount,
+          couponApplied: true,
+        });
+        await newOrder.save();
 
       // Save the order to the database
-      await newOrder.save();
-
       const a = await CouponDb.updateOne(
         { couponCode: req.session.couponCode },
         { $push: { userUsed: req.session.userId } }
@@ -462,6 +479,7 @@ export async function successPage(req: Request, res: Response) {
 
 export async function orderslist(req: Request, res: Response) {
   try {
+    const coupon = await CouponDb.find({userUsed:req.session.userId})
     const cartItems = await CartDb.aggregate([
       {
         $match: { userId: new mongoose.Types.ObjectId(req.session.userId) },
@@ -494,8 +512,8 @@ export async function orderslist(req: Request, res: Response) {
       { $unwind: "$orderDetails" },
       { $sort: { "orderDetails.orderDate": -1 } },
     ]);
-    // console.log(orders);
-    res.render("user/ordersList", { orders, user, cart });
+    
+    res.render("user/ordersList", { orders, user, cart, coupon });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

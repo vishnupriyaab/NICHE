@@ -10,22 +10,43 @@ if (!cloudName || !apiKey || !apiSecret) {
   console.error("Cloudinary configuration error: CLOUD_NAME, CLOUD_API_KEY, and CLOUD_API_SECRET are required.");
 }
 
+
+
+
+export default async function cloudinaryUploadImage(imgArr: string[]) {
+  console.log("wowww");
+
+  
 cloudinary.config({ 
-  CLOUD_NAME: cloudName, 
+  cloud_name: cloudName, 
   api_key: apiKey, 
   api_secret: apiSecret
 });
 
-export default function cloudinaryUploadImage(images: string[]) {
+console.log(cloudName,apiKey,apiSecret,"whatt");
+  
   return new Promise((resolve, reject) => {
+    console.log("One");
+    
     const uploadPromises = [];
-    for (const image of images) {
+    console.log("Two");
+    // console.log(imgArr,"imageeeeeeeeeeeeeeeeeee");
+    
+    for (const image of imgArr) {
+    // console.log(image,"iiiiiiiiiiiiiiiiiiiiiiii");
+    
+      console.log("Three");
       uploadPromises.push(
         new Promise((resolve, reject) => {
-          cloudinary.uploader.upload(image, (error, result) => {
+          console.log("Four");
+          cloudinary.uploader.upload(image, { resource_type: 'image', folder: 'NICHE' },(error, result) => {
+            console.log("five");
             if (result && result.secure_url) {
+              console.log("six");
               resolve(result.secure_url);
+              console.log("seven");
             } else {
+              console.log("eight");
               reject(error);
             }
           });
@@ -35,7 +56,15 @@ export default function cloudinaryUploadImage(images: string[]) {
 
     // Upload all images in parallel
     Promise.all(uploadPromises)
-      .then(resolve)
-      .catch(reject);
-  });
+    .then((urls) => {
+      // Once all images are uploaded, resolve with an array of secure URLs
+      resolve(urls);
+      
+      
+    })
+    .catch((error) => {
+      // If any upload fails, reject with the error
+      reject(error);
+    });
+    });
 }

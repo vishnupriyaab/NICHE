@@ -16,7 +16,7 @@
                         <h2 class="text-danger" id="errorContainer"></h2>
                     </div>
                     <div class="card-body">
-                        <form action="/addproduct" id="addProductForm" method="post">
+                        <form action="/addproduct" id="addProductForm" method="post" enctype="multipart/form-data">
 
                             <div class="mb-4">
                                 <label for="product_name" class="form-label">Product Name</label>
@@ -120,7 +120,7 @@
 
         // JavaScript for custom validation
         document.getElementById('addProductForm').addEventListener('submit', function (event) {
-            var form = event.target;
+        const form = event.target;
 
             if (!form.checkValidity()) {
                 event.preventDefault();
@@ -141,32 +141,33 @@
         const Image = document.getElementById("Image");
 
 
-
+        console.log(Image, "Image");
         addProductForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            let ImageArr = []
+            let imgArr = []
             for (let i = 0; i < Image.files.length; i++) {
-                ImageArr[i] = await convertBase64(Image.files[i]);
+                imgArr[i] = await convertBase64(Image.files[i]);
             }
+            console.log(imgArr, "imgArrrrrrrrrrrrrrrrrrrrrrrr");
 
-            axios
-                .post("/addproduct", {
-                    name: productname.value,
-                    description: description.value,
-                    price: price.value,
-                    stock: stock.value,
-                    category: category.value,
-                    imgArr: ImageArr
-                })
 
+            const formData = {
+                name: productname.value,
+                description: description.value,
+                price: price.value,
+                stock: stock.value,
+                category: category.value,
+                imgArr: imgArr // Pass the array of base64 images
+            };
+
+            axios.post("/addproduct", formData)
                 .then(({ data }) => {
                     if (data) {
-                        Swal.fire("Product Added", "Click the button", "success").then(
-                            () => {
-                                window.location.reload();
-                            }
-                        );
+                        Swal.fire("Product Added", "Click the button", "success").then(() => {
+                            window.location.href = '/addProduct';
+
+                        });
                     }
                 })
                 .catch((error) => {
@@ -214,10 +215,10 @@
             const pricevalue = price.value;
             const stockvalue = stock.value;
             const cat = category.value;
-            const images = Image.value;
+            const imgArr = Image.value;
 
 
-            if (!name || !desc || !pricevalue || !stockvalue || !cat || !images) {
+            if (!name || !desc || !pricevalue || !stockvalue || !cat || !imgArr) {
 
                 errorContainer.innerHTML = '<p>All fields are required</p>';
                 event.preventDefault();
@@ -247,7 +248,7 @@
                 event.preventDefault();
             }
 
-            if (!images.trim()) {
+            if (!imgArr.trim()) {
                 errorImage.innerHTML = '<p>Image is required</p>';
                 event.preventDefault();
             }

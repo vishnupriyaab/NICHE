@@ -16,4 +16,5 @@ export interface IOrder extends Document {
   }[];
   couponApplied: boolean;
   totalsum: number;
+  couponDiscount:number;
 }

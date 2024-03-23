@@ -364,7 +364,7 @@ export async function addToWallet(req: Request, res: Response) {
       return res.json({ order });
     });
 
-    const walletdb = await Walletdb.find();
+    // const walletdb = await Walletdb.find();
   } catch (error) {
     console.error("Error adding to wallet:", error);
     res.status(500).send("Internal Server Error");

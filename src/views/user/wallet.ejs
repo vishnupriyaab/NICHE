@@ -1,177 +1,175 @@
 <%- include('include/_header') %>
 
-    <style>
-      /* Hide the arrow icon for number input */
-      input[type="number"]::-webkit-inner-spin-button,
-      input[type="number"]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
+<style>
+  /* Hide the arrow icon for number input */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 
-      input[type="number"] {
-        -moz-appearance: textfield;
-        appearance: textfield;
-      }
-    </style>
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+</style>
 
-  <body>
-    <div class="bg-white-100 flex flex-col min-h-screen mt-36">
-      <div class="max-w-lg mx-auto mt-10">
-        <h1 class="text-3xl font-semibold text-center mb-6">User Wallet</h1>
+<body>
+  <div class="bg-white-100 flex flex-col min-h-screen mt-36">
+    <div class="max-w-lg mx-auto mt-10">
+      <h1 class="text-3xl font-semibold text-center mb-6">User Wallet</h1>
 
-        <!-- Add Transaction Form -->
-        <div class="bg-white p-4 rounded-md shadow-md mb-6">
-          <% if (wallet && wallet.length > 0) { %>
-            <h2 class="text-xl font-semibold mb-4">
-              Wallet Balance: ₹ <%= wallet[0].walletBalance %>
-            </h2>
-            <% } else { %>
-              <h2 class="text-xl font-semibold mb-4">
-                Wallet Balance: ₹ 0
-              </h2>
-          <% } %>
-          
-          <div class="flex items-center mb-2">
-            <label for="amount" class="mr-4">Amount:</label>
+      <!-- Add Transaction Form -->
+      <div class="bg-white p-4 rounded-md shadow-md mb-6">
+        <% if (wallet && wallet.length > 0) { %>
+        <h2 class="text-xl font-semibold mb-4">
+          Wallet Balance: ₹ <%= wallet[0].walletBalance %>
+        </h2>
+        <% } else { %>
+        <h2 class="text-xl font-semibold mb-4">Wallet Balance: ₹ 0</h2>
+        <% } %>
 
-            <input
-              type="number"
-              id="amount"
-              name="amount"
-              class="border border-gray-300 px-3 py-1 rounded-md"
-            />
-          </div>
-          <div
-            class="mb-4 text-center relative text-red-600 hidden"
-            id="errorpopup"
-          ></div>
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              onclick="addToWallet()"
-              class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-            >
-              Add To Wallet
-            </button>
-          </div>
+        <div class="flex items-center mb-2">
+          <label for="amount" class="mr-4">Amount:</label>
+
+          <input
+            type="number"
+            id="amount"
+            name="amount"
+            class="border border-gray-300 px-3 py-1 rounded-md"
+          />
         </div>
-
-        <!-- Transaction History -->
-        <div class="bg-white p-4 rounded-md shadow-md">
-          <h2 class="text-xl font-semibold mb-4">Transaction History</h2>
-          <table class="w-full">
-            <% if (wallet && wallet.length > 0) { %>
-
-            <thead>
-              <tr>
-                <th class="py-2">Amount</th>
-                <th class="py-2">Type</th>
-                <th class="py-2">Date</th>
-              </tr>
-            </thead>
-            
-            <tbody>
-             
-              <% wall.forEach(transaction => { %>
-              <tr class="border-b">
-                <td class="py-2">₹  <%= transaction.sortedArray.amount %></td>
-                <% if (transaction.sortedArray.type == '+ CREDIT') { %>
-                <td class="py-2 text-green-600"><%= transaction.sortedArray.type %></td>
-                <% } else if (transaction.sortedArray.type == '- DEBIT') { %>
-                <td class="py-2 text-red-600"><%= transaction.sortedArray.type %></td>
-                <% } %>
-
-                <td class="py-2">
-                  <%=
-                  transaction.sortedArray.transactionDate.toISOString().split('T')[0].split('-').reverse().join('-')
-                  %>
-                </td>
-              </tr>
-              <% }) %>
-            </tbody>
-            <% } else { %>
-              <h2 class="text-xl font-semibold mb-4">
-                No Transaction
-              </h2>
-            <% } %>
-          </table>
+        <div
+          class="mb-4 text-center relative text-red-600 hidden"
+          id="errorpopup"
+        ></div>
+        <div class="flex justify-end">
+          <button
+            type="submit"
+            onclick="addToWallet()"
+            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          >
+            Add To Wallet
+          </button>
         </div>
       </div>
+
+      <!-- Transaction History -->
+      <div class="bg-white p-4 rounded-md shadow-md">
+        <h2 class="text-xl font-semibold mb-4">Transaction History</h2>
+        <table class="w-full">
+          <% if (wallet && wallet.length > 0) { %>
+
+          <thead>
+            <tr>
+              <th class="py-2">Amount</th>
+              <th class="py-2">Type</th>
+              <th class="py-2">Date</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% wall.forEach(transaction => { %>
+            <tr class="border-b">
+              <td class="py-2">₹ <%= transaction.sortedArray.amount %></td>
+              <% if (transaction.sortedArray.type == '+ CREDIT') { %>
+              <td class="py-2 text-green-600">
+                <%= transaction.sortedArray.type %>
+              </td>
+              <% } else if (transaction.sortedArray.type == '- DEBIT') { %>
+              <td class="py-2 text-red-600">
+                <%= transaction.sortedArray.type %>
+              </td>
+              <% } %>
+
+              <td class="py-2">
+                <%=
+                transaction.sortedArray.transactionDate.toISOString().split('T')[0].split('-').reverse().join('-')
+                %>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+          <% } else { %>
+          <h2 class="text-xl font-semibold mb-4">No Transaction</h2>
+          <% } %>
+        </table>
+      </div>
     </div>
-  
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
-      integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script>
-      // console.log("<%=messages?.success%>");
-      if ("<%=messages?.success%>") {
-        Swal.fire(
-          "Successfully Added To Wallet",
-          "Click the button",
-          "success"
-        ).then(() => {
-          window.location.reload();
-        });
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
+    integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script>
+    if ("<%=messages?.success%>") {
+      Swal.fire(
+        "Successfully Added To Wallet",
+        "Click the button",
+        "success"
+      ).then(() => {
+        window.location.reload();
+      });
+    }
+  </script>
+  <script>
+    function addToWallet() {
+      const amount = document.getElementById("amount").value;
+
+      if (!amount) {
+        let errorModal = document.getElementById("errorpopup");
+        errorModal.innerText = "Enter Amount";
+        errorModal.classList.remove("hidden");
+      } else {
+        axios
+          .post("/addToWallet", {
+            amount,
+          })
+          .then(function (response) {
+            // console.log(response.data);
+            if (response.data?.order) {
+              var options = {
+                key: "rzp_test_wV96XGA4SLLOo7",
+                amount: response.data?.order.amount,
+                currency: "INR",
+                name: "Acme Corp",
+                description: "Test Transaction",
+                image: "https://example.com/your_logo",
+                order_id: response.data?.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                callback_url: "/walletRazorpay",
+                prefill: {
+                  name: "Gaurav Kumar",
+                  email: "gaurav.kumar@example.com",
+                  contact: "9000090000",
+                },
+                notes: {
+                  address: "Razorpay Corporate Office",
+                },
+                theme: {
+                  color: "#3399cc",
+                },
+              };
+              var rzp1 = new Razorpay(options);
+              rzp1.open();
+            }
+          })
+          .catch(function (error) {
+            console.error("Error:", error);
+            console
+              .log
+              // "Failed to adding amount to wallet. Please try again later."
+              ();
+          });
       }
-    </script>
-    <script>
-      function addToWallet() {
-        const amount = document.getElementById("amount").value;
-
-        if (!amount) {
-          let errorModal = document.getElementById("errorpopup");
-          errorModal.innerText = "Enter Amount";
-          errorModal.classList.remove("hidden");
-        } else {
-          axios
-            .post("/addToWallet", {
-              amount,
-            })
-            .then(function (response) {
-              // console.log(response.data);
-              if (response.data?.order) {
-                var options = {
-                  key: "rzp_test_wV96XGA4SLLOo7",
-                  amount: response.data?.order.amount,
-                  currency: "INR",
-                  name: "Acme Corp",
-                  description: "Test Transaction",
-                  image: "https://example.com/your_logo",
-                  order_id: response.data?.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                  callback_url: "/walletRazorpay",
-                  prefill: {
-                    name: "Gaurav Kumar",
-                    email: "gaurav.kumar@example.com",
-                    contact: "9000090000",
-                  },
-                  notes: {
-                    address: "Razorpay Corporate Office",
-                  },
-                  theme: {
-                    color: "#3399cc",
-                  },
-                };
-                var rzp1 = new Razorpay(options);
-                rzp1.open();
-              }
-            })
-            .catch(function (error) {
-              console.error("Error:", error);
-              console.log(
-                // "Failed to adding amount to wallet. Please try again later."
-              );
-            });
-        }
-      }
-    </script>
-  </body>
-  <%- include('include/_footer') %>
-
+    }
+  </script>
+</body>
+<%- include('include/_footer') %>

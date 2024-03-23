@@ -2,15 +2,15 @@ import mongoose from "mongoose";
 import IOffer from "../interface/offerInterface";
 
 const offerSchema = new mongoose.Schema<IOffer>({
-  name: {
+  offerName: {
     type: String,
     required: true,
   },
-  description: {
+  offerDescription: {
     type: String,
     required: true,
   },
-  discount: {
+  discountPercentage: {
     type: Number,
     required: true,
   },

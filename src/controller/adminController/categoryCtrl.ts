@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
 import categoryDb from "../../model/categoryModel";
 import { getListedAllCategories } from "../../config/dbHelper";
+import Offerdb from "../../model/offerModel";
 
 export async function getCategory(req: Request, res: Response) {
   try {
+    const currentDate = new Date();
+    const offers = await Offerdb.find({
+      expiryDate:{$gte: currentDate}  , isActive:true  })
+    
     const selectedCat = req.query.filter || "ALL";
-
     const allCategories = await categoryDb.find();
     const page: number | undefined =
       typeof req.query.page === "string" ? parseInt(req.query.page) : undefined;
@@ -17,6 +21,7 @@ export async function getCategory(req: Request, res: Response) {
       category,
       totalCategories,
       currentPage: Number(req.query.page),
+      offers
     });
   } catch (error: any) {
     console.error(error);

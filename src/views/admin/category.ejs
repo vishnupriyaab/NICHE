@@ -8,16 +8,19 @@
 
             <div>
                 <select id="categorySelect" name="cars" class="form-control bg-white" onchange="handleOptionChange()">
-                    <option value="ALL" <%= (selectedCat === 'ALL')?'selected':'' %> >All</option>
-                    <% for( let i = 0; i < category.length; i++ ) { %>
-                        <option value="<%= category[i].name %>" <%= (selectedCat === category[i].name)?'selected':'' %> ><%= category[i].name %></option>
-                    <% } %>
-                </select>               
+                    <option value="ALL" <%=(selectedCat==='ALL' )?'selected':'' %> >All</option>
+                    <% for( let i=0; i < category.length; i++ ) { %>
+                        <option value="<%= category[i].name %>" <%=(selectedCat===category[i].name)?'selected':'' %> >
+                            <%= category[i].name %>
+                        </option>
+                        <% } %>
+                </select>
             </div>
-            
-            
+
+
             <div style="display: flex;">
-                <input type="text" placeholder="Search Categories" class="form-control bg-white" onkeyup="sendData(this)"/>
+                <input type="text" placeholder="Search Categories" class="form-control bg-white"
+                    onkeyup="sendData(this)" />
                 <button type="submit" style="border: none;"><i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </div>
@@ -67,13 +70,14 @@
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Action</th>
+                                        <th style="text-align: center;">Offers</th>
                                         <th class="text-center">Edit</th>
                                     </tr>
                                 </thead>
 
                                 <tbody id="searchResult">
                                     <% category.map((value, index)=> { %>
-                                        <% if ((selectedCat === value.name) || (selectedCat === 'ALL')) { %>
+                                        <% if ((selectedCat===value.name) || (selectedCat==='ALL' )) { %>
                                             <tr>
                                                 <td class="text-center">
                                                 <td>
@@ -83,19 +87,28 @@
                                                     <%= value.name %>
                                                 </td>
                                                 <td>
-                                                    <% if (value.unlistStatus == true) { %>
-                                                        <button onclick="unlistCategory('<%= value._id %>')" id="Listbtn"
+                                                    <% if (value.unlistStatus==true) { %>
+                                                        <button onclick="unlistCategory('<%= value._id %>')"
+                                                            id="Listbtn"
                                                             class="btn btn-light rounded btn-sm font-sm justify-content-center"
                                                             style="color: red; width: 50px; height: 25px">Unlist
                                                         </button>
-                                                    <% } else { %>
-                                                        <button onclick="listCategory('<%= value._id %>')" id="Listbtn"
-                                                            class="btn btn-light rounded btn-sm font-sm justify-content-center"
-                                                            style="color: green; width: 50px; height: 25px">List
-                                                        </button>
-                                                    <% } %>
+                                                        <% } else { %>
+                                                            <button onclick="listCategory('<%= value._id %>')"
+                                                                id="Listbtn"
+                                                                class="btn btn-light rounded btn-sm font-sm justify-content-center"
+                                                                style="color: green; width: 50px; height: 25px">List
+                                                            </button>
+                                                            <% } %>
                                                 </td>
-                                                
+                                                <td style="text-align: center;">
+                                                    <button
+                                                        onclick="offerListing(this,'<%= value._id %>','<%= value.unlistStatus = true %>')"
+                                                        class="btn btn-light rounded btn-sm font-sm justify-content-center"
+                                                        style="color: white; background-color: #3BB77E; width: 100px; height: 25px">View
+                                                        Offers
+                                                    </button>
+                                                </td>
 
                                                 <td class="text-center">
                                                     <a href="#"
@@ -107,8 +120,8 @@
 
                                                 </td>
                                             </tr>
-                                        <% } %>
-                                    <% }) %>
+                                            <% } %>
+                                                <% }) %>
                                 </tbody>
                             </table>
                         </div>
@@ -122,226 +135,226 @@
 
     <% if (totalCategories !==0) { %>
         <div class="row mb-4">
-          <div class="col-12">
-            <div class="text-center pagenationButton">
-              <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                  <li class="page-item">
-                    <a
-                      class="page-link"
-                      href="/adminCategory?page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>"
-                      aria-label="Previous"
-                    >
-                      <span aria-hidden="true">&laquo;</span>
-                    </a>
-                  </li>
-                  <% for( let i=0; i < (Math.ceil(totalCategories / 10)); i++ ) { %>
-                  <li class="page-item">
-                    <a class="page-link" href="/adminCategory?page=<%= (i + 1) %>">
-                      <%= (i + 1) %>
-                    </a>
-                  </li>
-                  <% } %>
-                  <li class="page-item">
-                    <a
-                      class="page-link"
-                      href="/adminCategory?page=<%= (((Math.ceil(totalCategories / 10)) === currentPage) || (Math.ceil(totalCategories / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>"
-                      aria-label="Next"
-                    >
-                      <span aria-hidden="true">&raquo;</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+            <div class="col-12">
+                <div class="text-center pagenationButton">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="/adminCategory?page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>"
+                                    aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <% for( let i=0; i < (Math.ceil(totalCategories / 10)); i++ ) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/adminCategory?page=<%= (i + 1) %>">
+                                        <%= (i + 1) %>
+                                    </a>
+                                </li>
+                                <% } %>
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                            href="/adminCategory?page=<%= (((Math.ceil(totalCategories / 10)) === currentPage) || (Math.ceil(totalCategories / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>"
+                                            aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
-          </div>
         </div>
         <% } %>
 
-    <%- include('include/_footer') %>
-        </main>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+            <%- include('include/_footer') %>
+                </main>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
-            integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
+                    integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
+                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
 
-        <script src="/js/vendors/jquery-3.6.0.min.js"></script>
-        <script src="/js/vendors/bootstrap.bundle.min.js"></script>
-        <script src="/js/vendors/select2.min.js"></script>
-        <script src="/js/vendors/perfect-scrollbar.js"></script>
-        <script src="/js/vendors/jquery.fullscreen.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script src="/js/vendors/jquery-3.6.0.min.js"></script>
+                <script src="/js/vendors/bootstrap.bundle.min.js"></script>
+                <script src="/js/vendors/select2.min.js"></script>
+                <script src="/js/vendors/perfect-scrollbar.js"></script>
+                <script src="/js/vendors/jquery.fullscreen.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <!-- Main Script -->
-        <script src="/js/main.js?v=1.1" type="text/javascript"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js" integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script>
-            
+                <!-- Main Script -->
+                <script src="/js/main.js?v=1.1" type="text/javascript"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
+                    integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ=="
+                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-           async function sendData(e){
-                            try {
-                    const searchResult = document.getElementById('searchResult');
-                   const response = await axios.post('/getCategorySearch', {payLoad: e.value});
-                   const payLoad = response.data.payLoad;
-                   searchResult.innerHTML = '';
-                   if(payLoad.length < 1){
-                    searchResult.innerHTML = '<tr><td class="text-center" colspan="5">Sorry nothing...</td></tr>';
-                    return;
-                   }
+                    <script>
+                        
+                    </script>
+                <script>
+                    async function sendData(e) {
+                        try {
+                            const searchResult = document.getElementById('searchResult');
+                            const response = await axios.post('/getCategorySearch', { payLoad: e.value });
+                            const payLoad = response.data.payLoad;
+                            searchResult.innerHTML = '';
+                            if (payLoad.length < 1) {
+                                searchResult.innerHTML = '<tr><td class="text-center" colspan="5">Sorry nothing...</td></tr>';
+                                return;
+                            }
 
-                   let html = '';
-                   payLoad.forEach((value, index) => {
-                    html += `<tr>
+                            let html = '';
+                            payLoad.forEach((value, index) => {
+                                html += `<tr>
                                 <td class="text-center">
                                 <td>${index + 1}</td>
                                 <td>${value.name}</td>`;
 
-                    if (value.unlistStatus) {
-                        html += `<td>
-                                    <button onclick="unlistCategory('${value._id }')" id="Listbtn" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="color: red; width: 50px; height: 25px">Unlist</button>
+                                if (value.unlistStatus) {
+                                    html += `<td>
+                                    <button onclick="unlistCategory('${value._id}')" id="Listbtn" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="color: red; width: 50px; height: 25px">Unlist</button>
                                 </td>`;
-                    } else {
-                        html += `<td>
-                                    <button onclick="listCategory('${ value._id }')" id="Listbtn" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="color: green; width: 50px; height: 25px">List</button>
+                                } else {
+                                    html += `<td>
+                                    <button onclick="listCategory('${value._id}')" id="Listbtn" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="color: green; width: 50px; height: 25px">List</button>
                                 </td>`;
-                    }
+                                }
 
-                    html += `<td class="text-center">
-                                <a href="#" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="width: 50px; height: 25px" onclick="editDiv('${ value.name }', '${ value._id }')"><i>Edit</i></a>
+                                html += `<td class="text-center">
+                                <a href="#" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="width: 50px; height: 25px" onclick="editDiv('${value.name}', '${value._id}')"><i>Edit</i></a>
                             </td>`
 
-                    html += `</td>
+                                html += `</td>
                         </tr>`;
-                });
+                            });
 
-                searchResult.innerHTML = html;
-                   return
-                } catch (err) {
-                    
-                }
-            }
+                            searchResult.innerHTML = html;
+                            return
+                        } catch (err) {
 
-
-            function handleOptionChange() {
-                const selectedOption = document.getElementById('categorySelect').value;
-
-                // Redirect based on the selected option
-                if (selectedOption === 'ALL') {
-                    window.location.href = '/category';
-                } else {
-                    const url = `/category?filter=${selectedOption}`;
-                    window.location.href = url;
-                }
-
-                // Set the selectedIndex of the select box to the selected option
-                selectBox.selectedIndex = selectBox.selectedIndex;
-            }
-
-
-
-
-            const unlistCategory = (id) => {
-
-                axios.patch("/unlistCategory", {
-                    id: id,
-                }).then((value) => {
-                    Swal.fire({
-                        title: "Good job!",
-                        text: "Successfully Unlisted",
-                        icon: "success"
-                    });
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 1000);
-                }).catch((error) => {
-                    window.location.reload();
-                    console.log(error);
-                })
-            }
-
-            const listCategory = (id) => {
-
-                axios.patch("/listCategory", {
-                    id: id,
-                }).then((value) => {
-                    Swal.fire({
-                        title: "Good job!",
-                        text: "Successfully Listed",
-                        icon: "success"
-                    });
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 1000);
-                }).catch((error) => {
-                    window.location.reload();
-                    console.log(error);
-                })
-            }
-
-            const addCategory = () => {
-                const name = document.getElementById("category");
-                const categoryErr = document.getElementById("categoryErr");
-                axios.post("/addcategory", {
-                    name: name.value,
-                }).then((res) => {
-                    categoryErr.innerHTML = res.data;
-
-                    if (res.data == "success") {
-
-                        window.location.reload();
+                        }
                     }
-                }).catch((error) => {
-                    if (error) {
-                        categoryErr.innerHTML = error.response.data.errors[0].msg;
+
+
+                    function handleOptionChange() {
+                        const selectedOption = document.getElementById('categorySelect').value;
+
+                        // Redirect based on the selected option
+                        if (selectedOption === 'ALL') {
+                            window.location.href = '/category';
+                        } else {
+                            const url = `/category?filter=${selectedOption}`;
+                            window.location.href = url;
+                        }
+
+                        // Set the selectedIndex of the select box to the selected option
+                        selectBox.selectedIndex = selectBox.selectedIndex;
                     }
-                })
-            }
 
-            const editcategory = () => {
-                const name = document.getElementById("category1");
-                const id = document.getElementById("category2");
-                const editCategoryErr = document.getElementById("editCategoryErr");
-                axios.patch("/editcategory", {
-                    name: name.value,
-                    id: id.value
-                }).then((res) => {
-                    editCategoryErr.innerHTML = res.data;
 
-                    if (res.data == "success") {
 
-                        window.location.reload();
+
+                    const unlistCategory = (id) => {
+
+                        axios.patch("/unlistCategory", {
+                            id: id,
+                        }).then((value) => {
+                            Swal.fire({
+                                title: "Good job!",
+                                text: "Successfully Unlisted",
+                                icon: "success"
+                            });
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 1000);
+                        }).catch((error) => {
+                            window.location.reload();
+                            console.log(error);
+                        })
                     }
-                }).catch((error) => {
-                    if (error) {
-                        editCategoryErr.innerHTML = error.response.data.errors[0].msg;
+
+                    const listCategory = (id) => {
+
+                        axios.patch("/listCategory", {
+                            id: id,
+                        }).then((value) => {
+                            Swal.fire({
+                                title: "Good job!",
+                                text: "Successfully Listed",
+                                icon: "success"
+                            });
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 1000);
+                        }).catch((error) => {
+                            window.location.reload();
+                            console.log(error);
+                        })
                     }
-                })
-            }
+
+                    const addCategory = () => {
+                        const name = document.getElementById("category");
+                        const categoryErr = document.getElementById("categoryErr");
+                        axios.post("/addcategory", {
+                            name: name.value,
+                        }).then((res) => {
+                            categoryErr.innerHTML = res.data;
+
+                            if (res.data == "success") {
+
+                                window.location.reload();
+                            }
+                        }).catch((error) => {
+                            if (error) {
+                                categoryErr.innerHTML = error.response.data.errors[0].msg;
+                            }
+                        })
+                    }
+
+                    const editcategory = () => {
+                        const name = document.getElementById("category1");
+                        const id = document.getElementById("category2");
+                        const editCategoryErr = document.getElementById("editCategoryErr");
+                        axios.patch("/editcategory", {
+                            name: name.value,
+                            id: id.value
+                        }).then((res) => {
+                            editCategoryErr.innerHTML = res.data;
+
+                            if (res.data == "success") {
+
+                                window.location.reload();
+                            }
+                        }).catch((error) => {
+                            if (error) {
+                                editCategoryErr.innerHTML = error.response.data.errors[0].msg;
+                            }
+                        })
+                    }
 
 
-            const editDiv = (value, id) => {
+                    const editDiv = (value, id) => {
 
-                const editDiv = document.getElementById("editDiv");
-                const editPanel = document.getElementById("editPanel");
-                const categoryInput = document.getElementById("category");
-                document.getElementById("category1").value = value;
-                document.getElementById("category2").value = id;
-
-
-                editDiv.style.display = 'none';
-                editPanel.style.display = 'block';
-                // Add GSAP animation
-                gsap.from("#editPanel", { duration: 0.5, rotationY: 90, ease: "power3.out" });
-            }
+                        const editDiv = document.getElementById("editDiv");
+                        const editPanel = document.getElementById("editPanel");
+                        const categoryInput = document.getElementById("category");
+                        document.getElementById("category1").value = value;
+                        document.getElementById("category2").value = id;
 
 
+                        editDiv.style.display = 'none';
+                        editPanel.style.display = 'block';
+                        // Add GSAP animation
+                        gsap.from("#editPanel", { duration: 0.5, rotationY: 90, ease: "power3.out" });
+                    }
 
 
-        </script>
 
-        </body>
 
-        </html>
+                </script>
+
+                </body>
+
+                </html>

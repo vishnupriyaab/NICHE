@@ -3,15 +3,26 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import connectionDB from "./config/connetDb";
 import userRoute from "./router/userRouter";
 import path from "path";
-import morgan from "morgan";
 import session, { MemoryStore } from "express-session"
 import adminRoute from "./router/adminRoute";
 import flash from 'express-flash'
+import fileupload from "express-fileupload";
+import BodyParser  from 'body-parser';
+
 
 const app: Application = express();
-app.use(express.json({ limit: "10mb" }));
+
+
+app.use(fileupload({
+  useTempFiles:true,    
+  limits: { fileSize: 2 * 1024 * 1024 },
+}))
+
+// app.use(BodyParser.json({limit: }));
+
+app.use(express.json({ limit: "100mb" }));
 app.use(
-  express.urlencoded({ limit: "10mb", extended: true, parameterLimit: 50000 })
+  express.urlencoded({ limit: "100mb", extended: true, parameterLimit: 50000 })
 );
 app.use((req, res, next) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); 

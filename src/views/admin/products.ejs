@@ -94,8 +94,16 @@
                                         </td>
                                         <td>
 
-                                            <button type="button" class="btn btn-danger btn-sm"
-                                                onclick="deleteproduct('<%= product[i]._id %>')">Delete</button>
+                                            <!-- <button type="button" class="btn btn-danger btn-sm"
+                                                onclick="deleteproduct('<%#= product[i]._id %>')">Delete</button> -->
+                                            <a onclick="deleteProduct(' <%=product[i]._id %>')" title="Delete product">
+                                                <svg width="15" height="19" viewBox="0 0 15 19" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M1.07143 16.8889C1.07143 18.05 2.03571 19 3.21429 19H11.7857C12.9643 19 13.9286 18.05 13.9286 16.8889V4.22222H1.07143V16.8889ZM15 1.05556H11.25L10.1786 0H4.82143L3.75 1.05556H0V3.16667H15V1.05556Z"
+                                                        fill="black" />
+                                                </svg>
+                                            </a>
 
                                         </td>
                                     </tr>
@@ -103,91 +111,91 @@
                 </div>
                 <% } %>
 
-                
-            </tbody>
-        </table>
-    </div>
-</div>
-<!-- card-body end// -->
-</div>
-</section>
-<% if (totalProducts !==0) { %>
-    <div class="row mb-4">
-      <div class="col-12">
-        <div class="text-center pagenationButton">
-          <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-              <li class="page-item">
-                <a
-                  class="page-link"
-                  href="/adminProducts?page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>"
-                  aria-label="Previous"
-                >
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
-              <% for( let i=0; i < (Math.ceil(totalProducts/ 10)); i++ ) { %>
-              <li class="page-item">
-                <a class="page-link" href="/adminProducts?page=<%= (i + 1) %>">
-                  <%= (i + 1) %>
-                </a>
-              </li>
-              <% } %>
-              <li class="page-item">
-                <a
-                  class="page-link"
-                  href="/adminProducts?page=<%= (((Math.ceil(totalProducts / 10)) === currentPage) || (Math.ceil(totalProducts / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>"
-                  aria-label="Next"
-                >
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
+
+                    </tbody>
+                    </table>
+            </div>
         </div>
-      </div>
-    </div>
-    <% } %>
-    <%  if ( totalProducts == 0 ) { %>
-     
-
-        <div>
-            <h3 class="text-center text-danger">No Data Available..!!</h3>
+        <!-- card-body end// -->
         </div>
-
-
+    </section>
+    <% if (totalProducts !==0) { %>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="text-center pagenationButton">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="/adminProducts?page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>"
+                                    aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <% for( let i=0; i < (Math.ceil(totalProducts/ 10)); i++ ) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/adminProducts?page=<%= (i + 1) %>">
+                                        <%= (i + 1) %>
+                                    </a>
+                                </li>
+                                <% } %>
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                            href="/adminProducts?page=<%= (((Math.ceil(totalProducts / 10)) === currentPage) || (Math.ceil(totalProducts / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>"
+                                            aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
         <% } %>
-    <!-- content-main end// -->
-
-    <script>
-        function deleteproduct(id) {
-            axios.post('/deleteproduct', { id })
-                .then((data) => {
-                    Swal.fire({
-                        title: "Good job!",
-                        text: "Successfully Deleted",
-                        icon: "success"
-                    });
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 1000);
-                }).catch((err) => {
-                    console.log(err);
-                })
-        }
-    </script>
-
-    <%- include('include/_footer') %>
+            <% if ( totalProducts==0 ) { %>
 
 
-        </main>
-        <script src="/js/vendors/jquery-3.6.0.min.js"></script>
-        <script src="/js/vendors/bootstrap.bundle.min.js"></script>
-        <script src="/js/vendors/select2.min.js"></script>
-        <script src="/js/vendors/perfect-scrollbar.js"></script>
-        <script src="/js/vendors/jquery.fullscreen.min.js"></script>
-        <!-- Main Script -->
-        <script src="/js/main.js" type="text/javascript"></script>
-        </body>
+                <div>
+                    <h3 class="text-center text-danger">No Data Available..!!</h3>
+                </div>
 
-        </html>
+
+                <% } %>
+                    <!-- content-main end// -->
+
+                    <script>
+
+                        function deleteProduct(productId) {
+                            console.log(productId, "productId");
+                            axios.delete(`/deleteProduct/${productId}`)
+                                .then((data) => {
+                                    if (data) {
+                                        Swal.fire(
+                                            "Product Deleted Successfully",
+                                            "Click the button",
+                                            "success"
+                                        ).then(() => {
+                                            window.location.href = "/products";
+                                        });
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                });
+                        }
+                    </script>
+
+                    <%- include('include/_footer') %>
+
+
+                        </main>
+                        <script src="/js/vendors/jquery-3.6.0.min.js"></script>
+                        <script src="/js/vendors/bootstrap.bundle.min.js"></script>
+                        <script src="/js/vendors/select2.min.js"></script>
+                        <script src="/js/vendors/perfect-scrollbar.js"></script>
+                        <script src="/js/vendors/jquery.fullscreen.min.js"></script>
+                        <!-- Main Script -->
+                        <script src="/js/main.js" type="text/javascript"></script>
+                        </body>
+
+                        </html>

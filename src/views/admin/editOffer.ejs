@@ -1,0 +1,145 @@
+<%- include('include/_header') %>
+
+
+<style>
+    .card{
+        padding: 70px;
+    }
+</style>
+
+<!-- Create Coupon Table start -->
+<div class="page-body">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-sm-12">
+              <div class="card">
+                  <h2 style="padding-left: 50px;">Edit Offer</h2>
+                  <div class="card-body">
+                <div class="title-header option-title">
+                </div>
+                <div class="tab-content" id="pills-tabContent">
+                  <div class="tab-pane fade show active" id="pills-home" role="tabpanel">
+                    <form class="theme-form theme-form-2 mega-form" id="offerForm" action="#" method="post">
+                      <div class="card-header-1">
+                        <h5>General</h5>
+                      </div>
+
+                      <div class="row">
+                        <div class="mb-4 row align-items-center">
+                          <label class="form-label-title col-lg-2 col-md-3 mb-0">Offer
+                            Title</label>
+                          <div class="col-md-9 col-lg-10">
+                            <input class="form-control" name="title" type="text" value="<%= offer.offerName %>">
+                          </div>
+                        </div>
+
+                        <div class="mb-4 row align-items-center">
+                          <label class="col-lg-2 col-md-3 col-form-label form-label-title">Percentage</label>
+                          <div class="col-md-9 col-lg-10">
+                            <input class="form-control" placeholder="" name="percentage" type="number" value="<%= offer.discountPercentage %>">
+                          </div>
+                        </div>
+
+                        <div class="mb-4 row align-items-center">
+                          <label class="col-lg-2 col-md-3 col-form-label form-label-title">Start
+                            Date</label>
+                          <div class="col-md-9 col-lg-10">
+                            <input class="form-control" name="startDate" type="date" value="<%=offer.startingDate.toISOString().split('T')[0] %>">
+                          </div>
+                        </div>
+                        <div class="mb-4 row align-items-center">
+                          <label class="col-lg-2 col-md-3 col-form-label form-label-title">Expiry
+                            Date</label>
+                          <div class="col-md-9 col-lg-10">
+                            <input class="form-control" name="endDate" type="date" value="<%= offer.expiryDate.toISOString().split('T')[0] %>">
+                          </div>
+                        </div>
+                      
+                        <div class="mb-4 row align-items-center">
+                          <label class="col-lg-2 col-md-3 col-form-label form-label-title">Description</label>
+                          <div class="col-md-9 col-lg-10">
+                            <textarea class="form-control" name="description" rows="2" ><%= offer.offerDescription %></textarea>
+                          </div>
+                        </div>
+                        <br><br>
+                        <div class="right-options">
+                          <ul>
+                            <li>
+                              <div class="d-flex justify-content-end" >
+                                <button class="btn btn-solid" style="background-color: #3BB77E; 
+                                color: white;" type="submit">Edit Offer</button>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<!-- Create Coupon Table End -->
+
+<%- include('include/_footer') %>
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script>
+    toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": true,
+    "progressBar": false,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  };
+
+  $('#offerForm').submit(function(event) {
+    event.preventDefault();
+
+    const formData = $(this).serialize();
+
+    $.ajax({
+      url: '/editOffer',
+      type: 'POST',
+      data: formData,
+      success: function(response) {
+        if (response.success) {
+            window.location.href = '/offerList?success=true&message=' + encodeURIComponent(response.message);
+        } else {
+            toastr.error(response.message, 'Info!');
+        }
+
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error(jqXHR,textStatus, errorThrown);
+        alert('Error adding Offer. Please try again.');
+      }
+    });
+
+  });
+</script>
+

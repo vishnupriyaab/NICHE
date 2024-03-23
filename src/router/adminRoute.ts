@@ -8,7 +8,7 @@ import { addProduct, deleteImage, deleteProduct, getEditproduct, getProducts, ge
 import { blockUser, getUsers, unblockUser} from "../controller/adminController/userCtrl";
 import { adminOrder, updateOrder} from "../controller/adminController/orderCtrl";
 import { addCoupon, adminAddCoupon, adminCoupon, adminDeletedCoupon, adminEditCoupon, deleteCoupon, updateCoupon } from "../controller/adminController/couponCtrl";
-import { addCategoryOffer, offer } from "../controller/adminController/offerCtrl";
+import { addOffer, changeStatus, createOffer, deleteOffer, editOffer, getEditoffer, getOffer } from "../controller/adminController/offerCtrl";
 
 
 const adminRoute: Router = Router();
@@ -30,20 +30,24 @@ adminRoute.get("/adminCoupon",adminLoggedIn, adminCoupon );
 adminRoute.get("/adminAddCoupon",adminLoggedIn, adminAddCoupon );
 adminRoute.get("/editCoupon/:id",adminLoggedIn, adminEditCoupon);
 adminRoute.get("/adminDeletedCoupons",adminLoggedIn, adminDeletedCoupon);
-adminRoute.get("/adminOffer",adminLoggedIn, offer);
-adminRoute.get("/addCategoryOffer",adminLoggedIn, addCategoryOffer);
+adminRoute.get("/offerList",adminLoggedIn, getOffer);
+adminRoute.get("/addOffers",adminLoggedIn, addOffer);
+adminRoute.get("/editOffer",getEditoffer);
 
 
 
 adminRoute.post("/adminlogin", adminLoginValidation, validateadminRegistration, isAdmin);
 adminRoute.post("/adminRegister", adminRegister);
 adminRoute.post("/addcategory", categoryValidation, validateCategory, addCategory);
-adminRoute.post("/addProduct",checkAdmin, addProduct)
-adminRoute.post("/deleteproduct",checkAdmin, deleteProduct);
-adminRoute.post("/restoreproduct",checkAdmin, restoreProduct);
-adminRoute.post('/getCategorySearch',checkAdmin, getCategorySearch);
-adminRoute.post("/updateOrderStatus",checkAdmin, updateOrder)
+adminRoute.post("/addProduct", addProduct)
+adminRoute.post("/deleteproduct",deleteProduct);
+adminRoute.post("/restoreproduct", restoreProduct);
+adminRoute.post('/getCategorySearch', getCategorySearch);
+adminRoute.post("/updateOrderStatus", updateOrder)
 adminRoute.post('/addCoupon', addCoupon)
+adminRoute.post('/addOffers', createOffer)
+adminRoute.post('/editOffer', editOffer)
+adminRoute.post('/changeStatus', changeStatus)
 
 
 
@@ -58,6 +62,9 @@ adminRoute.put("/updateproduct/:id", updateProduct);
 
 adminRoute.delete("/deleteimage/:id/:productid", deleteImage)
 adminRoute.delete("/deleteCoupon/:id", deleteCoupon)
+adminRoute.delete("/deleteProduct/:id", deleteProduct)
+adminRoute.delete('/deleteOffer', deleteOffer)
+
 
 
 export default adminRoute;

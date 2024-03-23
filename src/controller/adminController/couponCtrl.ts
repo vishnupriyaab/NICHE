@@ -256,6 +256,7 @@ export async function deleteCoupon(
   }
 }
 
+
 export async function checkCoupon(req: Request, res: Response) {
 
   const { couponCode } = req.body;
@@ -273,7 +274,7 @@ export async function checkCoupon(req: Request, res: Response) {
     const coupon = await CouponDb.findOne({ couponCode: couponCode });
     if (!coupon) {
       // Coupon not found
-      return res.status(400).json({
+      return res.status(200).json({
         isValid: false,
         message: "Invalid coupon code. Please try again.",
       });
@@ -287,28 +288,28 @@ export async function checkCoupon(req: Request, res: Response) {
 
     if (usedUser) {
       res
-        .status(400)
+        .status(200)
         .json({ isValid: false, message: "Coupon is Already Applied.." });
       return;
     }
     // Check if coupon is expired
     if (coupon.expiry.getTime() < Date.now()) {
       return res
-        .status(400)
+        .status(200)
         .json({ isValid: false, message: "Coupon has expired." });
     }
     // Check if product price is within the price limit defined by the coupon
     console.log(coupon.priceLimit);
 
     if (sum < coupon.priceLimit) {
-      return res.status(400).json({
+      return res.status(200).json({
         isValid: false,
         message: "Product price exceeds coupon limit.",
       });
     }
     // Check if max use count has been exceeded
     if (coupon.maxUse <= 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         isValid: false,
         message: "Coupon has reached its maximum usage limit.",
       });

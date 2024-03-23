@@ -184,8 +184,8 @@
         } else if (parseInt(coupondiscount) < 0) {
           couponDiscountErr.innerText = "Discount must be a positive number.";
           flag = true;
-        } else if (parseInt(coupondiscount) > 95) {
-          couponDiscountErr.innerText = "Discount must be less than 95";
+        } else if (parseInt(coupondiscount) > 1000) {
+          couponDiscountErr.innerText = "Discount must be less than 1000";
           flag = true;
         }
 

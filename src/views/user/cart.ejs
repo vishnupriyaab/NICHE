@@ -183,16 +183,37 @@
   <% }); %>
 
 <!-- Cart Page End -->
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"
-/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+
+  toastr.options = {
+    closeButton: false,
+    debug: false,
+    newestOnTop: true,
+    progressBar: false,
+    positionClass: "toast-top-right",
+    preventDuplicates: false,
+    onclick: null,
+    showDuration: "300",
+    hideDuration: "1000",
+    timeOut: "5000",
+    extendedTimeOut: "1000",
+    showEasing: "swing",
+    hideEasing: "linear",
+    showMethod: "fadeIn",
+    hideMethod: "fadeOut",
+  };
+
 
   document.addEventListener("DOMContentLoaded", function () {
         document
@@ -304,17 +325,31 @@
       });
   }
 
-  function removeProduct(userId, productId) {
-    axios
+ async function removeProduct(userId, productId) {
+    const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#000000",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      });
+if(result.isConfirmed){
+  const response = await axios
       .patch("/removeFromCart", { userId, productId })
       .then((res) => {
-        console.log(res.data.message);
-        window.location.reload();
+        console.log(res.message);
+        toastr.success(res.message,"Product is deleted Successfully")
+       setTimeout(()=>{
+        window.location.reload()
+       },1000)
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   }
+}
 
 </script>
 

@@ -58,6 +58,9 @@ const orderSchema = new mongoose.Schema<IOrder>({
   couponApplied: {
     type: Boolean,
     default: false,
+  },
+  couponDiscount:{
+    type: Number,
   }
 });
 

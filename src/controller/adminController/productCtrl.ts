@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, json } from "express";
 import productDb from "../../model/productModel";
 import categoryDb from "../../model/categoryModel";
 import cloudinaryUploadImage from "../../config/cloudinary";
@@ -47,7 +47,7 @@ export async function getunlistedProduct(req: Request, res: Response) {
 export async function updateProduct(req: Request, res: Response) {
   try {
     let { productname, description, price, stock, imgArr, category } = req.body;
-    const categoryname = await categoryDb.findOne({ name: category });
+    // const categoryname = await categoryDb.findOne({ name: category });
     const url = await cloudinaryUploadImage(imgArr);
     await productDb.updateOne(
       { _id: req.params.id },
@@ -116,11 +116,15 @@ export async function getaddProduct(req: Request, res: Response) {
   }
 }
 
-export async function addProduct(req: Request<{}, {}, Product>, res: Response) {
+export async function addProduct(req: Request, res: Response) {
   try {
-    const { name, description, price, stock, imgArr, category } = req.body;
+    let { name, description, price, stock, imgArr, category } = req.body;
+
     const catID = await categoryDb.findById(category);
+
     const url = await cloudinaryUploadImage(imgArr);
+    console.log(url);
+
     const newCat = new productDb({
       name,
       description,
@@ -131,28 +135,37 @@ export async function addProduct(req: Request<{}, {}, Product>, res: Response) {
     });
     const saved = await newCat.save();
     if (saved) {
-      return res.status(201).json({ message: "Product Added" });
+      res.status(201).json({ message: "Product Added" });
+      return;
     }
-    return res.status(500).send("Internal Server Error");
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send("Internal Server Error");
-  }
-}
-
-export async function deleteProduct(req: Request, res: Response) {
-  try {
-    const data = await productDb.updateOne(
-      { _id: req.body.id },
-      { $set: { isHidden: true } }
-    );
-
-    if (data) res.status(200).send(false);
+    res.status(500).send("Internal Server Error");
+    return;
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
+    return;
   }
 }
+
+
+export async function deleteProduct(
+  req: Request,
+  res: Response
+): Promise<Response<any, Record<string, any>> | undefined> {
+  try {
+    const productId = req.params.id.trim(); // Trim any leading/trailing spaces
+    const data = await productDb.findByIdAndUpdate(productId, {
+      $set: { isHidden: true },
+    });
+    console.log(data);
+    return res.status(201).json({ message: "Product Deleted" });
+  } catch (error) {
+    console.error("Error deleting coupon:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+
 
 export async function restoreProduct(req: Request, res: Response) {
   try {

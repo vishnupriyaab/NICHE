@@ -176,7 +176,8 @@
           />
           <label
             for="payment_cod"
-            class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out">
+            class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out"
+          >
             <div class="ml-5">
               <span class="font-semibold">Cash on Delivery (COD)</span>
               <p class="text-gray-600 text-sm">Pay upon delivery</p>
@@ -189,46 +190,50 @@
   <!-- Order Summary -->
   <div class="mt-8 bg-white shadow-md rounded-lg p-6">
     <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
-    <!-- Coupon Section --> 
+
+
+    <!-- Coupon Section -->
     <div class="mb-4">
       <label for="couponCode" class="block text-sm font-medium text-gray-700"
-      >Coupon Code</label
+        >Coupon Code</label
       >
-      <p class="text-red-500">wertghj</p>
       <div class="mt-1 flex rounded-md shadow-sm">
+
         <input
           type="text"
           id="couponCode"
           name="couponCode"
-          class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm  border-1"
+          class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm border-1"
           placeholder="Enter coupon code..."
-        >
+        />
+        <button onclick="removeCoupon(this)" type="button" id="removeCouponButton">
+          <i class="fa fa-times p-3" aria-hidden="true"></i>
+      </button>
         <button
           id="applyCouponButton"
           type="button"
-          class="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          class="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
           Apply
         </button>
       </div>
-      <div style="padding-top: 15px;">
-        
-        <label for="couponCode" class="block text-sm font-medium text-gray-700 "
-      >Available coupons..!!</label
-      >
-        <select
-        class="border-2 w-50 rounded-md shadow-sm" 
-          style="height: 35px;"
+      <div style="padding-top: 15px">
+        <label for="couponCode" class="block text-sm font-medium text-gray-700"
+          >Available coupons..!!</label
         >
-        <option>Coupons here...</option>
-          <% for (let i of coupon) { %>
-            <% if (i.priceLimit <= sum) { %>
-              <option value="<%= i._id %>"><%= i.couponCode %> - <%= i.couponDescription %></option>
-            <% } %>
-          <% } %>
+        <select class="border-2 w-50 rounded-md shadow-sm" style="height: 35px">
+          <option>Coupons here...</option>
+          <% for (let i of coupon) { %> <% if (i.priceLimit <= sum) { %>
+          <option value="<%= i._id %>">
+            <%= i.couponCode %> - <%= i.couponDescription %>
+          </option>
+          <% } %> <% } %>
         </select>
-        </div>
+      </div>
     </div>
     <!-- End Coupon Section -->
+
+
     <div class="border-t border-b py-2">
       <div class="flex items-center justify-between">
         <p class="text-sm font-medium text-gray-700">Subtotal</p>
@@ -297,12 +302,6 @@
     hideMethod: "fadeOut",
   };
 
-
-
-
-
-
-
   document
     .getElementById("applyCouponButton")
     .addEventListener("click", async () => {
@@ -315,7 +314,7 @@
         const { isValid, discount } = response.data;
         if (isValid) {
           const totalPrice = document.querySelectorAll(".prdsum");
-          document.getElementById("totalSum").innerHTML = `INR  ${discount}`
+          document.getElementById("totalSum").innerHTML = `₹  ${discount}`;
 
           let total = 0;
           totalPrice.forEach((value) => (total += Number(value.innerHTML)));
@@ -332,12 +331,15 @@
           }
           totalSum.innerHTML = total - Number(discountedvalue);
           document.getElementById("couponDiscount").classList.remove("hidden");
+        } else {
+          toastr.error(response.data.message)
         }
       } catch (error) {
         console.error("Error checking coupon:", error);
       }
     });
 
+  
   document.addEventListener("DOMContentLoaded", async function () {
     const openAddressModalButton = document.getElementById(
       "openAddressModalButton"
@@ -428,13 +430,13 @@
     const price = document.getElementById("totalSum").innerText;
 
     const quantity = document.getElementById("prdquantity").innerText;
+    const activeCoupon = document.getElementById("couponCode").value;
 
     if (selectedPaymentMethod) {
       var paymentMethod = selectedPaymentMethod;
       var cod = "COD";
       var razorpay = "Razorpay";
       var wallet = "Cwallet";
-
       if (
         paymentMethod === cod ||
         paymentMethod === razorpay ||
@@ -449,6 +451,7 @@
             price: price,
             quantity: quantity,
             image: image,
+            activeCoupon: activeCoupon,
           })
           .then(function (response) {
             if (response.data?.order) {
