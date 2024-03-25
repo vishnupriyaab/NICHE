@@ -37,7 +37,6 @@ const couponSchema = new mongoose.Schema<Coupon>({
     },
     userUsed: [{
       type: String,
-     
     }],
   });
   

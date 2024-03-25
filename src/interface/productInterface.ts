@@ -8,5 +8,7 @@ export interface Product {
     imgArr: string[];
     category: mongoose.Schema.Types.ObjectId;
     isHidden: boolean;
-    offer: mongoose.Schema.Types.ObjectId
+    offer: mongoose.Schema.Types.ObjectId[];
+    offerPrice:number;
+    offerApplied:boolean;
   }

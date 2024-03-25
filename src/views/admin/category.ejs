@@ -102,9 +102,9 @@
                                                             <% } %>
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <button
-                                                        onclick="offerListing(this,'<%= value._id %>','<%= value.unlistStatus = true %>')"
+                                                    <button onclick="offerListing(this)"
                                                         class="btn btn-light rounded btn-sm font-sm justify-content-center"
+                                                        data-category-id='<%= value._id %>' data-is-unlistStatus=true
                                                         style="color: white; background-color: #3BB77E; width: 100px; height: 25px">View
                                                         Offers
                                                     </button>
@@ -132,6 +132,24 @@
         </div>
     </section>
 
+    <!--modallll-->
+    <div id="offerDetailsModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Offer Details</h5>
+
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <!-- Offer details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--modalllll end -->
 
     <% if (totalCategories !==0) { %>
         <div class="row mb-4">
@@ -186,13 +204,136 @@
 
                 <!-- Main Script -->
                 <script src="/js/main.js?v=1.1" type="text/javascript"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
-                    integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ=="
-                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-                    <script>
-                        
-                    </script>
+                <!--Offer Listing Start-->
+                <script>
+                    function offerListing(button) {
+                        console.log(button);
+                        const categoryId = button.dataset.categoryId;
+                        console.log(categoryId);
+                        document.querySelector('#offerDetailsModal').dataset.categoryId = categoryId;
+                        axios.post('/categoryOfferListing')
+                            .then(function (response) {
+                                let offersHtml = `
+                              <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th>Offer Name</th>
+                                    <th>Discount</th>
+                                    <th>Description</th>
+                                    <th>Apply</th>
+                                    <th>Remove</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                            `;
+                                response.data.offerDetails.forEach(offer => {
+                                    if (offer) {
+                                        offersHtml += `
+                                  <tr>
+                                    <td>${offer.offerName}</td>
+                                    <td>${offer.discountPercentage}% off</td>
+                                    <td>${offer.offerDescription}</td>
+                                    <td>
+                                      <button class="btn btn-primary apply-offer-btn">Apply</button>
+                                    </td>
+                                    <td>
+                                      <button class="btn btn-primary remove-offer-btn">Remove</button>
+                                    </td>
+                                  </tr>
+                                `;
+                                    }
+                                });
+                                offersHtml += `
+                                </tbody>
+                              </table>
+                            `;
+
+
+
+
+
+                                document.querySelector('#offerDetailsModal .modal-body').innerHTML = offersHtml;
+                                $('#offerDetailsModal').modal('show');
+
+                                document.querySelector('#offerDetailsModal .modal-body table').addEventListener('click', function (event) {
+                                    console.log("sdffd");
+                                    if (event.target.classList.contains('apply-offer-btn')) {
+                                        console.log("1111");
+                                        const row = event.target.closest('tr');
+                                        console.log("2222", row);
+                                        const offerName = row.querySelector('td:nth-child(1)').textContent;
+                                        console.log('Applying offer:', offerName);
+                                        const categoryId = document.querySelector('#offerDetailsModal').dataset.categoryId;
+                                        console.log(categoryId, "categoryId");
+
+                                        axios.post('/applyOfferToCategory', {
+                                            offerName: offerName,
+                                            categoryId: categoryId
+                                        })
+                                            .then(function (response) {
+                                                if (response) {
+                                                    Swal.fire({
+                                                        title: response.data.message,
+                                                        text: "Click the button",
+                                                        confirmButtonText: 'OK'
+                                                    }).then(() => {
+                                                        window.location.href = "/category";
+                                                    });
+                                                }
+                                                console.log(response.data.message);
+                                            })
+                                            .catch(function (error) {
+                                                console.error('Error applying offer:', error);
+                                            });
+                                    }
+                                });
+
+
+
+
+                                document.querySelector('#offerDetailsModal .modal-body table').addEventListener('click', function (event) {
+                                    if (event.target.classList.contains('remove-offer-btn')) {
+                                        console.log("frtyhjmnbvgyu");
+                                        const row = event.target.closest('tr');
+                                        console.log(row, "row");
+                                        const offerName = row.querySelector('td:nth-child(1)').textContent;
+                                        console.log(offerName, "offername");
+                                        const categoryId = document.querySelector('#offerDetailsModal').dataset.categoryId;
+                                        axios.post('/removeOfferCategory', {
+                                            offerName: offerName,
+                                            categoryId: categoryId
+                                        })
+                                            .then(function (response) {
+                                                Swal.fire({
+                                                    title: response.data.message,
+                                                    text: "Click the button",
+                                                    confirmButtonText: 'OK'
+                                                }).then(()=>{
+                                                    window.location.href = '/category';
+                                                })
+                                                console.log(response.data.message);
+                                            })
+                                            .catch(function (error) {
+                                                console.error('Error removing offer:', error);
+                                            });
+                                    }
+                                });
+
+                            })
+                            .catch(function (error) {
+                                console.error('Error fetching offer details:', error);
+                            });
+                    }
+
+
+                    document.querySelector('.btn-secondary').addEventListener('click', function () {
+                        $('#offerDetailsModal').modal('hide');
+                    });
+                </script>
+                <!--Offer Listing End-->
+
+                <!--Search Categories Start-->
                 <script>
                     async function sendData(e) {
                         try {
@@ -236,8 +377,12 @@
 
                         }
                     }
+                </script>
+                <!--Search Categories End-->
 
 
+
+                <script>
                     function handleOptionChange() {
                         const selectedOption = document.getElementById('categorySelect').value;
 
@@ -252,9 +397,6 @@
                         // Set the selectedIndex of the select box to the selected option
                         selectBox.selectedIndex = selectBox.selectedIndex;
                     }
-
-
-
 
                     const unlistCategory = (id) => {
 
@@ -349,9 +491,6 @@
                         // Add GSAP animation
                         gsap.from("#editPanel", { duration: 0.5, rotationY: 90, ease: "power3.out" });
                     }
-
-
-
 
                 </script>
 

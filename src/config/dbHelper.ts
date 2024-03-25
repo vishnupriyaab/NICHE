@@ -38,12 +38,21 @@ export async function getListedProducts(status = false, page = 1) {
       {
         $limit: 10,
       },
-    ];
+      {
+        $lookup: {
+          from: "categorydb", // Assuming the name of the category collection is "categories"
+          localField: "category", // Field in the current collection
+          foreignField: "_id", // Field in the referenced collection
+          as: "category" // Output array field
+        }
+      }
+    ]
     return await productDb.aggregate(agg);
   } catch (err) {
     throw err;
   }
 }
+
 
 
 export async function getListedAllCategories(

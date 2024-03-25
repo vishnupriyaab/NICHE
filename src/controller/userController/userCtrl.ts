@@ -42,7 +42,17 @@ export async function getHome(
     const user = req.session.userId;
     const product = await productDb
       .find({ isHidden: false })
-      .populate("category");
+      .populate("category").populate("offer");
+    console.log(product, "producttttttttttttttttt");
+    product.forEach(product => {
+      console.log(product.category,"11111111111"); // Log the category information for each product
+      console.log(product.offer[0],'offer is here');
+      
+  })
+  // product.forEach(offer=>{
+  //   console.log(product.offer)
+  // })
+
     const cart = await CartDb.findOne({ userId: user }).populate("products");
 
     res.render("user/home", { loginError, user, product, cart });
@@ -96,7 +106,7 @@ export async function userProfile(req: Request, res: Response) {
 
     const user = await userDb.findOne({ _id: req.session.userId });
     // console.log(user, "user");
-    const address = await Addressdb.find()
+    const address = await Addressdb.find();
     const cart = await CartDb.findOne({ userId: user }).populate("products");
     res.render("user/userProfile", { user, cart, address });
   } catch (error: any) {
@@ -320,7 +330,7 @@ export async function wallet(req: Request, res: Response) {
     const user = req.session.userId;
     const wallet = await Walletdb.find({ userId: req.session.userId });
     const wall = await Walletdb.aggregate([
-      { $match: {userId:new mongoose.Types.ObjectId(user)} },
+      { $match: { userId: new mongoose.Types.ObjectId(user) } },
       { $unwind: "$transactions" },
       { $sort: { "transactions.transactionDate": -1 } },
       {
@@ -330,12 +340,12 @@ export async function wallet(req: Request, res: Response) {
         },
       },
       {
-        $unwind: "$sortedArray"
+        $unwind: "$sortedArray",
       },
     ]);
-    console.log(wall,"wall");
+    console.log(wall, "wall");
     const cart = await CartDb.findOne({ userId: user }).populate("products");
-    res.render("user/wallet", { wallet, user, cart,wall });
+    res.render("user/wallet", { wallet, user, cart, wall });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

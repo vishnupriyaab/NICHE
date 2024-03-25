@@ -19,7 +19,6 @@ const productSchema = new Schema<Product>({
     required: true,
     min: 0,
   },
-  
   imgArr: {
     type: [String],
     required: true,
@@ -29,11 +28,18 @@ const productSchema = new Schema<Product>({
     ref: "categorydb",
     required: true,
   },
-  offer:{
+  isHidden: {
+    type: Boolean,
+    default: false,
+  },
+  offer:[{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'offerdb',
+  }],
+  offerPrice: {
+    type: Number,
   },
-  isHidden: {
+  offerApplied: {
     type: Boolean,
     default: false,
   },

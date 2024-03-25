@@ -108,7 +108,6 @@ export async function createOffer(req: Request, res: Response): Promise<void> {
 }
 
 
-
 export async function getEditoffer(req: Request, res: Response) {
   try {
     console.log("asdfghjk");
@@ -240,8 +239,7 @@ export async function deleteOffer(req: Request, res: Response) {
 }
 
 
-
-export async function changeStatus(req:Request,res:Response):Promise<void>{
+export async function offerChangeStatus(req:Request,res:Response):Promise<void>{
 
   try {
     const { offerId, status } = req.body;

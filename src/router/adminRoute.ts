@@ -3,12 +3,12 @@ import { adminRegister, getAdminlogin, getAdminlogout, getDashboard, isAdmin } f
 import { adminLoginValidation, checkAdmin, validateadminRegistration } from "../middleware/adminAuth";
 import { categoryValidation, editcategoryValidation, editvalidateCategory, validateCategory } from "../middleware/categoryAuth";
 import { adminLoggedIn } from "../middleware/sessionAuth";
-import { addCategory, editCategory, getCategory, getCategorySearch, listCategory, unlistCategory } from "../controller/adminController/categoryCtrl";
-import { addProduct, deleteImage, deleteProduct, getEditproduct, getProducts, getaddProduct, getunlistedProduct, restoreProduct, updateProduct } from "../controller/adminController/productCtrl";
+import { addCategory,  categoryOfferControl,  editCategory, getCategory, getCategorySearch, listCategory, offerApplyCategory, offerRemoveCategory, unlistCategory } from "../controller/adminController/categoryCtrl";
+import { addProduct, deleteImage, deleteProduct, getEditproduct, getProducts, getaddProduct, getunlistedProduct, offerApplyProduct, offerRemoveProduct, productOfferListing, restoreProduct, updateProduct } from "../controller/adminController/productCtrl";
 import { blockUser, getUsers, unblockUser} from "../controller/adminController/userCtrl";
 import { adminOrder, updateOrder} from "../controller/adminController/orderCtrl";
 import { addCoupon, adminAddCoupon, adminCoupon, adminDeletedCoupon, adminEditCoupon, deleteCoupon, updateCoupon } from "../controller/adminController/couponCtrl";
-import { addOffer, changeStatus, createOffer, deleteOffer, editOffer, getEditoffer, getOffer } from "../controller/adminController/offerCtrl";
+import { addOffer, createOffer, deleteOffer, editOffer, getEditoffer, getOffer, offerChangeStatus } from "../controller/adminController/offerCtrl";
 
 
 const adminRoute: Router = Router();
@@ -44,10 +44,23 @@ adminRoute.post("/deleteproduct",deleteProduct);
 adminRoute.post("/restoreproduct", restoreProduct);
 adminRoute.post('/getCategorySearch', getCategorySearch);
 adminRoute.post("/updateOrderStatus", updateOrder)
-adminRoute.post('/addCoupon', addCoupon)
-adminRoute.post('/addOffers', createOffer)
-adminRoute.post('/editOffer', editOffer)
-adminRoute.post('/changeStatus', changeStatus)
+adminRoute.post('/addCoupon', addCoupon);
+adminRoute.post('/addOffers', createOffer);
+adminRoute.post('/editOffer', editOffer);
+adminRoute.post('/changeStatus', offerChangeStatus);
+
+
+adminRoute.post('/categoryOfferListing', categoryOfferControl);
+adminRoute.post('/applyOfferToCategory', offerApplyCategory);
+adminRoute.post('/removeOfferCategory', offerRemoveCategory);
+
+
+
+adminRoute.post('/productOfferListing', productOfferListing);
+adminRoute.post('/applyOfferToProduct', offerApplyProduct);
+adminRoute.post('/removeOfferProduct', offerRemoveProduct);
+
+
 
 
 
@@ -60,10 +73,10 @@ adminRoute.patch("/updateCoupon/:id", updateCoupon);
 adminRoute.put("/updateproduct/:id", updateProduct);
 
 
-adminRoute.delete("/deleteimage/:id/:productid", deleteImage)
-adminRoute.delete("/deleteCoupon/:id", deleteCoupon)
-adminRoute.delete("/deleteProduct/:id", deleteProduct)
-adminRoute.delete('/deleteOffer', deleteOffer)
+adminRoute.delete("/deleteimage/:id/:productid", deleteImage);
+adminRoute.delete("/deleteCoupon/:id", deleteCoupon);
+adminRoute.delete("/deleteProduct/:id", deleteProduct);
+adminRoute.delete('/deleteOffer', deleteOffer);
 
 
 

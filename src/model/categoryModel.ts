@@ -11,10 +11,14 @@ const categorySchema = new Schema<Category>({
     type: Boolean,
     default: false,
   },
-  offer: {
+  offer: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "offerdb",
-  },
+  }],
+  offerApplied: {
+    type: Boolean,
+    default: false,
+},
 });
 const categoryDb = mongoose.model<Category>("categorydb", categorySchema);
 export default categoryDb;

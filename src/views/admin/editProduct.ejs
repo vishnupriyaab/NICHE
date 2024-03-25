@@ -11,7 +11,7 @@
                         <!-- <div class="col-md-6">
                             <label for="category" class="form-label">Category:</label>
                             <input type="text" class="form-control" id="category" name="category"
-                                value=" <%= // product.category.name %> ">
+                                value=" <%#= // product.category.name %> ">
                             </select>
                         </div> -->
 
@@ -34,11 +34,11 @@
                         <div class="mb-3">
                             <label for="category" class="form-label">Category:</label>
                             <select class="form-select" name="category" id="category">
-                                <% for (let i of category) { %>
-                                    <option value="<%= i._id %>">
-                                        <%= i.name %>
+                                <% category.forEach(category => { %>
+                                    <option <%= category._id.toString() === product.category._id.toString() ? 'selected' : '' %> >
+                                        <%= category.name %>
                                     </option>
-                                    <% } %>
+                                <% }); %>
                             </select>
                         </div>
                     </div>
