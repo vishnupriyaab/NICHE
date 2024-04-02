@@ -22,6 +22,14 @@ const orderSchema = new mongoose.Schema<IOrder>({
         type: Number,
         required: true,
       },
+      originalProductPrice: {
+        type: Number,
+        required: true,
+      },
+      offerApplied: {
+        type: Boolean,
+        default: false,
+      },
       quantity: {
         type: Number,
         required: true,
@@ -39,7 +47,6 @@ const orderSchema = new mongoose.Schema<IOrder>({
         ref: "productdb",
         required: true,
       },
-     
       orderStatus: {
         type: String,
         default: "Ordered",

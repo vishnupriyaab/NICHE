@@ -49,9 +49,9 @@
                   Quantity: <%= orders[i].orderDetails.quantity %>
                 </td>
                 <td class="py-2 px-4 border-b cursor-pointer"
-                  onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
-                  Total Price: ₹ <%= orders[i].orderDetails.quantity * orders[i].orderDetails.price %>
-                </td>
+                onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
+                Product Price: ₹ <%= Math.round(orders[i].totalsum) %>
+            </td>
                 <td class="py-2 px-4 border-b cursor-pointer"
                   onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'">
                   <span class="bg-green-500 text-white py-1 px-2 rounded">

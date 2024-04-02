@@ -1,0 +1,313 @@
+<%- include('include/_header') %>
+
+
+  <style>
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: max-content;
+      height: 300px;
+      text-align: center;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+  <section class="content-main">
+    <div class="content-header">
+      <h2 class="content-title">Sales Report</h2>
+      <button class="btn btn-primary" type="button" id="salesReportBtn">Download Sales report</button>
+
+      <!-- Modal -->
+      <div id="salesReportModal" class="modal">
+        <div class="modal-content">
+          <div style="text-align: right; margin-top: -20px; margin-bottom: 20px;" class="close" onclick="closeModal()">
+            &times;</div>
+          <h3 style="margin-bottom: 15px;">Select Download format:</h3>
+          <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+            <div style="margin-right: 10px;">
+              <input type="radio" id="pdfRadio" name="reportFormat" value="pdf">
+              <label for="pdfRadio">PDF</label>
+            </div>
+            <div>
+              <input type="radio" id="excelRadio" name="reportFormat" value="excel">
+              <label for="excelRadio">Excel</label>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+            <form class="row" id="downloadSalesForm">
+              <div class="mb-3 col" style="display: flex;">
+                <label for="fromDate" class="col-form-label">From:&nbsp;</label>
+                <input type="date" class="form-control" id="fromDate" name="fromDate">
+              </div>
+              <div class="mb-3 col" style="display: flex;">
+                <label for="toDate" class="col-form-label">To:&nbsp;</label>
+                <input type="date" class="form-control" id="toDate" name="toDate">
+              </div>
+            </form>
+          </div>
+          <button class="btn btn-primary" style="justify-content: center; " onclick="generateReport()">Generate</button>
+        </div>
+      </div>
+
+      <!-- /Modal -->
+
+
+
+    </div>
+    <div id="customDateInputs" style="display: none; margin-left: 900px;" class="mb-4">
+      <label for="customStartDate">Start Date:</label>
+      <input type="date" id="customStartDate" name="customStartDate" class="mb-2"><br>
+      <label for="customEndDate" style="margin-left: 3px;">End Date:</label>
+      <input type="date" id="customEndDate" name="customEndDate" style="margin-left: 3px;">
+    </div>
+    <div class="card mb-4">
+      <header class="card-header">
+        <div class="row align-items-center">
+          <div class="filter-controls" style="margin-left: 700px;">
+            <label><input type="radio" name="filter" value="daily" checked>Daily</label>&nbsp;&nbsp;
+            <label><input type="radio" name="filter" value="weekly">Weekly</label>&nbsp;&nbsp;
+            <label><input type="radio" name="filter" value="yearly">Yearly</label>&nbsp;&nbsp;
+            <label><input type="radio" name="filter" value="custom">Date</label>&nbsp;&nbsp;
+            <input type="date" id="startDate" name="startDate" style="display: none;">
+            <input type="date" id="endDate" name="endDate" style="display: none;">
+            <button class="btn btn-primary" onclick="applyFilter()">Apply</button>
+          </div>
+        </div>
+      </header>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="table-responsive">
+            <table class="table align-middle table-nowrap mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="align-middle" scope="col" style="text-align: left;">No</th>
+                  <th class="align-middle" scope="col" style="text-align: left;">Order ID</th>
+                  <th class="align-middle" scope="col" style="text-align: left;">Product Details</th>
+                  <th class="align-middle" scope="col" style="text-align: left;"></th>
+                  <th class="align-middle" scope="col" style="text-align: left;">User's Details</th>
+                  <th class="align-middle" scope="col" style="text-align: left;">Order Date</th>
+                  <th class="align-middle" scope="col" style="text-align: left;">Discount Price</th>
+                  <th class="align-middle" scope="col" style="text-align: left;">Total Price</th>
+                  <th class="align-middle" scope="col" style="text-align: center;">Payment Method</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for( let i=0; i < orders.length; i++ ) { %>
+                  <% if (orders[i].orderDetails.orderStatus==="Delivered" ) { %>
+                    <tr>
+                      <td style="text-align: left;">
+                        <%= i + 1 %>
+                      </td>
+                      <td style="text-align: left;"><a href="#" class="fw-bold">
+                          <%= orders[i]._id.toString().split('').slice(18,24).join('') %>
+                        </a></td>
+                      <td style="text-align: left; "><img style="height: 50px; width: 70px;"
+                          src="<%= orders[i].orderDetails.pImage %>" alt="No Image Uploaded" /></td>
+                      <td style="word-wrap: break-word; overflow-wrap: break-word; max-width: 20ch; text-align: left;">
+                        <%= orders[i].orderDetails.pName %><br>
+                          Quantity : <%= orders[i].orderDetails.quantity %>
+                      </td>
+                      <td style="word-wrap: break-word; overflow-wrap: break-word; max-width: 25ch; text-align: left;">
+                        <%= orders[i].orderDetails.address %><br>
+                          <%= orders[i].userDetails.email %>
+                      </td>
+                      <td style="text-align: left;">
+                        <%= new Date(orders[i].orderDetails.orderDate).toLocaleDateString()%>
+                      </td>
+                      <% if (orders[i].orderDetails.offerApplied) { %>
+                        <td style="text-align: left;">
+                          ₹ <%= (orders[i].orderDetails.originalProductPrice - orders[i].orderDetails.price) %>
+                        </td>
+                        <% }else{ %>
+                          <td class="text-danger">No Offers</td>
+                          <% } %>
+                            <td style="text-align: left;">
+                              ₹ <%= orders[i].orderDetails.price %>
+                            </td>
+                            <td style="text-align: center;">
+                              <%= orders[i].orderDetails.paymentMethod %>
+                            </td>
+                    </tr>
+                    <% } %>
+                      <% } %>
+              </tbody>
+            </table>
+            <div class="card-footer border-top ">
+              <p class="fw-bold" style="margin-left: 800px; font-size:large ">Total Revenue : &nbsp;₹ <%= totalPrice %>
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- table-responsive end// -->
+      </div>
+    </div>
+    <!-- card end// -->
+
+  </section>
+
+  <%- include('include/_footer') %>
+    <!-- <script>
+        document.getElementById("salesReportBtn").addEventListener('click',()=>{
+          console.log("hiii");
+          document.getElementById("salesReportModal").classList.add("d-flex")
+        })
+      </script> -->
+
+
+    <script>
+      var modal = document.getElementById("salesReportModal");
+      var salesReportBtn = document.getElementById("salesReportBtn");
+
+      salesReportBtn.addEventListener('click', function () {
+        modal.style.display = "block";
+      });
+      function closeModal() {
+        modal.style.display = "none";
+      }
+
+
+      function generateReport() {
+        var selectedFormat = document.querySelector('input[name="reportFormat"]:checked').value;
+        console.log(selectedFormat,"selectedFormat");
+        if (selectedFormat === 'excel') {
+          alert("Generating report in " + selectedFormat.toUpperCase() + " format...");
+          downloadSalesReport();
+          closeModal();
+        } else if(selectedFormat === 'pdf'){
+          alert("Generating report in " + selectedFormat.toUpperCase() + " format...");
+          generatePDF();
+          closeModal();
+        }else{
+          alert("Please select a format.");
+        }
+      }
+
+
+      function downloadSalesReport() {
+        var fromDate = document.getElementById('fromDate').value;
+        console.log(fromDate,"fromDateeSalesreport");
+        var toDate = document.getElementById('toDate').value;
+        console.log(toDate,"toDateSalesreport");
+        
+        $.ajax({
+          type: 'GET',
+            url: `/salesReportExcel?fromDate=${fromDate}&toDate=${toDate}`,
+            data: { fromDate: fromDate, toDate: toDate },
+            success: function (data) {
+                const blob = new Blob([data], { type: 'text/csv' });
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'sales_report.csv';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                console.log('Sales report downloaded successfully', data);
+            },
+            error: function (error) {
+                console.error('Error downloading sales report:', error.responseText);
+            }
+        });
+    }
+
+    async function generatePDF() {
+    console.log("satrtrtttt");
+    const fromDate = document.getElementById('fromDate').value;
+    const toDate = document.getElementById('toDate').value;
+    console.log(fromDate,"begining");
+    console.log(toDate,"wawww");
+    const response = await fetch(`/salesReportPDF?fromDate=${fromDate}&toDate=${toDate}`);
+    console.log("qwertyuio");
+    const blob = await response.blob();
+
+    const blobUrl = URL.createObjectURL(blob);
+
+    window.open(blobUrl, '_blank');
+  }
+    </script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"
+      integrity="sha512-+k1pnlgt4F1H8L7t3z95o3/KO+o78INEcXTbnoJQ/F2VqDVhWoaiVml/OEHv9HsVgxUaVW+IbiZPUJQfF/YxZw=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+
+
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+
+toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": true,
+    "progressBar": false,
+    "positionClass": "toast-top-center",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  };
+
+      function applyFilter() {
+        const filter = document.querySelector('input[name="filter"]:checked').value;
+        const customDateInputs = document.getElementById('customDateInputs');
+
+        customDateInputs.style.display = filter === 'custom' ? 'block' : 'none';
+
+        if (filter === 'custom') {
+          const startDate = document.getElementById('customStartDate').value;
+          const endDate = document.getElementById('customEndDate').value;
+
+          if (!startDate || !endDate) {
+          toastr.error("Please select both start and end dates", "error");
+          console.log("haaai");
+          return false;
+        }
+
+
+
+          if (startDate && endDate) {
+            window.location.href = `/salesReport?filter=${filter}&startDate=${startDate}&endDate=${endDate}`;
+          }
+        } else {
+          window.location.href = `/salesReport?filter=${filter}`;
+        }
+      }
+    </script>
+
+
+    <script>
+
+    </script>

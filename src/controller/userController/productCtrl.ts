@@ -4,11 +4,11 @@ import CartDb from "../../model/cartModel";
 
 
 
-export async function getsingleProduct(req: Request, res: Response) {
+export async function getSingleProduct(req: Request, res: Response) {
     try {
       const product = await productDb.findOne({ _id: req.params.id }).populate("offer");
       // console.log(product?.offer.discountPercentage,"productttttttttt");
-      console.log(product?.offerApplied,"111111");
+      // console.log(product?.offerApplied,"111111");
       
       const userid = req.session.userId;
       const user = await userDb.findById(userid);

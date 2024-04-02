@@ -117,7 +117,7 @@
           </div>
           <% if (product.offerApplied) { %>
             <div class="mb-3">
-              <span style="font-style: normal; font-weight: bolder;"> ₹<%= product.offerPrice %></span>
+              <span style="font-style: normal; font-weight: bolder;"> ₹<%= Math.round(product.offerPrice) %></span>
               <del><span style="color: red; font-style: normal; font-weight: bolder;">₹<%= product.price %></span></del>
               <% product.offer.forEach(offer => { %>
                 <span style="color: red; font-size: small; font-style: normal; font-weight: bolder;">(<%= offer.discountPercentage %>% Off)</span>

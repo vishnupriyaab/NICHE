@@ -10,7 +10,7 @@ import CartDb from "../../model/cartModel";
 export async function cart(req: Request, res: Response) {
   try {
     const user = req.session.userId;
-    const cart = await CartDb.findOne({ userId: user })
+    const cart = await CartDb.findOne({ userId: user }) 
     const products = await CartDb.aggregate([
       {
         $match: { userId: new mongoose.Types.ObjectId(user) },
@@ -31,15 +31,18 @@ export async function cart(req: Request, res: Response) {
       },
     ]);
 
-    console.log(products);
 
-    const sum = products.reduce((total, product) => {
+    let sum = products.reduce((total, product) => {
       if (product.products && product.productsDetails) {
+        if (product.productsDetails.price) {
+          total += product.products.quantity * product.productsDetails.price;
+        }else if (product.productsDetails.offerPrice)
         total += product.products.quantity * product.productsDetails.price;
       }
       return total;
     }, 0);
-    res.status(200).render("user/cart", { products, sum,user,cart });
+    sum =0;
+    res.status(200).render("user/cart", { products, sum ,user,cart });
   } catch (error) {
     console.error(error, "error");
     res.status(500).send("Internal Server Error");
@@ -48,7 +51,7 @@ export async function cart(req: Request, res: Response) {
 
 
 
-export async function addTocart(req: Request, res: Response): Promise<void> {
+export async function addToCart(req: Request, res: Response): Promise<void> {
   try {
     let userId = req.session.userId;
     if (!userId) {
@@ -80,8 +83,8 @@ export async function addTocart(req: Request, res: Response): Promise<void> {
     const itemIndex = cart.products.findIndex((p) => p.productId === productId);
     if (itemIndex > -1) {
       cart.products[itemIndex].quantity += quantity;
-      console.log(typeof quantity,"quantity");
-      console.log(quantity,"567");
+      // console.log(typeof quantity,"quantity");
+      // console.log(quantity,"567");
       
 
     } else {
@@ -150,6 +153,8 @@ export async function updateQuantity(
         $unwind: "$productsDetails",
       },
     ]);
+    console.log(result);
+    
     res.send(true);
   } catch (error) {
     console.log(error);
@@ -183,22 +188,42 @@ export async function reloadTotalAmount(req: Request, res: Response) {
     const sum = products.reduce((total, product) => {
       if (product.products && product.productsDetails) {
         if (String(product.products.productId) === req.params.productId) {
-          return (total +=
-            (product.products.quantity + req.body.change) *
-            product.productsDetails.price);
+          if (product.productsDetails.offerPrice) {
+            // Round the offer price calculation
+            return (total +=
+              Math.round((product.products.quantity + req.body.change) *
+              product.productsDetails.offerPrice));
+          } else {
+            // Round the regular price calculation
+            return (total +=
+              Math.round((product.products.quantity + req.body.change) *
+              product.productsDetails.price));
+          }
         }
-        total += product.products.quantity * product.productsDetails.price;
+        // Update total by adding the rounded price for each product
+        product.productsDetails.offerPrice ?
+          total += Math.round(product.products.quantity * product.productsDetails.offerPrice) :
+          total += Math.round(product.products.quantity * product.productsDetails.price);
       }
+      console.log(total, "999999999999999999999999999");
       return total;
     }, 0);
+    
 
     const updatedProduct = products.find(
       (product) => String(product.products.productId) === req.params.productId
     );
 
-    const amt =
+    let amt =
       (updatedProduct.products.quantity + req.body.change) *
-      updatedProduct.productsDetails.price;
+      updatedProduct.productsDetails.offerPrice
+
+      amt == 0  ?   amt =
+      (updatedProduct.products.quantity + req.body.change) *
+      updatedProduct.productsDetails.price :   amt =
+      (updatedProduct.products.quantity + req.body.change) *
+      updatedProduct.productsDetails.offerPrice
+      amt = Math.round(amt) 
 
     res.status(200).json({ updatedTotalAmount: sum, amt });
   } catch (error) {
@@ -206,7 +231,7 @@ export async function reloadTotalAmount(req: Request, res: Response) {
   }
 }
 
-export async function removeProductfromcart(req: Request, res: Response) {
+export async function removeProductFromCart(req: Request, res: Response) {
   try {
     const { userId, productId } = req.body;
     console.log(req.body);

@@ -159,17 +159,17 @@
   <div class="container">
     <div class="row" style="margin-top: 120px;">
       <div class="col-md-12">
-        <h3 class="main-heading mb-10">My wishlist</h3>
+        <h2 class="main-heading mb-20">My wishlist</h2>
         <div class="table-wishlist">
           <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <% if (wishlist.length>0) { %>
             <thead>
               <tr>
-                <th width="45%">Product Name</th>
+                <th width="45%">Product</th>
                 <th width="15%">Unit Price</th>
-                <th width="15%">Stock Status</th>
-                <th width="15%"></th>
-                <th width="10%"></th>
+                <th width="15%" >Stock Status</th>
+                <th width="15%" style="text-align: center;"></th>
+                <th width="10%" style="text-align: center;">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -180,18 +180,18 @@
                   <div class="display-flex align-center">
                     <div class="img-product">
                       <img
-                        src="<%= wishlist[0].productsDetails.imgArr[0] %>"
+                        src="<%= wishlist[i].productsDetails.imgArr[0] %>"
                         alt=""
                         class="mCS_img_loaded"
                       />
                     </div>
                     <div class="name-product">
-                      <%= wishlist[0].productsDetails.name %>
+                      <%= wishlist[i].productsDetails.name %>
                     </div>
                   </div>
                 </td>
                 <td width="15%" class="price">
-                  $<%= wishlist[0].productsDetails.price %>
+                  ₹<%= wishlist[i].productsDetails.price %>
                 </td>
                 <% if (wishlist[i].productsDetails.stock>=1) { %>
                 <td width="15%"><span class="in-stock-box">In Stock</span></td>
@@ -202,14 +202,13 @@
 
                 <% } %>
                 <td width="15%">
-                  <button onclick="addToCart('<%= wishlist[0].productsDetails._id %>')" class="round-black-btn small-btn">
+                  <button onclick="addToCart('<%= wishlist[i].productsDetails._id %>')" class="round-black-btn small-btn">
                     Add to Cart
                   </button>
                 </td>
                 <td width="10%" class="text-center">
-                  <button onclick="removeFromWishlist('<%= wishlist[0].productsDetails._id %>')" class="trash-icon"
-                    ><i class="far fa-trash-alt"></i
-                  ></button>
+                  <a onclick="removeFromWishlist('<%= wishlist[i].productsDetails._id %>')" class="trash-icon"
+                    ><i class="fa fa-trash" aria-hidden="true"></i></a>
                 </td>
               </tr>
               <% } %>
@@ -218,11 +217,11 @@
             <div class="flex justify-center items-center h-screen flex-grow">
               <div class="text-center">
                 <!-- Text -->
-                <p
-                  class="text-gray-700 mb-4 font-semibold text-4xl leading-snug tracking-wide"
+                <h2
+                 style="color: rgb(5, 63, 5); text-align: center;"
                 >
-                  Add Products to Wishlist
-                </p>
+                  Add Products to Wishlist! 👟
+              </h2>
                 <!-- Button to home page -->
                 <a
                   href="/"

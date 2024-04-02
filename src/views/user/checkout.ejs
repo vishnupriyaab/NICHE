@@ -1,506 +1,457 @@
 <%- include('include/_header') %>
 
-<div class="container mx-auto py-8 mt-32">
-  <div class="bg-white shadow rounded-lg p-6 mb-4">
-    <h2 class="text-xl font-bold mb-2">Product Summary</h2>
-    <% products.forEach(product => { %>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Product Image -->
-      <div class="md:col-span-1">
-        <img
-          id="imageproduct"
-          src="<%= product.productsDetails.imgArr[0] %>"
-          alt="<%= product.productsDetails.name %>"
-          style="width: 100px; height: 100px"
-        />
-      </div>
-      <!-- Product Details -->
-      <div class="md:col-span-2 flex flex-col justify-between">
-        <p class="text-gray-900 mb-2" id="prdname">
-          <%= product.productsDetails.name %>
-        </p>
-        <!-- Product Price -->
-        <p class="text-gray-700 mb-2" id="prdsum">
-          Total Price: ₹<%= (product.productsDetails.price) *
-          (product.products.quantity) %>
-        </p>
-        <!-- Product Quantity -->
-        <p class="text-gray-700 mb-2" id="prdquantity">
-          Quantity: <%= product.products.quantity %>
-        </p>
-      </div>
-    </div>
-    <hr />
-    <% }); %>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <div class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-xl font-semibold mb-4">Select Address</h2>
-      <div class="space-y-4">
-        <div class="flex items-center">
-          <button
-            id="openAddressModalButton"
-            class="bg-black hover:bg-gray-800 px-6 py-3 font-medium text-white rounded-md transition duration-300 ease-in-out"
-          >
-            Select or Add Address
-          </button>
+  <div class="container mx-auto py-8 mt-32">
+    <div class="bg-white shadow rounded-lg p-6 mb-4">
+      <h2 class="text-xl font-bold mb-2">Product Summary</h2>
+      <% products.forEach(product=> { %>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Product Image -->
+          <div class="md:col-span-1">
+            <img id="imageproduct" src="<%= product.productsDetails.imgArr[0] %>"
+              alt="<%= product.productsDetails.name %>" style="width: 100px; height: 100px" />
+          </div>
+          <!-- Product Details -->
+          <div class="md:col-span-2 flex flex-col justify-between">
+            <p class="text-gray-900 mb-2" id="prdname">
+              <%= product.productsDetails.name %>
+            </p>
+            <!-- Product Price -->
+            <p class="text-gray-700 mb-2" id="prdsum">
+              Total Price: ₹<%= Math.round(product.productsDetails.offerApplied ? (product.productsDetails.offerPrice *
+                  product.products.quantity) : (product.productsDetails.price * product.products.quantity)) %>
+          </p>
+            <!-- Product Quantity -->
+            <p class="text-gray-700 mb-2" id="prdquantity">
+              Quantity: <%= product.products.quantity %>
+            </p>
+          </div>
         </div>
-      </div>
-      <!-- Selected address section -->
-      <div id="selectedAddressSection" class="mt-4 hidden">
-        <h3 class="text-lg font-semibold mb-2">Selected Address:</h3>
-        <span id="selectedAddress"></span>
-      </div>
+        <hr />
+        <% }); %>
     </div>
 
-    <!-- Modal -->
-    <div id="addressModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
-      <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-          <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Select Address</h2>
+        <div class="space-y-4">
+          <div class="flex items-center">
+            <button id="openAddressModalButton"
+              class="bg-black hover:bg-gray-800 px-6 py-3 font-medium text-white rounded-md transition duration-300 ease-in-out">
+              Select or Add Address
+            </button>
+          </div>
         </div>
+        <!-- Selected address section -->
+        <div id="selectedAddressSection" class="mt-4 hidden">
+          <h3 class="text-lg font-semibold mb-2">Selected Address:</h3>
+          <span id="selectedAddress"></span>
+        </div>
+      </div>
 
-        <div
-          class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full"
-        >
-          <!-- Close button -->
-          <button
-            id="closeAddressModalButton"
-            class="absolute top-0 right-0 m-4 text-gray-600 hover:text-gray-800 focus:outline-none"
-          >
-            <svg
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
+      <!-- Modal -->
+      <div id="addressModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+          <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+          </div>
 
-          <!-- Modal content goes here -->
-          <div class="p-6">
-            <h2 class="text-xl font-semibold mb-4">Address Modal</h2>
-            <!-- Address list goes here -->
-            <!-- Add address form goes here -->
-            <div id="addressList">
-              <p class="relative z-10 text-red-600 hidden" id="errorpopup"></p>
-              <!-- Address item -->
-              <% for( let i=0; i < address.length; i++ ) { %>
+          <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+            <!-- Close button -->
+            <button id="closeAddressModalButton"
+              class="absolute top-0 right-0 m-4 text-gray-600 hover:text-gray-800 focus:outline-none">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
 
-              <div class="flex items-center mb-4">
-                <span class="mr-2">
-                  <%= address[i].name %>,<%= address[i].phonenumber %>,<%=
-                  address[i].pin %>
-                </span>
-                <button
-                  class="select-address-button bg-blue-500 hover:bg-blue-600 px-3 py-2 text-white font-semibold rounded-md"
-                >
-                  Select
-                </button>
+            <!-- Modal content goes here -->
+            <div class="p-6">
+              <h2 class="text-xl font-semibold mb-4">Address Modal</h2>
+              <!-- Address list goes here -->
+              <!-- Add address form goes here -->
+              <div id="addressList">
+                <p class="relative z-10 text-red-600 hidden" id="errorpopup"></p>
+                <!-- Address item -->
+                <% for( let i=0; i < address.length; i++ ) { %>
+
+                  <div class="flex items-center mb-4">
+                    <span class="mr-2">
+                      <%= address[i].name %>,<%= address[i].phonenumber %>,<%= address[i].pin %>
+                    </span>
+                    <button
+                      class="select-address-button bg-blue-500 hover:bg-blue-600 px-3 py-2 text-white font-semibold rounded-md">
+                      Select
+                    </button>
+                  </div>
+                  <% } %>
+
+                    <!-- Add more address items here -->
               </div>
-              <% } %>
-
-              <!-- Add more address items here -->
+              <a href="/addaddress"><button
+                  class="bg-green-500 hover:bg-green-600 px-3 py-2 text-white font-semibold rounded-md">
+                  Add Address
+                </button>
+              </a>
             </div>
-            <a href="/addaddress"
-              ><button
-                class="bg-green-500 hover:bg-green-600 px-3 py-2 text-white font-semibold rounded-md"
-              >
-                Add Address
-              </button>
-            </a>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Payment Methods -->
-    <div class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-xl font-semibold mb-4">Select Payment Method</h2>
-      <form class="space-y-4">
-        <p class="text-red-600 text-sm">
-          Your Wallet Balance: ₹ <%= wallet[0]?.walletBalance %>
+      <!-- Payment Methods -->
+      <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Select Payment Method</h2>
+        <form class="space-y-4">
+          <p class="text-red-600 text-sm">
+            Your Wallet Balance: ₹ <%= wallet[0]?.walletBalance %>
+          </p>
+          <div class="relative">
+            <input class="peer hidden" id="payment_wallet" type="radio" name="payment_method" value="Cwallet" />
+            <label for="payment_wallet"
+              class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out">
+              <div class="ml-5">
+                <span class="font-semibold">Wallet</span>
+                <p class="text-gray-600 text-sm">Use your own wallet</p>
+              </div>
+            </label>
+          </div>
+
+          <div class="relative">
+            <input class="peer hidden" id="payment_razorpay" type="radio" name="payment_method" value="Razorpay" />
+            <label for="payment_razorpay"
+              class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out">
+              <div class="ml-5">
+                <span class="font-semibold">Razorpay</span>
+                <p class="text-gray-600 text-sm">Secure online payment</p>
+              </div>
+            </label>
+          </div>
+
+          <div class="relative">
+            <input class="peer hidden" id="payment_cod" type="radio" name="payment_method" value="COD" />
+            <label for="payment_cod"
+              class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out">
+              <div class="ml-5">
+                <span class="font-semibold">Cash on Delivery (COD)</span>
+                <p class="text-gray-600 text-sm">Pay upon delivery</p>
+              </div>
+            </label>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Order Summary -->
+    <div class="mt-8 bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+
+      <!-- Coupon Section -->
+      <div class="mb-4">
+        <label for="couponCode" class="block text-sm font-medium text-gray-700">Coupon Code</label>
+        <div class="mt-1 flex rounded-md shadow-sm">
+          <input type="text" id="couponCode" name="couponCode"
+            class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm border-1"
+            placeholder="Enter coupon code..." />
+          <button onclick="removeCoupon()" type="button" id="removeCouponButton">
+            <i class="fa fa-times p-3" aria-hidden="true"></i>
+          </button>
+          <button id="applyCouponButton" type="button"
+            class="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Apply
+          </button>
+        </div>
+        <div style="padding-top: 15px">
+          <label for="couponCode" class="block text-sm font-medium text-gray-700">Available coupons..!!</label>
+          <select class="border-2 w-50 rounded-md shadow-sm" style="height: 35px">
+            <option>Coupons here...</option>
+            <% for (let i of coupon) { %>
+              <% if (i.priceLimit <=sum) { %>
+                <option value="<%= i._id %>">
+                  <%= i.couponCode %> - <%= i.couponDescription %>
+                </option>
+                <% } %>
+                  <% } %>
+          </select>
+        </div>
+      </div>
+      <!-- End Coupon Section -->
+
+      <div class="border-t border-b py-2">
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium text-gray-700">Subtotal</p>
+          <p class="font-semibold text-gray-700">₹ &nbsp;<%= sum %>
+          </p>
+        </div>
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium text-gray-700">Shipping</p>
+          <p class="font-semibold text-blue-700">Free Shipping</p>
+        </div>
+        <!-- Coupon Discount Display -->
+        <div id="couponDiscount" class="flex items-center justify-between hidden">
+          <p class="text-sm font-medium text-gray-700">Coupon Discount</p>
+          <p id="couponDiscountValue" class="font-semibold text-green-500"></p>
+        </div>
+      </div>
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-medium text-gray-700">Total</p>
+        <p id="totalSum1" class="text-2xl font-semibold text-gray-700">
+          ₹&nbsp;<%= sum %>
         </p>
-        <div class="relative">
-          <input
-            class="peer hidden"
-            id="payment_wallet"
-            type="radio"
-            name="payment_method"
-            value="Cwallet"
-          />
-          <label
-            for="payment_wallet"
-            class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out"
-          >
-            <div class="ml-5">
-              <span class="font-semibold">Wallet</span>
-              <p class="text-gray-600 text-sm">Use your own wallet</p>
-            </div>
-          </label>
-        </div>
+        <p style="display: none" id="hy">
+          <%= sum %>
+        </p>
+      </div>
 
-        <div class="relative">
-          <input
-            class="peer hidden"
-            id="payment_razorpay"
-            type="radio"
-            name="payment_method"
-            value="Razorpay"
-          />
-          <label
-            for="payment_razorpay"
-            class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out"
-          >
-            <div class="ml-5">
-              <span class="font-semibold">Razorpay</span>
-              <p class="text-gray-600 text-sm">Secure online payment</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="relative">
-          <input
-            class="peer hidden"
-            id="payment_cod"
-            type="radio"
-            name="payment_method"
-            value="COD"
-          />
-          <label
-            for="payment_cod"
-            class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out"
-          >
-            <div class="ml-5">
-              <span class="font-semibold">Cash on Delivery (COD)</span>
-              <p class="text-gray-600 text-sm">Pay upon delivery</p>
-            </div>
-          </label>
-        </div>
-      </form>
-    </div>
-  </div>
-  <!-- Order Summary -->
-  <div class="mt-8 bg-white shadow-md rounded-lg p-6">
-    <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
-
-
-    <!-- Coupon Section -->
-    <div class="mb-4">
-      <label for="couponCode" class="block text-sm font-medium text-gray-700"
-        >Coupon Code</label
-      >
-      <div class="mt-1 flex rounded-md shadow-sm">
-
-        <input
-          type="text"
-          id="couponCode"
-          name="couponCode"
-          class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm border-1"
-          placeholder="Enter coupon code..."
-        />
-        <button onclick="removeCoupon(this)" type="button" id="removeCouponButton">
-          <i class="fa fa-times p-3" aria-hidden="true"></i>
+      <button id="placeOrderButton" onclick="placeOrder('<%= sum %>')"
+        class="mt-4 w-full rounded-md bg-blue-500 hover:bg-blue-600 px-6 py-3 font-medium text-white transition duration-300 ease-in-out">
+        Place Order
       </button>
-        <button
-          id="applyCouponButton"
-          type="button"
-          class="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Apply
-        </button>
-      </div>
-      <div style="padding-top: 15px">
-        <label for="couponCode" class="block text-sm font-medium text-gray-700"
-          >Available coupons..!!</label
-        >
-        <select class="border-2 w-50 rounded-md shadow-sm" style="height: 35px">
-          <option>Coupons here...</option>
-          <% for (let i of coupon) { %> <% if (i.priceLimit <= sum) { %>
-          <option value="<%= i._id %>">
-            <%= i.couponCode %> - <%= i.couponDescription %>
-          </option>
-          <% } %> <% } %>
-        </select>
-      </div>
     </div>
-    <!-- End Coupon Section -->
-
-
-    <div class="border-t border-b py-2">
-      <div class="flex items-center justify-between">
-        <p class="text-sm font-medium text-gray-700">Subtotal</p>
-        <p class="font-semibold text-gray-700">₹ &nbsp;<%= sum %></p>
-      </div>
-      <div class="flex items-center justify-between">
-        <p class="text-sm font-medium text-gray-700">Shipping</p>
-        <p class="font-semibold text-blue-700">Free Shipping</p>
-      </div>
-      <!-- Coupon Discount Display -->
-      <div id="couponDiscount" class="flex items-center justify-between hidden">
-        <p class="text-sm font-medium text-gray-700">Coupon Discount</p>
-        <p id="couponDiscountValue" class="font-semibold text-green-500"></p>
-      </div>
-    </div>
-    <div class="flex items-center justify-between">
-      <p class="text-sm font-medium text-gray-700">Total</p>
-      <p id="totalSum" class="text-2xl font-semibold text-gray-700">
-        ₹&nbsp;<%= sum %>
-      </p>
-    </div>
-
-    <button
-      id="placeOrderButton"
-      onclick="placeOrder('<%= sum %>')"
-      class="mt-4 w-full rounded-md bg-blue-500 hover:bg-blue-600 px-6 py-3 font-medium text-white transition duration-300 ease-in-out"
-    >
-      Place Order
-    </button>
   </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"
-/>
-<script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
-  integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
+    integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<script>
-  toastr.options = {
-    closeButton: false,
-    debug: false,
-    newestOnTop: true,
-    progressBar: false,
-    positionClass: "toast-top-right",
-    preventDuplicates: false,
-    onclick: null,
-    showDuration: "300",
-    hideDuration: "1000",
-    timeOut: "5000",
-    extendedTimeOut: "1000",
-    showEasing: "swing",
-    hideEasing: "linear",
-    showMethod: "fadeIn",
-    hideMethod: "fadeOut",
-  };
+  <script>
+    const totalPrice = document.getElementById("hy").innerHTML;
+    document
+      .getElementById("removeCouponButton")
+      .addEventListener("click", async () => {
+        await axios
+          .post("/removeCoupon", {
+            totalPrice,
+          })
+          .then((response) => {
+            const totalSum = response.data.success;
+            document.getElementById("totalSum1").innerText = totalSum;
+          });
+      });
+  </script>
 
-  document
-    .getElementById("applyCouponButton")
-    .addEventListener("click", async () => {
-      const couponCode = document.getElementById("couponCode").value;
+  <script>
+    toastr.options = {
+      closeButton: false,
+      debug: false,
+      newestOnTop: true,
+      progressBar: false,
+      positionClass: "toast-top-right",
+      preventDuplicates: false,
+      onclick: null,
+      showDuration: "300",
+      hideDuration: "1000",
+      timeOut: "5000",
+      extendedTimeOut: "1000",
+      showEasing: "swing",
+      hideEasing: "linear",
+      showMethod: "fadeIn",
+      hideMethod: "fadeOut",
+    };
 
-      try {
-        const response = await axios.post("/api/checkCoupon", {
-          couponCode,
-        });
-        const { isValid, discount } = response.data;
-        if (isValid) {
-          const totalPrice = document.querySelectorAll(".prdsum");
-          document.getElementById("totalSum").innerHTML = `₹  ${discount}`;
+    document
+      .getElementById("applyCouponButton")
+      .addEventListener("click", async () => {
+        const couponCode = document.getElementById("couponCode").value;
 
-          let total = 0;
-          totalPrice.forEach((value) => (total += Number(value.innerHTML)));
+        const totalPrice = document.getElementById("hy").innerHTML;
 
-          console.log(total);
-          const discountedvalue = Math.floor(total / discount);
-
-          console.log(Number(discountedvalue));
-          // Update UI to show discount
-          document.getElementById("couponDiscountValue").textContent =
-            discountedvalue;
-          if (!discountedvalue) {
-            discountedvalue = 0;
+        try {
+          const response = await axios.post("/api/checkCoupon", {
+            couponCode,
+            totalPrice,
+          });
+          const { isValid, discount } = response.data;
+          if (isValid) {
+            const totalPrice = document.querySelectorAll(".prdsum");
+            document.getElementById("totalSum1").innerHTML = `₹  ${discount}`;
+            let total = 0;
+            totalPrice.forEach((value) => (total += Number(value.innerHTML)));
+            const discountedvalue = Math.floor(total / discount);
+            console.log(Number(discountedvalue));
+            // Update UI to show discount
+            document.getElementById("couponDiscountValue").textContent =
+              discountedvalue;
+            if (!discountedvalue) {
+              discountedvalue = 0;
+            }
+            totalSum.innerHTML = total - Number(discountedvalue);
+            document.getElementById("couponDiscount").classList.remove("hidden");
+          } else {
+            toastr.error(response.data.message);
           }
-          totalSum.innerHTML = total - Number(discountedvalue);
-          document.getElementById("couponDiscount").classList.remove("hidden");
-        } else {
-          toastr.error(response.data.message)
+        } catch (error) {
+          console.error("Error checking coupon:", error);
         }
-      } catch (error) {
-        console.error("Error checking coupon:", error);
-      }
+      });
+
+    document.addEventListener("DOMContentLoaded", async function () {
+      const openAddressModalButton = document.getElementById(
+        "openAddressModalButton"
+      );
+      const addressModal = document.getElementById("addressModal");
+
+      openAddressModalButton.addEventListener("click", async function () {
+        try {
+          // Make a GET request to fetch address data
+          const response = await axios.get("/checkaddress");
+          const address = response.data;
+          console.log(address, "res");
+          // Show the modal
+          addressModal.classList.remove("hidden");
+        } catch (error) {
+          addressModal.classList.remove("hidden");
+          if (error?.response?.data) {
+            let errorModal = document.getElementById("errorpopup");
+            errorModal.innerText = error.response.data.message;
+            return errorModal.classList.remove("hidden");
+          }
+        }
+      });
     });
 
-  
-  document.addEventListener("DOMContentLoaded", async function () {
-    const openAddressModalButton = document.getElementById(
-      "openAddressModalButton"
-    );
+    const closeButton = document.getElementById("closeAddressModalButton");
     const addressModal = document.getElementById("addressModal");
 
-    openAddressModalButton.addEventListener("click", async function () {
-      try {
-        // Make a GET request to fetch address data
-        const response = await axios.get("/checkaddress");
-        const address = response.data;
-        console.log(address, "res");
-        // Show the modal
-        addressModal.classList.remove("hidden");
-      } catch (error) {
-        addressModal.classList.remove("hidden");
-        if (error?.response?.data) {
-          let errorModal = document.getElementById("errorpopup");
-          errorModal.innerText = error.response.data.message;
-          return errorModal.classList.remove("hidden");
-        }
+    // Close the modal when clicking outside of it or pressing ESC key
+    function handleWindowClick(event) {
+      if (event.target === addressModal) {
+        closeModal();
       }
-    });
-  });
-
-  const closeButton = document.getElementById("closeAddressModalButton");
-  const addressModal = document.getElementById("addressModal");
-
-  // Close the modal when clicking outside of it or pressing ESC key
-  function handleWindowClick(event) {
-    if (event.target === addressModal) {
-      closeModal();
     }
-  }
 
-  function handleKeyDown(event) {
-    if (event.key === "Escape") {
-      closeModal();
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        closeModal();
+      }
     }
-  }
 
-  window.addEventListener("click", handleWindowClick);
-  window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("click", handleWindowClick);
+    window.addEventListener("keydown", handleKeyDown);
 
-  // Function to close the modal
-  function closeModal() {
-    addressModal.classList.add("hidden");
-    // Remove event listeners to prevent memory leaks
-    window.removeEventListener("click", handleWindowClick);
-    window.removeEventListener("keydown", handleKeyDown);
-  }
+    // Function to close the modal
+    function closeModal() {
+      addressModal.classList.add("hidden");
+      // Remove event listeners to prevent memory leaks
+      window.removeEventListener("click", handleWindowClick);
+      window.removeEventListener("keydown", handleKeyDown);
+    }
 
-  // Add event listener to close button
-  closeButton.addEventListener("click", closeModal);
+    // Add event listener to close button
+    closeButton.addEventListener("click", closeModal);
 
-  function showSelectedAddress(selectedAddress) {
-    const selectedAddressElement = document.getElementById("selectedAddress");
-    selectedAddressElement.textContent = selectedAddress;
-    document
-      .getElementById("selectedAddressSection")
-      .classList.remove("hidden");
-  }
+    function showSelectedAddress(selectedAddress) {
+      const selectedAddressElement = document.getElementById("selectedAddress");
+      selectedAddressElement.textContent = selectedAddress;
+      document
+        .getElementById("selectedAddressSection")
+        .classList.remove("hidden");
+    }
 
-  const selectButtons = document.querySelectorAll(".select-address-button");
-  selectButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      // Get the selected address from the button's parent element
-      const selectedAddress = button.previousElementSibling.textContent.trim();
-      // Show the selected address
-      showSelectedAddress(selectedAddress);
-      // Close the modal
-      closeModal();
+    const selectButtons = document.querySelectorAll(".select-address-button");
+    selectButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        // Get the selected address from the button's parent element
+        const selectedAddress = button.previousElementSibling.textContent.trim();
+        // Show the selected address
+        showSelectedAddress(selectedAddress);
+        // Close the modal
+        closeModal();
+      });
     });
-  });
+    let activeCoupon = document.getElementById("couponCode").value;
 
-  function placeOrder(sum) {
-    const selectedPaymentMethod = document.querySelector(
-      'input[name="payment_method"]:checked'
-    ).value;
+    function placeOrder(sum) {
+      const selectedPaymentMethod = document.querySelector(
+        'input[name="payment_method"]:checked'
+      ).value;
 
-    const totalSum = sum;
-    const selectedAddress =
-      document.getElementById("selectedAddress").innerText;
-    const image = document.getElementById("imageproduct").src;
+      const totalSum = sum;
+      const selectedAddress =
+        document.getElementById("selectedAddress").innerText;
+      const image = document.getElementById("imageproduct").src;
 
-    const name = document.getElementById("prdname").innerText;
+      const name = document.getElementById("prdname").innerText;
 
-    const price = document.getElementById("totalSum").innerText;
+      const price = document.getElementById("totalSum1").innerText;
 
-    const quantity = document.getElementById("prdquantity").innerText;
-    const activeCoupon = document.getElementById("couponCode").value;
+      const quantity = document.getElementById("prdquantity").innerText;
+      console.log(activeCoupon,"qwertyuijhgfdcvbjk");
 
-    if (selectedPaymentMethod) {
-      var paymentMethod = selectedPaymentMethod;
-      var cod = "COD";
-      var razorpay = "Razorpay";
-      var wallet = "Cwallet";
-      if (
-        paymentMethod === cod ||
-        paymentMethod === razorpay ||
-        paymentMethod === wallet
-      ) {
-        axios
-          .post("/placeorder", {
-            address: selectedAddress,
-            totalsum: totalSum,
-            paymentMethod: paymentMethod,
-            name: name,
-            price: price,
-            quantity: quantity,
-            image: image,
-            activeCoupon: activeCoupon,
-          })
-          .then(function (response) {
-            if (response.data?.order) {
-              var options = {
-                key: "rzp_test_wV96XGA4SLLOo7",
-                amount: response.data?.order.amount,
-                currency: "INR",
-                name: "Niche",
-                description: "Test Transaction",
-                image: "https://example.com/your_logo",
-                order_id: response.data?.order.id,
-                callback_url: "/verifyrazorpay",
-                prefill: {
-                  name: "Gaurav Kumar",
-                  email: "gaurav.kumar@example.com",
-                  contact: "9000090000",
-                },
-                notes: {
-                  address: "Razorpay Corporate Office",
-                },
-                theme: {
-                  color: "#3399cc",
-                },
-              };
-              var rzp1 = new Razorpay(options);
-              rzp1.open();
-              return;
-            }
-
-            if (paymentMethod === cod) {
-              window.location.href = "/successpage";
-              return;
-            }
-
-            if (paymentMethod === wallet) {
-              if (response?.data?.message) {
-                toastr.warning(response.data.message, "Warning!");
+      if (selectedPaymentMethod) {
+        var paymentMethod = selectedPaymentMethod;
+        var cod = "COD";
+        var razorpay = "Razorpay";
+        var wallet = "Cwallet";
+        if (
+          paymentMethod === cod ||
+          paymentMethod === razorpay ||
+          paymentMethod === wallet
+        ) {
+          axios
+            .post("/placeorder", {
+              address: selectedAddress,
+              totalsum: totalSum,
+              paymentMethod: paymentMethod,
+              name: name,
+              price: price,
+              quantity: quantity,
+              image: image,
+              activeCoupon: activeCoupon,
+            })
+            .then(function (response) {
+              if (response.data?.order) {
+                var options = {
+                  key: "rzp_test_wV96XGA4SLLOo7",
+                  amount: response.data?.order.amount,
+                  currency: "INR",
+                  name: "Niche",
+                  description: "Test Transaction",
+                  image: "https://example.com/your_logo",
+                  order_id: response.data?.order.id,
+                  callback_url: "/verifyrazorpay",
+                  prefill: {
+                    name: "Gaurav Kumar",
+                    email: "gaurav.kumar@example.com",
+                    contact: "9000090000",
+                  },
+                  notes: {
+                    address: "Razorpay Corporate Office",
+                  },
+                  theme: {
+                    color: "#3399cc",
+                  },
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+                return;
               }
-            }
-          })
-          .catch(function (error) {
-            console.error("Error:", error);
-          });
+
+              if (paymentMethod === cod) {
+                window.location.href = "/successpage";
+                return;
+              }
+
+              if (paymentMethod === wallet) {
+                if (response?.data?.message) {
+                  window.location.href = "/successpage";
+                return;
+                }
+              }
+            })
+            .catch(function (error) {
+              console.error("Error:", error);
+            });
+        } else {
+          console.log("Payment method selected:", paymentMethod);
+        }
       } else {
-        console.log("Payment method selected:", paymentMethod);
+        console.log("No payment method selected");
       }
-    } else {
-      console.log("No payment method selected");
     }
-  }
-</script>
-<%- include('include/_footer') %>
+  </script>
+  <%- include('include/_footer') %>

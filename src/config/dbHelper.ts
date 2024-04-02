@@ -21,7 +21,6 @@ export async function getAllUsers(page = 1) {
   }
 }
 
-
 export async function getListedProducts(status = false, page = 1) {
   try {
     const skip = Number(page) ? Number(page) - 1 : 0;
@@ -40,20 +39,18 @@ export async function getListedProducts(status = false, page = 1) {
       },
       {
         $lookup: {
-          from: "categorydb", // Assuming the name of the category collection is "categories"
-          localField: "category", // Field in the current collection
-          foreignField: "_id", // Field in the referenced collection
-          as: "category" // Output array field
-        }
-      }
-    ]
+          from: "categorydbs",
+          localField: "category",
+          foreignField: "_id",
+          as: "categoryDetails",
+        },
+      },
+    ];
     return await productDb.aggregate(agg);
   } catch (err) {
     throw err;
   }
 }
-
-
 
 export async function getListedAllCategories(
   isHidden = false,
@@ -72,14 +69,14 @@ export async function getListedAllCategories(
     // if(forSelectBox){
     //     return await Categorydb.find({isHidden});
     // }
-    return await categoryDb.find({ isHidden })
+    return await categoryDb
+      .find({ isHidden })
       .skip(skip * 10)
       .limit(10);
   } catch (err) {
     throw err;
   }
 }
-
 
 interface AggregationStage {
   $unwind: string;
@@ -93,8 +90,10 @@ interface AggregationStage {
   $limit?: number;
 }
 
-
-export async function getAllCoupon(couponId: string | null = null, page?: number | null) {
+export async function getAllCoupon(
+  couponId: string | null = null,
+  page?: number | null
+) {
   try {
     const skip = Number(page) ? Number(page) - 1 : 0;
     // for updation of coupon we need details of the particular coupon
@@ -102,9 +101,9 @@ export async function getAllCoupon(couponId: string | null = null, page?: number
       if (!isObjectIdOrHexString(couponId)) {
         return null;
       }
-      return await CouponDb.findOne({ _id: couponId,isDeleted:false });
+      return await CouponDb.findOne({ _id: couponId, isDeleted: false });
     }
-    return await CouponDb.find({isDeleted:false})
+    return await CouponDb.find({ isDeleted: false })
       .skip(10 * skip)
       .limit(10);
   } catch (err) {
@@ -120,9 +119,9 @@ export async function getAllDeletedCoupons(couponId = null, page = null) {
       if (!isObjectIdOrHexString(couponId)) {
         return null;
       }
-      return await CouponDb.findOne({ _id: couponId,isDeleted:true });
+      return await CouponDb.findOne({ _id: couponId, isDeleted: true });
     }
-    return await CouponDb.find({isDeleted:true})
+    return await CouponDb.find({ isDeleted: true })
       .skip(10 * skip)
       .limit(10);
   } catch (err) {

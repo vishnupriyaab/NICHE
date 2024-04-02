@@ -12,6 +12,18 @@
     -moz-appearance: textfield;
     appearance: textfield;
   }
+  .text {
+    color: black;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: underline;
+  }
+
+  .text:hover {
+    background-color: white;
+    color: rgb(109, 92, 92);
+  }
+ 
 </style>
 
 <body>
@@ -62,15 +74,18 @@
 
           <thead>
             <tr>
-              <th class="py-2">Amount</th>
-              <th class="py-2">Type</th>
-              <th class="py-2">Date</th>
+              <th class="py-2" style="text-align: center">No</th>
+              <th class="py-2" style="text-align: center">Amount</th>
+              <th class="py-2" style="text-align: center">Type</th>
+              <th class="py-2" style="text-align: center">Date</th>
             </tr>
           </thead>
 
           <tbody>
-            <% wall.forEach(transaction => { %>
+            <% let index = 1; %> <% wall.forEach(transaction => { %>
             <tr class="border-b">
+              <td class="py-2"><%= index %></td>
+              <!-- Adding manually counted index numbers -->
               <td class="py-2">₹ <%= transaction.sortedArray.amount %></td>
               <% if (transaction.sortedArray.type == '+ CREDIT') { %>
               <td class="py-2 text-green-600">
@@ -81,22 +96,58 @@
                 <%= transaction.sortedArray.type %>
               </td>
               <% } %>
-
               <td class="py-2">
                 <%=
                 transaction.sortedArray.transactionDate.toISOString().split('T')[0].split('-').reverse().join('-')
                 %>
               </td>
             </tr>
-            <% }) %>
+            <% index++; %> <% }) %>
           </tbody>
           <% } else { %>
-          <h2 class="text-xl font-semibold mb-4">No Transaction</h2>
+          <h2 class="text-xl font-semibold mb-4" style="color: rgb(4, 36, 4)">
+            No Transaction
+          </h2>
           <% } %>
         </table>
       </div>
     </div>
+    <h3 style="text-align: center; padding-top: 30px">
+      Refer Friends & Recieve Cash 💵
+    </h3>
+    <br />
+    <p style="text-align: center">
+      Receive ₹199 for every friend you refer, and your referred friend gets ₹99
+    </p>
+    <a href="#" class="text" id="refferalLink">Click Me</a>
   </div>
+
+
+<!-- 
+  <nav aria-label="Page navigation example">
+    <ul class="flex items-center -space-x-px h-8 text-sm">
+      <li>
+        <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-black border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-800 hover:text-black-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+          <span class="sr-only">Previous</span>
+          <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-grey border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+      </li>
+      <li>
+        <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-black border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+          <span class="sr-only">Next</span>
+          <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+          </svg>
+        </a>
+      </li>
+    </ul>
+  </nav> -->
+  
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -108,6 +159,35 @@
   ></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const referralLink = document.getElementById("refferalLink");
+
+      referralLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        axios
+          .get("/refferalLink")
+          .then(function (response) {
+            console.log(response);
+            if (response.success) {
+              const link = response.data.link;
+              navigator.clipboard.writeText(link).then(() => {
+                alert(response.data.message);
+              });
+            } else {
+              const link = response.data.link;
+              navigator.clipboard.writeText(link).then(() => {
+                alert(response.data.message);
+              });
+            }
+          })
+          .catch(function (error) {
+            console.error("Error:", error);
+          });
+      });
+    });
+  </script>
 
   <script>
     if ("<%=messages?.success%>") {

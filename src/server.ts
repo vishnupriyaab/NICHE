@@ -8,6 +8,7 @@ import adminRoute from "./router/adminRoute";
 import flash from 'express-flash'
 import fileupload from "express-fileupload";
 import BodyParser  from 'body-parser';
+import morgan from "morgan";
 
 
 const app: Application = express();
@@ -17,8 +18,6 @@ app.use(fileupload({
   useTempFiles:true,    
   limits: { fileSize: 2 * 1024 * 1024 },
 }))
-
-// app.use(BodyParser.json({limit: }));
 
 app.use(express.json({ limit: "100mb" }));
 app.use(
@@ -37,6 +36,8 @@ app.use(session({
   saveUninitialized: true,
   store: new MemoryStore(),
 }));
+
+app.use(morgan('dev'));
 
 app.use(flash());
 

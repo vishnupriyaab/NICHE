@@ -24,7 +24,7 @@ export const validateCategory = (
   next();
 };
 
-export const editcategoryValidation = [
+export const editCategoryValidation = [
   body("name")
     .notEmpty()
     .withMessage("Category Name is Required")
@@ -36,7 +36,7 @@ export const editcategoryValidation = [
     .withMessage("Category must contain only letters and spaces. No special characters allowed"),
 ];
 
-export const editvalidateCategory = (
+export const editValidateCategory = (
   req: Request,
   res: Response,
   next: NextFunction

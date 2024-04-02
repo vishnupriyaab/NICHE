@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UserRequestBody } from "../../interface/userInterface";
-import userDb from "../../model/userModel";
+// import userDb from "../../model/userModel";
 import {
   generateOTP,
   sendEmailWithOTP,
@@ -14,6 +14,7 @@ import Walletdb from "../../model/walletModel";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import mongoose from "mongoose";
+import userDb from "../../model/userModel";
 
 interface body {
   email: string;
@@ -34,6 +35,7 @@ export async function getLogin(
     console.error(error);
   }
 }
+
 export async function getHome(
   req: Request<{}, {}, body>,
   res: Response
@@ -42,16 +44,8 @@ export async function getHome(
     const user = req.session.userId;
     const product = await productDb
       .find({ isHidden: false })
-      .populate("category").populate("offer");
-    console.log(product, "producttttttttttttttttt");
-    product.forEach(product => {
-      console.log(product.category,"11111111111"); // Log the category information for each product
-      console.log(product.offer[0],'offer is here');
-      
-  })
-  // product.forEach(offer=>{
-  //   console.log(product.offer)
-  // })
+      .populate("category")
+      .populate("offer");
 
     const cart = await CartDb.findOne({ userId: user }).populate("products");
 
@@ -72,13 +66,6 @@ export async function getShop(req: Request, res: Response) {
   }
 }
 
-// export async function checkout(req: Request, res: Response) {
-//   try {
-//     res.render("user/checkout");
-//   } catch (error: any) {
-//     console.error(error);
-//   }
-// }
 export async function testimonial(req: Request, res: Response) {
   try {
     res.render("user/testimonial");
@@ -86,6 +73,7 @@ export async function testimonial(req: Request, res: Response) {
     console.error(error);
   }
 }
+
 export async function _404page(req: Request, res: Response) {
   try {
     res.render("user/include/_404page");
@@ -102,10 +90,7 @@ export async function contact(req: Request, res: Response) {
 }
 export async function userProfile(req: Request, res: Response) {
   try {
-    // console.log("deffrev", req.session.userId);
-
     const user = await userDb.findOne({ _id: req.session.userId });
-    // console.log(user, "user");
     const address = await Addressdb.find();
     const cart = await CartDb.findOne({ userId: user }).populate("products");
     res.render("user/userProfile", { user, cart, address });
@@ -122,22 +107,68 @@ export async function userRegister(
   try {
     const { Email, UserName, Password, Phone, otp } = req.body;
     console.log(Email);
+
+    const token = req.query.token;
+console.log(token,"token");
+
     req.session.Email = Email;
-    console.log(req.session.Email, req.session.otp, "1");
 
     const isVerified = verifyOtp(otp, req.session.otp ? req.session.otp : "");
-    console.log(isVerified);
 
     if (isVerified) {
-      const newUser = new userDb({
-        username: UserName,
-        email: Email,
-        password: Password,
-        phone: Phone,
-      });
-      await newUser.save();
+      console.log("excecuted");
+      
+      if (token) {
+        console.log("qwert");
+        
+        const newUser = new userDb({
+          username: UserName,
+          email: Email,
+          password: Password,
+          phone: Phone,
+          refferedToken: token,
+        });
 
-      res.send("Registered Successfully");
+        await newUser.save();
+        console.log(newUser,'newuser');
+        
+        const greneratorUser = await userDb.findOne({
+          refferalOfferToken: token,
+        });
+        console.log(greneratorUser,"greneratorUser");
+        
+
+        await Walletdb.updateOne(
+          { userId: greneratorUser!._id },
+          {
+            $inc: { walletBalance: 199 },
+            $push: { transactions: { amount: 199, type: "+ CREDIT" } },
+          },
+          { upsert: true }
+        );
+        const refUsedUser = await userDb.findOne({ _id: newUser._id });
+        console.log(refUsedUser,"12345678");
+        
+        await Walletdb.updateOne(
+          { userId: refUsedUser!._id },
+          {
+            $inc: { walletBalance: 99 },
+            $push: { transactions: { amount: 99, type: "+ CREDIT" } },
+          },
+          { upsert: true }
+        );
+
+        res.send("Registered Successfully");
+      } else {
+        const newUser = new userDb({
+          username: UserName,
+          email: Email,
+          password: Password,
+          phone: Phone,
+        });
+        await newUser.save();
+        res.send("Registered Successfully");
+      }
     } else {
       res.send("otp is invalid");
     }
@@ -147,9 +178,9 @@ export async function userRegister(
 }
 
 // 2.1 - 3.1 ms SPEED otp sending
-export async function otpSnd(req: Request, res: Response): Promise<void> {
+export async function otpSend(req: Request, res: Response): Promise<void> {
   try {
-    console.log(req.body, "hyyyy");
+    // console.log(req.body, "hyyyy");
     req.session.Email = req.body.Email;
     const newOTP = generateOTP();
     req.session.otp = newOTP;
@@ -161,7 +192,7 @@ export async function otpSnd(req: Request, res: Response): Promise<void> {
 }
 export async function resendOtp(req: Request, res: Response) {
   try {
-    console.log("xcvbnm,");
+    // console.log("xcvbnm,");
     const email = req.session.Email;
     const newOTP = generateOTP();
     req.session.otp = newOTP;
@@ -227,7 +258,7 @@ export async function postLogin(
   }
 }
 
-export async function getuserLogout(req: Request, res: Response) {
+export async function getUserLogout(req: Request, res: Response) {
   try {
     delete req.session.userId;
     res.redirect("/");
@@ -297,7 +328,10 @@ export async function deleteAddress(req: Request, res: Response) {
   }
 }
 
-export async function updateAddress(req: Request, res: Response) {
+export async function updateAddress(
+  req: Request,
+  res: Response
+): Promise<void> {
   try {
     let { name, district, country, phonenumber, hNo, state, pin, addressType } =
       req.body;
@@ -352,7 +386,9 @@ export async function wallet(req: Request, res: Response) {
   }
 }
 
-export async function addToWallet(req: Request, res: Response) {
+
+
+export async function addToWallet(req: Request, res: Response): Promise<void> {
   try {
     const { amount } = req.body;
 
@@ -381,7 +417,10 @@ export async function addToWallet(req: Request, res: Response) {
   }
 }
 
-export async function walletRazorpayVerification(req: Request, res: Response) {
+export async function walletRazorpayVerification(
+  req: Request,
+  res: Response
+): Promise<void> {
   try {
     new Razorpay({
       key_id: process.env.RZP_KEY_ID as string,
@@ -423,5 +462,66 @@ export async function walletRazorpayVerification(req: Request, res: Response) {
     delete (req.session as any)?.amount;
     console.error("Error while verifying", error);
     res.status(500).send("Error verifiying razorpay payment");
+  }
+}
+
+export async function refferalLinkGenerating(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    // const userId = req.session.userId;
+    const UserData = await userDb.findOne({ _id: req.session.userId });
+    if (UserData?.refferalOfferToken) {
+      res.json({ success: false, message: "Link already generated" });
+    } else {
+      const token = generateRefferalToken();
+      UserData!.refferalOfferToken = token;
+      UserData?.save();
+      const generatedLink = `http://127.0.0.1:3000/userLogin?token=${token}`;
+      res.json({
+        success: true,
+        link: generatedLink,
+        message: "Referral Link copied to clipboard",
+      });
+    }
+  } catch (error) {
+    console.log("referralLinkError", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while generating the referral link." });
+  }
+}
+
+const generateRefferalToken = () => {
+  return crypto.randomBytes(20).toString("hex");
+};
+
+
+
+export async function searchProduct(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const query = req.query.q;
+    if (!query) {
+      res.status(400).send({ error: "Query parameter is missing" });
+      return;
+    }
+
+    //perform the search
+    const products = await productDb.find({
+      $or: [
+        { productName: { $regex: query, $options: "i" } },
+        { productDescription: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    res.send(products);
+  } catch (error) {
+    console.error("Error adding product to cart : ", error);
+    res.status(500).send("Internal Server Error");
   }
 }

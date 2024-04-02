@@ -4,7 +4,7 @@ import Wishlistdb from "../../model/wishlistModel";
 import productDb from "../../model/productModel";
 import CartDb from "../../model/cartModel";
 
-export async function wishlist(req: Request, res: Response) {
+export async function getWishlist(req: Request, res: Response) {
   try {
     const user = req.session.userId;
     const cart = await CartDb.findOne({ userId: user }).populate("products");
@@ -35,7 +35,6 @@ export async function wishlist(req: Request, res: Response) {
     res.status(500).send("Internal Server Error");
   }
 }
-
 export async function addToWishlist(
   req: Request,
   res: Response
@@ -49,18 +48,18 @@ export async function addToWishlist(
 
     const { productId } = req.body;
 
-    const dup = await Wishlistdb.findOne({
+    const duplicate = await Wishlistdb.findOne({
       userId: userId,
-      "products.productId": productId,
+      "products.productId": productId
     });
 
-    if (dup) {
+    if (duplicate) {
       res.status(200).json({ message: "Product already in wishlist" });
       return;
     }
 
-    const wishlist = await Wishlistdb.updateOne(
-      { userId: req.session.userId },
+    await Wishlistdb.updateOne(
+      { userId: userId },
       {
         $push: { products: { productId: productId } },
       },
@@ -73,6 +72,7 @@ export async function addToWishlist(
     res.status(500).send("Internal Server Error");
   }
 }
+
 
 export async function removeFromWishlist(req: Request, res: Response) {
   try {

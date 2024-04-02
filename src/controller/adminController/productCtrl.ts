@@ -29,7 +29,7 @@ export async function getProducts(req: Request, res: Response) {
   }
 }
 
-export async function getEditproduct(req: Request, res: Response) {
+export async function getEditProduct(req: Request, res: Response) {
   try {
     const product = await productDb.findOne({ _id: req.params.id }).populate('category');
     const category = await categoryDb.find();
@@ -40,7 +40,7 @@ export async function getEditproduct(req: Request, res: Response) {
   }
 }
 
-export async function getunlistedProduct(req: Request, res: Response) {
+export async function getUnlistedProduct(req: Request, res: Response) {
   try {
     const product = await productDb.find().populate("category");
     res.render("admin/unlistedProduct", { product });
@@ -52,7 +52,8 @@ export async function getunlistedProduct(req: Request, res: Response) {
 export async function updateProduct(req: Request, res: Response) {
   try {
     let { productname, description, price, stock, imgArr, category } = req.body;
-    // const categoryname = await categoryDb.findOne({ name: category });
+    const categoryname = await categoryDb.findOne({ name: { $regex: new RegExp(category, 'i') }},{_id: 1});
+
     const url = await cloudinaryUploadImage(imgArr);
     console.log("zzzzzzzzzzzzzzzzzzzz");
     
@@ -64,7 +65,7 @@ export async function updateProduct(req: Request, res: Response) {
           description,
           price,
           stock,
-          category,
+          category: categoryname?._id,
         },
       }
     );
@@ -114,7 +115,7 @@ export async function deleteImage(req: Request, res: Response) {
   }
 }
 
-export async function getaddProduct(req: Request, res: Response) {
+export async function getAddProduct(req: Request, res: Response) {
   try {
     const category = await categoryDb.find({ unlistStatus: true });
     res.render("admin/addProduct", { category });

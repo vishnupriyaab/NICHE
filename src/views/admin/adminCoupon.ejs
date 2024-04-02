@@ -55,8 +55,8 @@
 	  </div> -->
 				<% for( let i=0; i < coupons.length; i++ ) { %>
 					<div class="produts">
-						<div class="productImg d-flex align-items-center justify-content-between">						
-							<div class="proImg d-flex gap-3 align-items-center">
+						<div class="productImg d-flex align-items-center justify-content-between" style="width: 100%;">						
+							<div class="proImg d-flex gap-3 align-items-center" style="width: 70%;">
 								<p class="mb-1 p-0 text-capitalize"><%= i+1 %></p>
 								<div class="description d-flex align-items-center">
 									<div>
@@ -69,7 +69,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="dPrice">
+							<div class="dPrice" style="width: 30%;">
 								<p class="mb-1 p-0">Category: <%= coupons[i].category %>
 								</p>
 								<p class="mb-1 p-0">Max uses: <%= coupons[i].maxUse %>
@@ -79,7 +79,7 @@
 								<p class="m-0 p-0">Coupon Expiry: <%=
 										coupons[i].expiry.toString().split(' ').slice(0, 4).join(' ') %></p>
 			</div>
-			<div class="actions d-flex align-items-center stop">
+			<div class="actions d-flex align-items-center stop" >
 			  <a href="/editCoupon/<%= coupons[i]._id %>" title="Edit Coupon">
 				<svg
 				  width="18"

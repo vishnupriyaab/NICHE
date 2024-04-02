@@ -27,6 +27,12 @@ const userSchema = new Schema<User>({
     liveStatus: {
         type: Boolean,
         default: true,
+    },
+    refferalOfferToken: {
+        type: String,
+    },
+    refferedToken: {
+        type: String,
     }
 
 });

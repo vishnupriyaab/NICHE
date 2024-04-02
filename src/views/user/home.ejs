@@ -7,21 +7,6 @@
         <div class="col-md-12 col-lg-7">
           <h6 class="mb-3 text-secondary">Give Wings To Your Dreams</h6>
           <h1 class="mb-5 display-3 text-primary">NICHE</h1>
-          <!-- <div class="position-relative mx-auto">
-              <input
-                class="form-control w-75 py-3 px-4 rounded-pill"
-                style="border-color: rgba(37, 34, 34, 0.479)"
-                type="number"
-                placeholder="Search"
-              />
-              <button
-                type="submit"
-                class="btn btn-submit-color position-absolute rounded-pill text-white h-100"
-                style="top: 0; right: 25%; background-color: black;border-color: black;"
-              >
-                 Submit now
-              </button>
-            </div> -->
         </div>
         <div class="col-md-12 col-lg-5">
         </div>
@@ -41,7 +26,6 @@
             </div>
             <div class="featurs-content text-center">
               <h6>Free Shipping</h6>
-
             </div>
           </div>
         </div>
@@ -52,7 +36,6 @@
             </div>
             <div class="featurs-content text-center">
               <h6>100% Security Payment</h6>
-
             </div>
           </div>
         </div>
@@ -63,7 +46,6 @@
             </div>
             <div class="featurs-content text-center">
               <h6>30 Day Return</h6>
-
             </div>
           </div>
         </div>
@@ -113,7 +95,6 @@
                   <span class="text-dark" style="width: 130px">Kids</span>
                 </a>
               </li>
-
             </ul>
           </div>
         </div>
@@ -125,9 +106,7 @@
                   <% for( let i=0; i < product.length; i++ ) { %>
                     <div class="col-md-6 col-lg-4 col-xl-3">
                       <a href="/singleProductpage/<%= product[i]._id %>">
-
                         <div class="rounded position-relative fruite-item">
-
                           <div class="fruite-img">
                             <img src="<%= product[i].imgArr[0] %>" class="img-fluid w-100 rounded-top" alt="" />
                           </div>
@@ -150,7 +129,8 @@
                                   <div class="d-flex justify-content-between flex-lg-wrap">
                                     <% if (product[i].offerApplied) { %>
                                       <p class="text-dark fs-5 fw-bold mb-0">
-                                        <span class="off-price">₹<%= product[i].offerPrice %></span>
+                                        <span class="off-price">₹<%= Math.round(product[i].offerPrice) %></span>
+
                                         <del>
                                           <span class="price" style="color: red;">₹<%= product[i].price %> </span>
                                         </del>
@@ -397,51 +377,6 @@
   </div>
   <!-- Fruits Shop End-->
 
-
-  <!-- Vesitable Shop Start-->
-  <!-- <div class="container-fluid vesitable py-2">
-      <div class="container py-2">
-        <h1 class="mb-0">Newly Launched</h1>
-        <div class="owl-carousel vegetable-carousel justify-content-center">
-
-          <%# for( let i = 0; i < product.length; i++ ) { %>
-          
-            <div
-            class="border border-primary rounded position-relative vesitable-item"
-            >
-            <div class="vesitable-img">
-              <img
-              src="<%#= product[i].imgArr[0] %>"
-              class="img-fluid w-100 rounded-top"
-              alt=""
-              />
-            </div>
-            <div
-            class="text-white bg-primary px-3 py-1 rounded position-absolute"
-            style="top: 10px; right: 10px"
-            >
-            <%#= product[i].category.name %>
-          </div>
-          <div class="p-4 rounded-bottom">
-            <h4><%#= product[i].name %></h4>
-            <p class="text-dark">
-              FOR <%#= product[i].category.name %>
-            </p>
-            <div class="d-flex justify-content-between flex-lg-wrap">
-              <p class="text-dark fs-5 fw-bold mb-0">$<%#= product[i].price %></p>
-              <button onclick="addTocart('<%#- product[i]._id %>')"
-              class="btn border border-secondary rounded-pill px-3 text-primary"
-              ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
-              cart</button
-              >
-            </div>
-          </div>
-        </div>
-        <%# } %>
-        </div>
-      </div>
-    </div> -->
-  <!-- Vesitable Shop End -->
 
   <!-- Banner Section Start-->
   <div class="container-fluid banner bg-second my-5">
@@ -757,6 +692,10 @@
         });
     }
   </script>
+
+
+
+
 
 
   <%- include('include/_footer') %>

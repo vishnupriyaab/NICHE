@@ -151,6 +151,9 @@
                     <a href="/userProfile" class="block px-4 py-1 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md">
                         <i class="material-icons md-account_circle mr-2"></i> Profile
                     </a>
+                    <a href="/wishlist" class="block px-4 py-1 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md">
+                      <i class="material-icons md-account_circle mr-2"></i> Whishlist
+                  </a>
                     <a href="/wallet" class="block px-4 py-1 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md">
                       <i class="material-icons md-account_circle mr-2"></i> Wallet
                   </a>
@@ -202,6 +205,7 @@
               <input
                 type="search"
                 class="form-control p-3"
+                id="searchInput"
                 placeholder="Search"
                 aria-describedby="search-icon-1"
               />
@@ -214,3 +218,64 @@
       </div>
     </div>
     <!-- Modal Search End -->
+
+    
+<!-- search box main function-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.querySelector('.search-results');
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim();
+            if (query.length >= 1) {
+                axios.get(`/search?q=${query}`)
+                    .then(function (response) {
+                        const products = response.data;
+                        searchResults.innerHTML = ''; // Clear previous search results
+                        if (products.length > 0) {
+                            products.forEach(product => {
+                                const productDiv = document.createElement('div');
+                                productDiv.classList.add('product-result');
+                                productDiv.innerHTML = `
+                                    <h6>${product.productName}</h6>
+                                    <p>${product.productDescription}</p>
+                                    <img src="${product.images[0]}" alt="${product.productName}">
+                                `;
+                                productDiv.addEventListener('click', function () {
+                                    window.location.href = `/single-product/${product._id}`;
+                                });
+                                searchResults.appendChild(productDiv);
+                            });
+                        } else {
+                            const notFoundDiv = document.createElement('div');
+                            notFoundDiv.classList.add('product-result', 'notFound');
+                            notFoundDiv.innerHTML = `<p>Product Not found with the name '${query}'</p>`;
+                            searchResults.appendChild(notFoundDiv);
+                        }
+                        searchResults.style.display = 'block';
+                    })
+                    .catch(function (error) {
+                        console.error('Error fetching search results:', error);
+                    });
+            } else {
+                searchResults.innerHTML = '';
+                searchResults.style.display = 'none';
+            }
+        });
+
+        // Hide search results when clicking outside the search box and results
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('.search-box, .search-results')) {
+                searchResults.innerHTML = '';
+                searchResults.style.display = 'none';
+            }
+        });
+    });
+</script>

@@ -39,10 +39,10 @@
                                 <th style="text-align: center;">Product Image</th>
                                 <th style="text-align: center;">Product Name</th>
                                 <th style="text-align: center;">Description</th>
+                                <th style="text-align: center;">Category</th>
                                 <th style="text-align: center;">Offers</th>
                                 <th style="text-align: center;">Price</th>
                                 <th style="text-align: center;">Stock</th>
-                                <!-- <th style="text-align: center;">Category</th> -->
                                 <th style="text-align: center;">Edit</th>
                                 <th style="text-align: center;">Delete</th>
 
@@ -70,6 +70,11 @@
                                         <td style="text-align: center;">
                                             <p>
                                                 <%= product[i].description %>
+                                            </p>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <p>
+                                                <%= product[i].categoryDetails[0].name %>
                                             </p>
                                         </td>
                                         <td>

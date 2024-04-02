@@ -6,7 +6,7 @@ import {
   validateUserRegistration,
   validateUserlogin,
 } from "../middleware/userAuth";
-import { getsingleProduct } from "../controller/userController/productCtrl";
+import { getSingleProduct } from "../controller/userController/productCtrl";
 import {
   _404page,
   addAddressss,
@@ -16,10 +16,12 @@ import {
   getHome,
   getLogin,
   getShop,
-  getuserLogout,
-  otpSnd,
+  getUserLogout,
+  otpSend,
   postLogin,
+  refferalLinkGenerating,
   resendOtp,
+  searchProduct,
   testimonial,
   updateAddress,
   userProfile,
@@ -29,10 +31,10 @@ import {
 } from "../controller/userController/userCtrl";
 import { isLoggedIn, isLoggedout } from "../middleware/sessionAuth";
 import {
-  addTocart,
+  addToCart,
   cart,
   reloadTotalAmount,
-  removeProductfromcart,
+  removeProductFromCart,
   updateQuantity,
 } from "../controller/userController/cartCtrl";
 import {
@@ -43,23 +45,23 @@ import {
   editAddress,
   orderInfo,
   orderRazorpayVerification,
-  orderslist,
-  placeorder,
+  ordersList,
+  placeOrder,
   returnOrder,
   showAddress,
   successPage,
 } from "../controller/userController/orderCtrl";
 import {
   addToWishlist,
+  getWishlist,
   removeFromWishlist,
-  wishlist,
 } from "../controller/userController/wishlishctrl";
-import { checkCoupon } from "../controller/adminController/couponCtrl";
+import { checkCoupon, removeCoupon } from "../controller/adminController/couponCtrl";
 
 const userRoute: Router = Router();
 
 userRoute.get("/userLogin", getLogin);
-userRoute.get("/userLogout", isLoggedIn, getuserLogout);
+userRoute.get("/userLogout", isLoggedIn, getUserLogout);
 
 userRoute.get("/", getHome);
 userRoute.get("/shop", getShop);
@@ -73,7 +75,7 @@ userRoute.get(
   "/singleProductpage/:id",
   isLoggedIn,
   checkBlocked,
-  getsingleProduct
+  getSingleProduct
 );
 userRoute.get("/resendotp", resendOtp);
 userRoute.get("/userProfile", isLoggedIn, userProfile);
@@ -81,12 +83,14 @@ userRoute.get("/address", checkBlocked, showAddress);
 userRoute.get("/addaddress", checkBlocked, addAddress);
 userRoute.get("/editaddress/:id", checkBlocked, editAddress);
 userRoute.get("/successpage", checkBlocked, successPage);
-userRoute.get("/orders", checkBlocked, orderslist);
+userRoute.get("/orders", checkBlocked, ordersList);
 userRoute.get("/orderinformation/:id", checkBlocked, orderInfo);
-userRoute.get("/wishlist", wishlist);
-userRoute.get("/wallet", isLoggedIn, wallet);
+userRoute.get("/wishlist", getWishlist);
+userRoute.get("/wallet", isLoggedIn, wallet, refferalLinkGenerating);
+userRoute.get("/refferalLink", isLoggedIn, refferalLinkGenerating);
+userRoute.get("/search", searchProduct);
 
-userRoute.post("/placeorder", placeorder);
+userRoute.post("/placeorder", placeOrder);
 userRoute.post("/cancelOrder", cancelOrder);
 userRoute.post(
   "/userLogin",
@@ -95,14 +99,14 @@ userRoute.post(
   validateUserlogin,
   postLogin
 );
-userRoute.post("/registerValue", isLoggedout, userRegister);
+userRoute.post("/registerValue", userRegister);
 userRoute.post(
   "/otpSend",
   userRegistrationValidation,
   validateUserRegistration,
-  otpSnd
+  otpSend
 );
-userRoute.post("/addTocart", addTocart);
+userRoute.post("/addTocart", addToCart);
 userRoute.post("/updateQuantity", updateQuantity);
 userRoute.post("/getUpdatedTotalAmount/:productId", reloadTotalAmount);
 userRoute.post("/addAddressss", addAddressss);
@@ -112,9 +116,10 @@ userRoute.post("/verifyrazorpay", orderRazorpayVerification);
 userRoute.post("/addTowallet", addToWallet);
 userRoute.post("/walletRazorpay", walletRazorpayVerification);
 userRoute.post("/api/checkCoupon", checkCoupon);
+userRoute.post("/removeCoupon", removeCoupon);
 
 
-userRoute.patch("/removeFromCart", removeProductfromcart);
+userRoute.patch("/removeFromCart", removeProductFromCart);
 
 
 userRoute.delete("/deleteaddress/:id", deleteAddress);

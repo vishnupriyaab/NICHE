@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import adminDb, { IAdmin } from "../../model/adminModel";
 import bcrypt from "bcrypt";
+import productDb from "../../model/productModel";
+import userDb from "../../model/userModel";
+import Orderdb from "../../model/orderModel";
 
 interface body {
   email: string;
@@ -11,7 +14,55 @@ let loginError: string | null = null;
 
 export async function getDashboard(req: Request, res: Response) {
   try {
-    res.render("admin/dashboard");
+    const productCount = await productDb.countDocuments({ isHidden: false });
+    const userCount = await userDb.countDocuments({ liveStatus: true });
+    const totalOrders = await Orderdb.aggregate([
+      {
+        $project: {
+          orderDetailsCount: { $size: "$orderDetails" },
+        },
+      },
+      
+    ]);
+    const totalOrderCount = totalOrders.reduce(
+      (total, obj) => total + obj.orderDetailsCount,
+      0
+    );
+    let orders = await Orderdb.aggregate([
+      {
+        $unwind: "$orderDetails",
+      },
+      {
+        $lookup: {
+          from: userDb.collection.name,
+          localField: "userId",
+          foreignField: "_id",
+          as: "userDetails",
+        },
+      },
+      {
+        $unwind: "$userDetails",
+      },
+      {
+        $sort: {
+          "orderDetails.orderDate": -1,
+        },
+      },
+      {
+        $match: {
+          "orderDetails.orderStatus": "Delivered",
+        },
+      },
+    ]);
+
+    const totalPrice: any = orders.reduce(
+      (total, order) => total + order.orderDetails.price,
+      0
+    );
+
+    // console.log(totalOrders[0].totalsum,"wertyuioikjuyttrfghj")
+
+    res.render("admin/dashboard", { productCount, userCount,totalOrderCount, totalPrice });
   } catch (error: any) {
     console.error(error);
   }

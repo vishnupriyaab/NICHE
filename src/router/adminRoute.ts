@@ -1,28 +1,30 @@
 import { Router } from "express";
 import { adminRegister, getAdminlogin, getAdminlogout, getDashboard, isAdmin } from "../controller/adminController/dashboardCtrl";
 import { adminLoginValidation, checkAdmin, validateadminRegistration } from "../middleware/adminAuth";
-import { categoryValidation, editcategoryValidation, editvalidateCategory, validateCategory } from "../middleware/categoryAuth";
+import { categoryValidation, editCategoryValidation, editValidateCategory,validateCategory } from "../middleware/categoryAuth";
 import { adminLoggedIn } from "../middleware/sessionAuth";
 import { addCategory,  categoryOfferControl,  editCategory, getCategory, getCategorySearch, listCategory, offerApplyCategory, offerRemoveCategory, unlistCategory } from "../controller/adminController/categoryCtrl";
-import { addProduct, deleteImage, deleteProduct, getEditproduct, getProducts, getaddProduct, getunlistedProduct, offerApplyProduct, offerRemoveProduct, productOfferListing, restoreProduct, updateProduct } from "../controller/adminController/productCtrl";
+import { addProduct, deleteImage, deleteProduct, getAddProduct, getEditProduct,  getProducts, getUnlistedProduct, offerApplyProduct, offerRemoveProduct, productOfferListing, restoreProduct, updateProduct } from "../controller/adminController/productCtrl";
 import { blockUser, getUsers, unblockUser} from "../controller/adminController/userCtrl";
 import { adminOrder, updateOrder} from "../controller/adminController/orderCtrl";
 import { addCoupon, adminAddCoupon, adminCoupon, adminDeletedCoupon, adminEditCoupon, deleteCoupon, updateCoupon } from "../controller/adminController/couponCtrl";
 import { addOffer, createOffer, deleteOffer, editOffer, getEditoffer, getOffer, offerChangeStatus } from "../controller/adminController/offerCtrl";
+import { salesReport, salesReportExcel, salesReportPDF } from "../controller/adminController/salesReportCtrl";
 
 
 const adminRoute: Router = Router();
 
 
 adminRoute.get("/dashboard", adminLoggedIn, getDashboard);
+adminRoute.get("/salesReport", adminLoggedIn, salesReport);
 adminRoute.get("/users", adminLoggedIn, getUsers);
 adminRoute.get("/category", adminLoggedIn, getCategory);
 adminRoute.get("/products", adminLoggedIn, getProducts);
 adminRoute.get("/adminlogin", checkAdmin, getAdminlogin);
 adminRoute.get("/adminlogout", getAdminlogout);
-adminRoute.get("/addProduct", adminLoggedIn, getaddProduct);
-adminRoute.get("/unlistedProduct", adminLoggedIn, getunlistedProduct);
-adminRoute.get("/editProduct/:id", adminLoggedIn, getEditproduct);
+adminRoute.get("/addProduct", adminLoggedIn, getAddProduct);
+adminRoute.get("/unlistedProduct", adminLoggedIn, getUnlistedProduct);
+adminRoute.get("/editProduct/:id", adminLoggedIn, getEditProduct);
 adminRoute.get("/blockuser", adminLoggedIn, blockUser);
 adminRoute.get("/unblockuser", adminLoggedIn, unblockUser);
 adminRoute.get("/adminOrder",adminLoggedIn, adminOrder);
@@ -33,6 +35,12 @@ adminRoute.get("/adminDeletedCoupons",adminLoggedIn, adminDeletedCoupon);
 adminRoute.get("/offerList",adminLoggedIn, getOffer);
 adminRoute.get("/addOffers",adminLoggedIn, addOffer);
 adminRoute.get("/editOffer",getEditoffer);
+
+
+adminRoute.get("/salesReport",salesReport)
+adminRoute.get("/salesReportExcel",salesReportExcel)
+adminRoute.get("/salesReportPDF", salesReportPDF);
+
 
 
 
@@ -66,7 +74,7 @@ adminRoute.post('/removeOfferProduct', offerRemoveProduct);
 
 adminRoute.patch("/listCategory", listCategory);
 adminRoute.patch("/unlistCategory", unlistCategory);
-adminRoute.patch("/editcategory", editcategoryValidation, editvalidateCategory, editCategory);
+adminRoute.patch("/editcategory", editCategoryValidation, editValidateCategory, editCategory);
 adminRoute.patch("/updateCoupon/:id", updateCoupon);
 
 

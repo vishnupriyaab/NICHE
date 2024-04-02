@@ -26,6 +26,8 @@ interface User {
   password: string;
   block: Boolean;
   liveStatus: Boolean;
+  refferalOfferToken: string;
+  refferedToken: string;
 }
 
 export default User

@@ -291,6 +291,7 @@
       }
     }
 
+
     const openModal = () => {
       if (ConfirmpassWord.value === Password.value) {
         axios
@@ -316,11 +317,17 @@
       }
     };
 
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+
+
     function HandleRegister() {
       localStorage.setItem("startTime", new Date().getTime());
       loader.style.display ='block';
       axios
-        .post("/registerValue", {
+        .post(`/registerValue?token=${encodeURIComponent(token)}`, {
           Email: Email.value,
           UserName: UserName.value,
           Password: Password.value,

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <h3>Sales Report</h3> -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        /* display: flex; */
+        justify-content: center;
+        background-color: #efefef;
+      }
+      h2 {
+        /* padding-top: 35px; */
+        text-align: center;
+        /* font-size: larger; */
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        
+      }
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #cac9c9;
+        text-align: left;
+      }
+      th {
+        background-color: #ffffff;
+      }
+      img {
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <a href=""><img src="/img/icon.jpg" alt="Nest Dashboard" /></a> -->
+    <!-- <p style="font-size:xx-small; text-align: center; color: gray;">Yelp - Taher Mardini Street, Paris  niche07@gmail.com</p> -->
+    <!-- <p style="font-size: smaller;">niche07@gmail.com</p> -->
+    <h2>NICHE Sales Report</h2>
+    <div  style="margin: 0px 60px 0px 60px">
+    <table>
+      <thead>
+        <tr>
+          <td colspan="8" style="text-align: right; border: none">Date: <%= currentDate %></td>
+        </tr>
+        <tr>
+          <th>No</th>
+          <th>Order Id</th>
+          <th>Product Details</th>
+          <th>User's Details</th>
+          <th>Order Date</th>
+          <th>Payment Method</th>
+          <th>Discount Price</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for( let i = 0; i < orders.length; i++ ) { %>
+          <% if (orders[i].orderDetails.orderStatus === "Delivered") { %>
+        <tr>
+          <td  style="margin-left: 20px;"><%= i + 1 %></td>
+          <td><%= orders[i]._id.toString().split('').slice(18,24).join('') %></td>
+          <td><%= orders[i].orderDetails.pName %><br>
+            Quantity :  <%= orders[i].orderDetails.quantity %></td>
+          <td><%= orders[i].orderDetails.address %><br><%= orders[i].userDetails.email %></td>
+          <td><%= new Date(orders[i].orderDetails.orderDate).toLocaleDateString()%></td>
+          <td><%= orders[i].orderDetails.paymentMethod %></td>
+          <% if (orders[i].orderDetails.offerApplied) { %>
+              <td>₹ <%= (orders[i].orderDetails.originalProductPrice - orders[i].orderDetails.price) %></td>
+        <% }else{ %>
+            <td style="color: red;">No Offers</td>
+        <% } %>
+
+          <td>₹ <%= orders[i].orderDetails.price %></td>
+        </tr>
+        <% } %>
+        <% } %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="7" style="text-align: right; font-weight: bold;">Total Revenue:</td>
+          <td style="font-weight: bold;">₹ <%= totalPrice %></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  </body>
+</html>
