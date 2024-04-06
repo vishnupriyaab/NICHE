@@ -204,13 +204,6 @@ export async function placeOrder(req: Request, res: Response) {
           console.log(couponAmount, "couponAmount");
         }
 
-
-        const orginalSum = (req.session as any).sum;
-      // if (orginalSum <= 1000) {
-      //   console.log("asdfghjqwertyuiop");
-
-
-
         const orderItems = cartItems.map((element) => {
           let orgPrice;
           let offerApplied;
@@ -267,12 +260,7 @@ export async function placeOrder(req: Request, res: Response) {
 
         await clearUserCart(req.session.userId);
         res.status(200).json({ message: "Order placed successfully!" });
-      // } else {
-      //   console.log("WWWWcfvgbhnjk");
-      //   res.json({
-      //     message: "Total price above Rs 1000 should not be allowed for COD",
-      //   });
-      // }
+      
     }
 
     if (paymentMethod === "Cwallet") {
