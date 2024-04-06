@@ -153,7 +153,7 @@
               <div class="d-flex justify-content-between">
                 <h5 class="mb-0 me-4">Shipping</h5>
                 <div class="">
-                  <p class="mb-0">FREE</p>
+                  <p class="mb-0">₹ <%= shipping %></p>
                 </div>
               </div>
             </div>
@@ -162,11 +162,11 @@
               <p class="mb-0 pe-4 totalAmt" id="totalAmt">
                 ₹<%= Math.round(products.reduce((total, element) => {
                     if (element.productsDetails.offerApplied) {
-                        return total + (Math.round(element.productsDetails.offerPrice * element.products.quantity));
+                        return total + (element.productsDetails.offerPrice * element.products.quantity);
                     } else {
-                        return total + (Math.round(element.productsDetails.price * element.products.quantity));
+                        return total + (element.productsDetails.price * element.products.quantity);
                     }
-                }, 0)) %>
+                }, 0)+shipping) %>
             </p>
             
             

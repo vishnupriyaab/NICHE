@@ -15,6 +15,7 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import mongoose from "mongoose";
 import userDb from "../../model/userModel";
+import categoryDb from "../../model/categoryModel";
 
 interface body {
   email: string;
@@ -36,35 +37,35 @@ export async function getLogin(
   }
 }
 
+
+
 export async function getHome(
   req: Request<{}, {}, body>,
   res: Response
 ): Promise<void> {
   try {
     const user = req.session.userId;
-    const product = await productDb
-      .find({ isHidden: false })
-      .populate("category")
-      .populate("offer");
+    const categories = await categoryDb.find({ unlistStatus: true });
 
-    const cart = await CartDb.findOne({ userId: user }).populate("products");
+    if (categories.length > 0) {
+      const categoryIds = categories.map(category => category._id);
+      const product = await productDb.find({ isHidden: false, category: { $in: categoryIds } })
+                                        .populate("category")
+                                        .populate("offer");
 
-    res.render("user/home", { loginError, user, product, cart });
-    loginError = null;
+      const cart = await CartDb.findOne({ userId: user }).populate("products");
+
+      res.render("user/home", { loginError, user, product, cart });
+      loginError = null;
+    } else {
+      res.render("noCategoriesAvailable", { user });
+    }
   } catch (error: any) {
     console.error(error);
   }
 }
 
-export async function getShop(req: Request, res: Response) {
-  try {
-    const user = req.session.userId;
-    const cart = await CartDb.findOne({ userId: user }).populate("products");
-    res.render("user/shop", { user });
-  } catch (error: any) {
-    console.error(error);
-  }
-}
+
 
 export async function testimonial(req: Request, res: Response) {
   try {
@@ -109,7 +110,7 @@ export async function userRegister(
     console.log(Email);
 
     const token = req.query.token;
-console.log(token,"token");
+    console.log(token, "token");
 
     req.session.Email = Email;
 
@@ -117,10 +118,10 @@ console.log(token,"token");
 
     if (isVerified) {
       console.log("excecuted");
-      
+
       if (token) {
         console.log("qwert");
-        
+
         const newUser = new userDb({
           username: UserName,
           email: Email,
@@ -130,13 +131,12 @@ console.log(token,"token");
         });
 
         await newUser.save();
-        console.log(newUser,'newuser');
-        
+        console.log(newUser, "newuser");
+
         const greneratorUser = await userDb.findOne({
           refferalOfferToken: token,
         });
-        console.log(greneratorUser,"greneratorUser");
-        
+        console.log(greneratorUser, "greneratorUser");
 
         await Walletdb.updateOne(
           { userId: greneratorUser!._id },
@@ -147,8 +147,8 @@ console.log(token,"token");
           { upsert: true }
         );
         const refUsedUser = await userDb.findOne({ _id: newUser._id });
-        console.log(refUsedUser,"12345678");
-        
+        console.log(refUsedUser, "12345678");
+
         await Walletdb.updateOne(
           { userId: refUsedUser!._id },
           {
@@ -365,19 +365,19 @@ export async function wallet(req: Request, res: Response) {
     const wallet = await Walletdb.find({ userId: req.session.userId });
     const wall = await Walletdb.aggregate([
       { $match: { userId: new mongoose.Types.ObjectId(user) } },
-      { $unwind: "$transactions" },
-      { $sort: { "transactions.transactionDate": -1 } },
       {
-        $group: {
-          _id: "null",
-          sortedArray: { $push: "$transactions" },
+        $unwind: {
+          path: "$transactions",
         },
       },
       {
-        $unwind: "$sortedArray",
+        $sort: {
+          "transactions.transactionDate": -1,
+        },
       },
     ]);
-    console.log(wall, "wall");
+    console.log(wall, "walllllllllll");
+
     const cart = await CartDb.findOne({ userId: user }).populate("products");
     res.render("user/wallet", { wallet, user, cart, wall });
   } catch (error) {
@@ -385,8 +385,6 @@ export async function wallet(req: Request, res: Response) {
     res.status(500).send("Internal Server Error");
   }
 }
-
-
 
 export async function addToWallet(req: Request, res: Response): Promise<void> {
   try {
@@ -496,8 +494,6 @@ export async function refferalLinkGenerating(
 const generateRefferalToken = () => {
   return crypto.randomBytes(20).toString("hex");
 };
-
-
 
 export async function searchProduct(
   req: Request,

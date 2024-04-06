@@ -15,7 +15,6 @@ import {
   deleteAddress,
   getHome,
   getLogin,
-  getShop,
   getUserLogout,
   otpSend,
   postLogin,
@@ -42,6 +41,7 @@ import {
   cancelOrder,
   checkAddress,
   checkout,
+  downloadInvoice,
   editAddress,
   orderInfo,
   orderRazorpayVerification,
@@ -57,6 +57,8 @@ import {
   removeFromWishlist,
 } from "../controller/userController/wishlishctrl";
 import { checkCoupon, removeCoupon } from "../controller/adminController/couponCtrl";
+import { getShop } from "../controller/userController/shopCtrl";
+// import { getShop } from "../controller/userController/shopCtrl";
 
 const userRoute: Router = Router();
 
@@ -89,6 +91,14 @@ userRoute.get("/wishlist", getWishlist);
 userRoute.get("/wallet", isLoggedIn, wallet, refferalLinkGenerating);
 userRoute.get("/refferalLink", isLoggedIn, refferalLinkGenerating);
 userRoute.get("/search", searchProduct);
+
+
+
+
+
+userRoute.get("/downloadInvoice", downloadInvoice);
+
+
 
 userRoute.post("/placeorder", placeOrder);
 userRoute.post("/cancelOrder", cancelOrder);

@@ -8,7 +8,7 @@ import adminRoute from "./router/adminRoute";
 import flash from 'express-flash'
 import fileupload from "express-fileupload";
 import BodyParser  from 'body-parser';
-import morgan from "morgan";
+// import morgan from "morgan";
 
 
 const app: Application = express();
@@ -37,7 +37,7 @@ app.use(session({
   store: new MemoryStore(),
 }));
 
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 
 app.use(flash());
 

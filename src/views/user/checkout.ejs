@@ -17,7 +17,7 @@
             </p>
             <!-- Product Price -->
             <p class="text-gray-700 mb-2" id="prdsum">
-              Total Price: ₹<%= Math.round(product.productsDetails.offerApplied ? (product.productsDetails.offerPrice *
+              Price : ₹<%= Math.round(product.productsDetails.offerApplied ? (product.productsDetails.offerPrice *
                   product.products.quantity) : (product.productsDetails.price * product.products.quantity)) %>
           </p>
             <!-- Product Quantity -->
@@ -177,12 +177,12 @@
       <div class="border-t border-b py-2">
         <div class="flex items-center justify-between">
           <p class="text-sm font-medium text-gray-700">Subtotal</p>
-          <p class="font-semibold text-gray-700">₹ &nbsp;<%= sum %>
+          <p class="font-semibold text-gray-700">₹<%= sum %>
           </p>
         </div>
         <div class="flex items-center justify-between">
-          <p class="text-sm font-medium text-gray-700">Shipping</p>
-          <p class="font-semibold text-blue-700">Free Shipping</p>
+          <p class="text-sm font-medium text-gray-700">Shipping Charge</p>
+          <p class="font-semibold text-blue-700">₹60</p>
         </div>
         <!-- Coupon Discount Display -->
         <div id="couponDiscount" class="flex items-center justify-between hidden">
@@ -193,10 +193,10 @@
       <div class="flex items-center justify-between">
         <p class="text-sm font-medium text-gray-700">Total</p>
         <p id="totalSum1" class="text-2xl font-semibold text-gray-700">
-          ₹&nbsp;<%= sum %>
+          ₹&nbsp;<%= sum + shipping %>
         </p>
         <p style="display: none" id="hy">
-          <%= sum %>
+          <%= sum + shipping %>
         </p>
       </div>
 
@@ -373,6 +373,7 @@
       const totalSum = sum;
       const selectedAddress =
         document.getElementById("selectedAddress").innerText;
+        console.log(selectedAddress,"00000000000000000");
       const image = document.getElementById("imageproduct").src;
 
       const name = document.getElementById("prdname").innerText;
@@ -381,6 +382,11 @@
 
       const quantity = document.getElementById("prdquantity").innerText;
       console.log(activeCoupon,"qwertyuijhgfdcvbjk");
+
+      if(!selectedAddress){
+        toastr["info"](`Please select an address.`, "Info!");
+      return;
+      }
 
       if (selectedPaymentMethod) {
         var paymentMethod = selectedPaymentMethod;
@@ -392,6 +398,9 @@
           paymentMethod === razorpay ||
           paymentMethod === wallet
         ) {
+          if(paymentMethod === cod && totalSum >= 1000){
+            return toastr.error('Total price above Rs 1000 should not be allowed for COD!');
+          }
           axios
             .post("/placeorder", {
               address: selectedAddress,
@@ -404,6 +413,7 @@
               activeCoupon: activeCoupon,
             })
             .then(function (response) {
+              console.log("qwertyui");
               if (response.data?.order) {
                 var options = {
                   key: "rzp_test_wV96XGA4SLLOo7",
@@ -432,8 +442,15 @@
               }
 
               if (paymentMethod === cod) {
-                window.location.href = "/successpage";
+                // if(response.success){
+                //   window.location.href = "/successpage";
+                // }else{
+                //   toastr.error(response.message, 'Total price above Rs 1000 should not be allowed for COD!');
+                // }
+                if (response?.data?.message) {
+                  window.location.href = "/successpage";
                 return;
+                }
               }
 
               if (paymentMethod === wallet) {

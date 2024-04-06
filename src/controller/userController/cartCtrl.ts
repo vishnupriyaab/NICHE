@@ -42,7 +42,9 @@ export async function cart(req: Request, res: Response) {
       return total;
     }, 0);
     sum =0;
-    res.status(200).render("user/cart", { products, sum ,user,cart });
+
+    const shipping = 60;
+    res.status(200).render("user/cart", { products, sum ,user,cart, shipping });
   } catch (error) {
     console.error(error, "error");
     res.status(500).send("Internal Server Error");

@@ -88,16 +88,16 @@
                                                 </td>
                                                 <td>
                                                     <% if (value.unlistStatus==true) { %>
-                                                        <button onclick="unlistCategory('<%= value._id %>')"
+                                                        <button onclick="listCategory('<%= value._id %>')"
                                                             id="Listbtn"
                                                             class="btn btn-light rounded btn-sm font-sm justify-content-center"
-                                                            style="color: red; width: 50px; height: 25px">Unlist
+                                                            style="color: green; width: 50px; height: 25px">List
                                                         </button>
                                                         <% } else { %>
-                                                            <button onclick="listCategory('<%= value._id %>')"
+                                                            <button onclick="unlistCategory('<%= value._id %>')"
                                                                 id="Listbtn"
                                                                 class="btn btn-light rounded btn-sm font-sm justify-content-center"
-                                                                style="color: green; width: 50px; height: 25px">List
+                                                                style="color: red; width: 50px; height: 25px">Unist
                                                             </button>
                                                             <% } %>
                                                 </td>
@@ -355,11 +355,11 @@
 
                                 if (value.unlistStatus) {
                                     html += `<td>
-                                    <button onclick="unlistCategory('${value._id}')" id="Listbtn" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="color: red; width: 50px; height: 25px">Unlist</button>
+                                    <button onclick="listCategory('${value._id}')" id="Listbtn" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="color: green; width: 50px; height: 25px">Unlist</button>
                                 </td>`;
                                 } else {
                                     html += `<td>
-                                    <button onclick="listCategory('${value._id}')" id="Listbtn" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="color: green; width: 50px; height: 25px">List</button>
+                                    <button onclick="unlistCategory('${value._id}')" id="Listbtn" class="btn btn-light rounded btn-sm font-sm justify-content-center" style="color: red; width: 50px; height: 25px">List</button>
                                 </td>`;
                                 }
 
@@ -398,14 +398,14 @@
                         selectBox.selectedIndex = selectBox.selectedIndex;
                     }
 
-                    const unlistCategory = (id) => {
+                    const listCategory = (id) => {
 
-                        axios.patch("/unlistCategory", {
+                        axios.patch("/listCategory", {
                             id: id,
                         }).then((value) => {
                             Swal.fire({
                                 title: "Good job!",
-                                text: "Successfully Unlisted",
+                                text: "Successfully Listed This Category",
                                 icon: "success"
                             });
                             setTimeout(() => {
@@ -417,14 +417,14 @@
                         })
                     }
 
-                    const listCategory = (id) => {
+                    const unlistCategory = (id) => {
 
-                        axios.patch("/listCategory", {
+                        axios.patch("/unlistCategory", {
                             id: id,
                         }).then((value) => {
                             Swal.fire({
                                 title: "Good job!",
-                                text: "Successfully Listed",
+                                text: "Successfully Unlisted This Category",
                                 icon: "success"
                             });
                             setTimeout(() => {

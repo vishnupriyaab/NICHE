@@ -70,12 +70,16 @@ export async function editCategory(req: Request, res: Response) {
   }
 }
 
-export async function unlistCategory(req: Request, res: Response) {
+export async function listCategory(req: Request, res: Response) {
   try {
+    console.log("zsdfghjkl");
+    
     const data = await categoryDb.findOneAndUpdate(
       { _id: req.body.id },
       { $set: { unlistStatus: false } }
     );
+    console.log(data,"dataaaa");
+    
     if (data) {
       res.status(200).json({ status: true });
     } else {
@@ -89,14 +93,20 @@ export async function unlistCategory(req: Request, res: Response) {
   }
 }
 
-export async function listCategory(req: Request, res: Response) {
+export async function unlistCategory(req: Request, res: Response) {
   try {
+    console.log("sdfghjk");
+    
     const data = await categoryDb.findOneAndUpdate(
       { _id: req.body.id },
       { $set: { unlistStatus: true } }
     );
+    console.log(data,"data22");
+    
     if (data) {
       res.status(200).json({ status: true });
+      console.log("wertyuio");
+      
     } else {
       res.status(401).json({
         message: "Invalid Id",

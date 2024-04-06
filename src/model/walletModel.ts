@@ -28,7 +28,9 @@ const walletSchema = new Schema<Wallet>({
             },
         }
     ]
-})
+},
+{ timestamps: true }
+)
 
 
 const Walletdb = mongoose.model<Wallet>('walletdb', walletSchema);

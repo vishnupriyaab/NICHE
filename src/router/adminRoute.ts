@@ -72,8 +72,8 @@ adminRoute.post('/removeOfferProduct', offerRemoveProduct);
 
 
 
-adminRoute.patch("/listCategory", listCategory);
 adminRoute.patch("/unlistCategory", unlistCategory);
+adminRoute.patch("/listCategory", listCategory);
 adminRoute.patch("/editcategory", editCategoryValidation, editValidateCategory, editCategory);
 adminRoute.patch("/updateCoupon/:id", updateCoupon);
 

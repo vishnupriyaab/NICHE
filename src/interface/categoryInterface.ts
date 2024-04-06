@@ -5,6 +5,7 @@ interface Category {
     unlistStatus: boolean;
     offer: mongoose.Types.ObjectId[];
     offerApplied:boolean;
+    timestamps: boolean;
   }
 
 

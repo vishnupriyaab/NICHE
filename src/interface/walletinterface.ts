@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 interface Transaction {
+    date: string | number | Date;
     amount: number;
     type: string;
     transactionDate: Date;

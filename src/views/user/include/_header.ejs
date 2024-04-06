@@ -99,7 +99,7 @@
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
               <a href="/" class="nav-item nav-link active">Home</a>
-              <!-- <a href="/shop" class="nav-item nav-link">Shop</a> -->
+              <a href="/shop" class="nav-item nav-link">Shop</a>
               
               <div class="nav-item dropdown">
                 <a
@@ -110,11 +110,11 @@
                 >
                 <div class="dropdown-menu m-0 bg-secondary rounded-0">
                   <a href="/cart" class="dropdown-item">Cart</a>
-                  <a href="/testimonial" class="dropdown-item"
-                    >Reviews</a>
+                  <!-- <a href="/testimonial" class="dropdown-item"
+                    >Reviews</a> -->
                 </div>
               </div>
-              <a href="/contact" class="nav-item nav-link">Contact</a>
+              <!-- <a href="/contact" class="nav-item nav-link">Contact</a> -->
             </div>
             <div class="d-flex m-3 me-0">
               <button
@@ -226,56 +226,3 @@
 
 
 
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('searchInput');
-        const searchResults = document.querySelector('.search-results');
-
-        searchInput.addEventListener('input', function () {
-            const query = this.value.trim();
-            if (query.length >= 1) {
-                axios.get(`/search?q=${query}`)
-                    .then(function (response) {
-                        const products = response.data;
-                        searchResults.innerHTML = ''; // Clear previous search results
-                        if (products.length > 0) {
-                            products.forEach(product => {
-                                const productDiv = document.createElement('div');
-                                productDiv.classList.add('product-result');
-                                productDiv.innerHTML = `
-                                    <h6>${product.productName}</h6>
-                                    <p>${product.productDescription}</p>
-                                    <img src="${product.images[0]}" alt="${product.productName}">
-                                `;
-                                productDiv.addEventListener('click', function () {
-                                    window.location.href = `/single-product/${product._id}`;
-                                });
-                                searchResults.appendChild(productDiv);
-                            });
-                        } else {
-                            const notFoundDiv = document.createElement('div');
-                            notFoundDiv.classList.add('product-result', 'notFound');
-                            notFoundDiv.innerHTML = `<p>Product Not found with the name '${query}'</p>`;
-                            searchResults.appendChild(notFoundDiv);
-                        }
-                        searchResults.style.display = 'block';
-                    })
-                    .catch(function (error) {
-                        console.error('Error fetching search results:', error);
-                    });
-            } else {
-                searchResults.innerHTML = '';
-                searchResults.style.display = 'none';
-            }
-        });
-
-        // Hide search results when clicking outside the search box and results
-        document.addEventListener('click', function (event) {
-            if (!event.target.closest('.search-box, .search-results')) {
-                searchResults.innerHTML = '';
-                searchResults.style.display = 'none';
-            }
-        });
-    });
-</script>

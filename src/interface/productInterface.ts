@@ -11,4 +11,6 @@ export interface Product {
     offer: mongoose.Schema.Types.ObjectId[];
     offerPrice:number;
     offerApplied:boolean;
+    sold:number;
+    timestamps: boolean;
   }

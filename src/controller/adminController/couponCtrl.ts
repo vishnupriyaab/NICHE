@@ -24,9 +24,7 @@ export async function adminCoupon(req: Request, res: Response) {
     const category = await categoryDb.find();
     const page = req.query.page ? parseInt(req.query.page as string, 10) : null;
     const coupons = await getAllCoupon(null, page);
-
     const totalCoupons = allcoupons.length;
-    // console.log(coupons);
 
     res.render("admin/adminCoupon", {
       coupons,
@@ -370,11 +368,12 @@ export async function checkCoupon(req: Request, res: Response) {
         message: "Coupon has reached its maximum usage limit.",
       });
     }
-    const b = await CouponDb.updateOne(
-      { couponCode: coupon.couponCode },
-      { $inc: { maxUse: -1 } }
-    );
-
+    // const b = await CouponDb.updateOne(
+    //   { couponCode: coupon.couponCode },
+    //   { $inc: { maxUse: -1 } }
+    // );
+// let shipping:number = 60;
+// const checkoutTotal = sum+shipping
     (req.session as SessionData).couponCode = coupon.couponCode;
     const discount = sum - coupon.coupondiscount;
     return res.json({

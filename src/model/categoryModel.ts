@@ -18,7 +18,9 @@ const categorySchema = new Schema<Category>({
   offerApplied: {
     type: Boolean,
     default: false,
+}
 },
-});
+{ timestamps: true }
+);
 const categoryDb = mongoose.model<Category>("categorydb", categorySchema);
 export default categoryDb;

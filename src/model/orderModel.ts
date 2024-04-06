@@ -68,7 +68,11 @@ const orderSchema = new mongoose.Schema<IOrder>({
   },
   couponDiscount:{
     type: Number,
+  },
+  fixedShippingCharge:{
+    type: Number,
   }
+  
 });
 
 const Orderdb = mongoose.model<IOrder>("orderdb", orderSchema);

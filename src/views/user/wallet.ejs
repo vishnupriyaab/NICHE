@@ -23,7 +23,6 @@
     background-color: white;
     color: rgb(109, 92, 92);
   }
- 
 </style>
 
 <body>
@@ -69,7 +68,7 @@
       <!-- Transaction History -->
       <div class="bg-white p-4 rounded-md shadow-md">
         <h2 class="text-xl font-semibold mb-4">Transaction History</h2>
-        <table class="w-full">
+        <table class="w-[350px]">
           <% if (wallet && wallet.length > 0) { %>
 
           <thead>
@@ -83,24 +82,27 @@
 
           <tbody>
             <% let index = 1; %> <% wall.forEach(transaction => { %>
-            <tr class="border-b">
+            <tr class="border-b" style="text-align: center;">
               <td class="py-2"><%= index %></td>
               <!-- Adding manually counted index numbers -->
-              <td class="py-2">₹ <%= transaction.sortedArray.amount %></td>
-              <% if (transaction.sortedArray.type == '+ CREDIT') { %>
-              <td class="py-2 text-green-600">
-                <%= transaction.sortedArray.type %>
-              </td>
-              <% } else if (transaction.sortedArray.type == '- DEBIT') { %>
-              <td class="py-2 text-red-600">
-                <%= transaction.sortedArray.type %>
-              </td>
+              <td class="py-2" style="text-align: center;">₹ <%= transaction.transactions.amount %></td>
+              <% if (transaction.transactions.type == '+ CREDIT') { %>
+              <td class="py-2 text-green-600" style="text-align: center;">
+                <%= transaction.transactions.type %>
+              </td>&nbsp;
+              <% } else if (transaction.transactions.type == '- DEBIT') { %>
+              <td class="py-2 text-red-600" style="text-align: center;">
+                <%= transaction.transactions.type %>
+              </td>&nbsp;
               <% } %>
-              <td class="py-2">
-                <%=
-                transaction.sortedArray.transactionDate.toISOString().split('T')[0].split('-').reverse().join('-')
+              
+                <%#=
+                transaction.transactions.transactionDate.toISOString().split('T')[0].split('-').reverse().join('-')
                 %>
-              </td>
+
+                <!-- <%# const dateObject = new Date(transaction.transactions.transactionDate) %>
+                <%# const date = dateObject.toDateString(); %> -->
+                <td class="py-2" style="text-align: center;"><%= transaction.transactions.transactionDate.toISOString().split('T')[0].split('-').reverse().join('-')  %></td>
             </tr>
             <% index++; %> <% }) %>
           </tbody>
@@ -122,8 +124,7 @@
     <a href="#" class="text" id="refferalLink">Click Me</a>
   </div>
 
-
-<!-- 
+  <!-- 
   <nav aria-label="Page navigation example">
     <ul class="flex items-center -space-x-px h-8 text-sm">
       <li>
@@ -147,7 +148,6 @@
       </li>
     </ul>
   </nav> -->
-  
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
