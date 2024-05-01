@@ -4,6 +4,8 @@ import CartDb from "../../model/cartModel";
 import categoryDb from "../../model/categoryModel";
 import CouponDb from "../../model/couponModel";
 import { Request, Response } from "express";
+import Category from "../../interface/categoryInterface";
+import { ObjectId } from "mongoose";
 
 function generateCouponCode() {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -30,7 +32,7 @@ export async function adminCoupon(req: Request, res: Response) {
       coupons,
       totalCoupons,
       category,
-      currentPage: Number(req.query.page),
+      currentPage: page,
     });
   } catch (error) {
     console.error(error);
@@ -63,9 +65,6 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
       coupondiscount,
       expiry,
     } = req.body;
-    // console.log(req.body,"1");
-
-    // console.log(regexCode,"2");
     // Generate a random coupon code
     const couponCode = generateCouponCode();
 
@@ -220,69 +219,6 @@ export async function updateCoupon(req: Request, res: Response): Promise<void> {
 
 
 
-
-// export async function updateCoupon(req:Request, res:Response) {
-//   try {
-//     const {
-//       couponCode,
-//       couponDescription,
-//       category,
-//       maxUse,
-//       priceLimit,
-//       coupondiscount,
-//       expiry,
-//     } = req.body;
-
-//     const regexCode = new RegExp(couponCode, "i");
-    
-//     // Check if coupon with the same code already exists, excluding the current coupon being updated
-//     const duplicate = await CouponDb.findOne({
-//       couponCode: { $regex: new RegExp("^" + couponCode + "$", "i") },
-//       _id: { $ne: req.params.id }, 
-//     });
-
-//     // Validate required fields
-//     if (!couponCode || !couponDescription || !category || !maxUse || !priceLimit || !coupondiscount || !expiry) {
-//       res.status(400).json({ error: "All fields are required." });
-//       return;
-//     }
-
-//     // Check for duplicate coupon
-//     if (duplicate) {
-//       res.status(400).json({ error: "Coupon with the same code already exists." });
-//       return;
-//     }
-
-//     // Update the coupon
-//     const updatedCoupon = await CouponDb.updateOne(
-//       { _id: req.params.id },
-//       {
-//         $set: {
-//           couponCode,
-//           couponDescription,
-//           category,
-//           maxUse,
-//           priceLimit,
-//           coupondiscount,
-//           expiry,
-//         },
-//       }
-//     );
-
-//     if (updatedCoupon) {
-//       res.status(200).json({ message: "Coupon updated successfully." });
-//     } else {
-//       res.status(500).json({ error: "Failed to update coupon." });
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// }
-
-
-
-
 export async function adminDeletedCoupon(req: Request, res: Response) {
   try {
     const allcoupons = await CouponDb.find();
@@ -328,7 +264,6 @@ export async function checkCoupon(req: Request, res: Response) {
   try {
     const coupon = await CouponDb.findOne({ couponCode: couponCode });
 
-
     if (!coupon) {
       return res.status(200).json({
         isValid: false,
@@ -368,12 +303,7 @@ export async function checkCoupon(req: Request, res: Response) {
         message: "Coupon has reached its maximum usage limit.",
       });
     }
-    // const b = await CouponDb.updateOne(
-    //   { couponCode: coupon.couponCode },
-    //   { $inc: { maxUse: -1 } }
-    // );
-// let shipping:number = 60;
-// const checkoutTotal = sum+shipping
+    
     (req.session as SessionData).couponCode = coupon.couponCode;
     const discount = sum - coupon.coupondiscount;
     return res.json({

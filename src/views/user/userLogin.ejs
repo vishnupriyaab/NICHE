@@ -326,8 +326,9 @@
     function HandleRegister() {
       localStorage.setItem("startTime", new Date().getTime());
       loader.style.display ='block';
+      const isToken = token?encodeURIComponent(token):'';
       axios
-        .post(`/registerValue?token=${encodeURIComponent(token)}`, {
+        .post(`/registerValue?token=${isToken}`, {
           Email: Email.value,
           UserName: UserName.value,
           Password: Password.value,

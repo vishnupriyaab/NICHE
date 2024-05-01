@@ -19,14 +19,14 @@
                         <div class="form-check ms-2">
                         </div>
                     </div>
-                    <div class="col-md-2 col-6">
+                    <!-- <div class="col-md-2 col-6">
                         <select class="form-select">
                             <option selected>Status</option>
                             <option>Active</option>
                             <option>Disabled</option>
                             <option>Show all</option>
                         </select>
-                    </div>
+                    </div> -->
                 </div>
             </header>
             <!-- card-header end// -->
@@ -74,7 +74,7 @@
                                         </td>
                                         <td style="text-align: center;">
                                             <p>
-                                                <%= product[i].categoryDetails[0].name %>
+                                                <%= product[i].category.name %>
                                             </p>
                                         </td>
                                         <td>
@@ -107,9 +107,6 @@
                                             </div>
                                         </td>
                                         <td style="text-align: center;">
-
-                                            <!-- <button type="button" class="btn btn-danger btn-sm"
-                                                onclick="deleteproduct('<%#= product[i]._id %>')">Delete</button> -->
                                             <a onclick="deleteProduct(' <%=product[i]._id %>')" title="Delete product">
                                                 <svg width="15" height="19" viewBox="0 0 15 19" fill="none"
                                                     xmlns="http://www.w3.org/2000/svg">
@@ -133,44 +130,41 @@
         <!-- card-body end// -->
         </div>
     </section>
-    <% if (totalProducts !==0) { %>
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="text-center pagenationButton">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item">
-                                <a class="page-link"
-                                    href="/adminProducts?page=<%= (currentPage === 1 || !currentPage)?1:(currentPage - 1) %>"
-                                    aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <% for( let i=0; i < (Math.ceil(totalProducts/ 10)); i++ ) { %>
-                                <li class="page-item">
-                                    <a class="page-link" href="/adminProducts?page=<%= (i + 1) %>">
-                                        <%= (i + 1) %>
-                                    </a>
-                                </li>
-                                <% } %>
-                                    <li class="page-item">
-                                        <a class="page-link"
-                                            href="/adminProducts?page=<%= (((Math.ceil(totalProducts / 10)) === currentPage) || (Math.ceil(totalProducts / 10)) && !currentPage)?(currentPage?currentPage:1):(currentPage === 1 || !currentPage)?2:(currentPage + 1) %>"
-                                            aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                        </ul>
-                    </nav>
-                </div>
+    <% if (totalProducts !== 0) { %>
+        <div class="row mb-4 position-relative" style="z-index: 99999999;">
+          <div class="col-12">
+            <div class="text-center pagenationButton">
+              <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item">
+                    <a class="page-link" href="/products?page=<%= (currentPage <= 1) ? 1 : currentPage - 1 %>" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <% for (let i = 1; i <= Math.ceil(totalProducts / 10); i++) { %>
+                    <li class="page-item <%= (currentPage == i) ? 'active' : '' %>">
+                      <a class="page-link" href="/products?page=<%= i %>">
+                        <%= i %>
+                      </a>
+                    </li>
+                  <% } %>
+                  <li class="page-item">
+                    <a class="page-link" href="/products?page=<%= (currentPage >= Math.ceil(totalProducts / 10)) ? Math.ceil(totalProducts / 10) : currentPage + 1 %>" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
             </div>
+          </div>
         </div>
-        <% } %>
-            <% if ( totalProducts==0 ) { %>
-                <div>
-                    <h3 class="text-center text-danger">No Data Available..!!</h3>
-                </div>
-                <% } %>
+      <% } %>
+      <% if (totalProducts === 0) { %>
+        <div>
+          <h3 class="text-center text-danger">No Data Available..!!</h3>
+        </div>
+      <% } %>
+      
                     <!-- content-main end// -->
 
                     <!--modallll-->

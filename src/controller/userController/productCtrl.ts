@@ -4,7 +4,6 @@ import userDb from "../../model/userModel";
 import CartDb from "../../model/cartModel";
 
 
-
 export async function getSingleProduct(req: Request, res: Response) {
     try {
       const product = await productDb.findOne({ _id: req.params.id }).populate("offer");
@@ -21,3 +20,4 @@ export async function getSingleProduct(req: Request, res: Response) {
       res.status(500).send("Internal Server Error");
     }
   }
+

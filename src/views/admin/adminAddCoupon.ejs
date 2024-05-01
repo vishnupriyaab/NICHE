@@ -51,13 +51,13 @@
                     <div class="d-flex align-items-center formRow">
                         <div class="w-50">
                             <label for="discount" class="d-block">Coupon Discount (Price)</label>
-                            <input type="number" name="discount" id="coupondiscount">
+                            <input type="number" name="discount" id="coupondiscount" min="1">
                             <p id="discountErr" style="color: red">
                             </p>
                         </div>
                         <div class="dheading w-50">
                             <label for="count" class="d-block">Max Use (per person)</label>
-                            <input type="number" name="count" id="Maxuse">
+                            <input type="number" min="1" max="1000" name="count" id="Maxuse">
                             <p id="maxUseErr" style="color: red">
                             </p>
                         </div>
@@ -66,7 +66,7 @@
                     <div class="d-flex align-items-center formRow">
                         <div class="w-50">
                             <label for="minPrice" class="d-block">Minimum Rate</label>
-                            <input type="number" name="minPrice" id="pricelimit">
+                            <input type="number" name="minPrice" id="pricelimit" min="100">
                             <p id="priceLimitErr" style="color: red">
                             </p>
                         </div>
@@ -171,6 +171,9 @@
                 flag = true;
             } else if (parseInt(priceLimit) < 0) {
                 priceLimitError.innerText = "Enter limit in positive number";
+                flag = true;
+            }else if(priceLimit >= coupondiscount){
+                priceLimitError.innerText = "Minimum rate is not lesser than Coupon discount";
                 flag = true;
             }
 

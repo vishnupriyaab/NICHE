@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import Address from "../interface/addressInterface";
 
-const addressSchema = new mongoose.Schema({
+const addressSchema = new mongoose.Schema<Address>({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "userdb",
@@ -48,6 +49,6 @@ const addressSchema = new mongoose.Schema({
   },
 });
 
-const Addressdb = mongoose.model("addressdb", addressSchema);
+const Addressdb = mongoose.model<Address>("addressdb", addressSchema);
 
 export default Addressdb;

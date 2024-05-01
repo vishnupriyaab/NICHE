@@ -35,7 +35,11 @@ const userSchema = new Schema<User>({
         type: String,
     }
 
-});
+}, 
+{
+    timestamps:true
+}
+);
 
 // Use a pre-save hook to hash the password before saving
 userSchema.pre('save', async function (next) {

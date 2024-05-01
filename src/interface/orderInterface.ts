@@ -20,4 +20,5 @@ export interface IOrder extends Document {
   fixedShippingCharge: number;
   totalsum: number;
   couponDiscount:number;
+  paymentStatus:string
 }

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import productDb from "../../model/productModel";
 import CartDb from "../../model/cartModel";
-// import { ObjectId } from "mongoose";
 import categoryDb from "../../model/categoryModel";
 import mongoose from "mongoose";
 
@@ -11,15 +10,6 @@ export async function getShop(req: Request, res: Response) {
     const endPrice = Number(req.query.endPrice) || 0;
     const sortingInput: any = req.query.sorting || "default";
     let productSearch: any = "";
-    // console.log(
-    //   startingPrice,
-    //   endPrice,
-    //   sortingInput,
-    //   productSearch,
-    //   "reeeqqquueesstt bodyyyy"
-    // );
-
-    //Filter
     let query: any = { unlistStatus: true };
 
     if (startingPrice && endPrice) {
@@ -35,11 +25,7 @@ export async function getShop(req: Request, res: Response) {
     if (req.query.category) {
       query.category = req.query.category;
     }
-    console.log(query, "QUERYYYY");
-    console.log(query.price, "QUERYYYY");
-    //sort
     let sorting: any = {};
-    // console.log(sortingInput, "qwertyuiop");
 
     switch (sortingInput) {
       case "lowToHigh":
@@ -125,8 +111,6 @@ export async function getShop(req: Request, res: Response) {
         $limit: perProduct,
       },
     ]);
-    console.log(product, "producttttt");
-
     const cart = await CartDb.findOne({ userId: user }).populate("products");
 
     if (

@@ -39,6 +39,34 @@ export async function getLogin(
 
 
 
+// export async function getHome(
+//   req: Request<{}, {}, body>,
+//   res: Response
+// ): Promise<void> {
+//   try {
+//     const user = req.session.userId;
+//     const categories = await categoryDb.find({ unlistStatus: true });
+
+//     if (categories.length > 0) {
+//       const categoryIds = categories.map(category => category._id);
+//       const product = await productDb.find({ isHidden: false, category: { $in: categoryIds } })
+//                                         .populate("category")
+//                                         .populate("offer");
+
+//       const cart = await CartDb.findOne({ userId: user }).populate("products");
+
+//       res.render("user/home", { loginError, user, product, cart });
+//       loginError = null;
+//     } else {
+//       res.render("noCategoriesAvailable", { user });
+//     }
+//   } catch (error: any) {
+//     console.error(error);
+//   }
+// }
+
+
+
 export async function getHome(
   req: Request<{}, {}, body>,
   res: Response
@@ -49,13 +77,17 @@ export async function getHome(
 
     if (categories.length > 0) {
       const categoryIds = categories.map(category => category._id);
-      const product = await productDb.find({ isHidden: false, category: { $in: categoryIds } })
-                                        .populate("category")
-                                        .populate("offer");
+      // Modify the query to find products sorted by createdAt and limit to 4
+      const product = await productDb
+        .find({ isHidden: false, category: { $in: categoryIds } })
+        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+        .limit(4) // Limit to 4 products
+        .populate("category")
+        .populate("offer");
 
       const cart = await CartDb.findOne({ userId: user }).populate("products");
 
-      res.render("user/home", { loginError, user, product, cart });
+      res.render("user/home", { loginError, user, product, cart }); // Changed 'product' to 'products'
       loginError = null;
     } else {
       res.render("noCategoriesAvailable", { user });
@@ -64,6 +96,7 @@ export async function getHome(
     console.error(error);
   }
 }
+
 
 
 
@@ -107,53 +140,27 @@ export async function userRegister(
 ) {
   try {
     const { Email, UserName, Password, Phone, otp } = req.body;
-    console.log(Email);
 
     const token = req.query.token;
-    console.log(token, "token");
+    console.log(typeof token, token, "token");
 
     req.session.Email = Email;
 
     const isVerified = verifyOtp(otp, req.session.otp ? req.session.otp : "");
 
     if (isVerified) {
-      console.log("excecuted");
 
       if (token) {
-        console.log("qwert");
-
-        const newUser = new userDb({
-          username: UserName,
-          email: Email,
-          password: Password,
-          phone: Phone,
-          refferedToken: token,
-        });
-
-        await newUser.save();
-        console.log(newUser, "newuser");
-
+   
         const greneratorUser = await userDb.findOne({
           refferalOfferToken: token,
         });
-        console.log(greneratorUser, "greneratorUser");
 
         await Walletdb.updateOne(
           { userId: greneratorUser!._id },
           {
             $inc: { walletBalance: 199 },
             $push: { transactions: { amount: 199, type: "+ CREDIT" } },
-          },
-          { upsert: true }
-        );
-        const refUsedUser = await userDb.findOne({ _id: newUser._id });
-        console.log(refUsedUser, "12345678");
-
-        await Walletdb.updateOne(
-          { userId: refUsedUser!._id },
-          {
-            $inc: { walletBalance: 99 },
-            $push: { transactions: { amount: 99, type: "+ CREDIT" } },
           },
           { upsert: true }
         );
@@ -180,7 +187,6 @@ export async function userRegister(
 // 2.1 - 3.1 ms SPEED otp sending
 export async function otpSend(req: Request, res: Response): Promise<void> {
   try {
-    // console.log(req.body, "hyyyy");
     req.session.Email = req.body.Email;
     const newOTP = generateOTP();
     req.session.otp = newOTP;
@@ -192,14 +198,12 @@ export async function otpSend(req: Request, res: Response): Promise<void> {
 }
 export async function resendOtp(req: Request, res: Response) {
   try {
-    // console.log("xcvbnm,");
     const email = req.session.Email;
     const newOTP = generateOTP();
     req.session.otp = newOTP;
     await sendEmailWithOTP(email ? email : "", newOTP);
     console.log(`New OTP generated for ${email}: ${newOTP}`);
 
-    // Redirect back to the page with a success message or handle it as needed
     res.json({ message: "Resend Otp Sended" });
   } catch (error) {
     console.error("Error while resending OTP:", error);
@@ -235,7 +239,6 @@ export async function postLogin(
           err: true,
           url: "/userLogin",
         });
-        // res.redirect("/userLogin");
       }
     } else {
       loginError = "User not found";
@@ -245,7 +248,6 @@ export async function postLogin(
         err: true,
         url: "/userLogin",
       });
-      // res.redirect("/userLogin");
     }
   } catch (error: any) {
     console.error(error);
@@ -254,7 +256,6 @@ export async function postLogin(
       err: true,
       url: "/userLogin",
     });
-    // res.redirect("/userLogin");
   }
 }
 
@@ -308,7 +309,6 @@ export async function addAddressss(req: Request, res: Response): Promise<void> {
     });
     const saved = await newAddress.save();
 
-    // if (saved) res.status(200).send(true);
     if (saved) {
       res.status(201).json({ message: "Address Added" });
     }
@@ -359,32 +359,37 @@ export async function updateAddress(
   }
 }
 
+
+
 export async function wallet(req: Request, res: Response) {
   try {
     const user = req.session.userId;
     const wallet = await Walletdb.find({ userId: req.session.userId });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit; 
+
+    // Query to get wallet transactions with pagination
     const wall = await Walletdb.aggregate([
       { $match: { userId: new mongoose.Types.ObjectId(user) } },
-      {
-        $unwind: {
-          path: "$transactions",
-        },
-      },
-      {
-        $sort: {
-          "transactions.transactionDate": -1,
-        },
-      },
+      { $unwind: { path: "$transactions" } },
+      { $sort: { "transactions.transactionDate": -1 } },
+      { $skip: skip }, // Skip records based on pagination
+      { $limit: limit }, // Limit records based on pagination
     ]);
-    console.log(wall, "walllllllllll");
 
     const cart = await CartDb.findOne({ userId: user }).populate("products");
-    res.render("user/wallet", { wallet, user, cart, wall });
+    
+    // Render the view with wallet, user, cart, and paginated transactions
+    res.render("user/wallet", { wall, user, cart, currentPage: page, wallet });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 }
+
+
+
 
 export async function addToWallet(req: Request, res: Response): Promise<void> {
   try {

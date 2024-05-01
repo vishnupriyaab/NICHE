@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adminRegister, getAdminlogin, getAdminlogout, getDashboard, isAdmin } from "../controller/adminController/dashboardCtrl";
+import { adminRegister, getAdminlogin, getAdminlogout, getDashboard, getDetailsChart, isAdmin } from "../controller/adminController/dashboardCtrl";
 import { adminLoginValidation, checkAdmin, validateadminRegistration } from "../middleware/adminAuth";
 import { categoryValidation, editCategoryValidation, editValidateCategory,validateCategory } from "../middleware/categoryAuth";
 import { adminLoggedIn } from "../middleware/sessionAuth";
@@ -56,6 +56,7 @@ adminRoute.post('/addCoupon', addCoupon);
 adminRoute.post('/addOffers', createOffer);
 adminRoute.post('/editOffer', editOffer);
 adminRoute.post('/changeStatus', offerChangeStatus);
+adminRoute.post('/admin/chartData',getDetailsChart)
 
 
 adminRoute.post('/categoryOfferListing', categoryOfferControl);
@@ -67,8 +68,6 @@ adminRoute.post('/removeOfferCategory', offerRemoveCategory);
 adminRoute.post('/productOfferListing', productOfferListing);
 adminRoute.post('/applyOfferToProduct', offerApplyProduct);
 adminRoute.post('/removeOfferProduct', offerRemoveProduct);
-
-
 
 
 

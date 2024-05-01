@@ -71,6 +71,9 @@ const orderSchema = new mongoose.Schema<IOrder>({
   },
   fixedShippingCharge:{
     type: Number,
+  },
+  paymentStatus:{
+    type: String,
   }
   
 });

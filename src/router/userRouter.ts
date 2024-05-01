@@ -47,6 +47,8 @@ import {
   orderRazorpayVerification,
   ordersList,
   placeOrder,
+  retryPayment,
+  retryPaymentVerify,
   returnOrder,
   showAddress,
   successPage,
@@ -96,8 +98,10 @@ userRoute.get("/search", searchProduct);
 
 
 
-userRoute.get("/downloadInvoice", downloadInvoice);
+userRoute.post("/downloadInvoice", downloadInvoice);
 
+userRoute.post("/retryPayment", retryPayment);
+userRoute.post("/paymentRetryVerify", retryPaymentVerify);
 
 
 userRoute.post("/placeorder", placeOrder);

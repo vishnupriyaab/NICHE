@@ -112,7 +112,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-
         document.querySelector('.submit').addEventListener('click', () => {
             document.querySelector('#form').submit();
             console.log("12345");
@@ -130,8 +129,6 @@
             form.classList.add('was-validated');
         });
 
-
-
         const addProductForm = document.getElementById("addProductForm");
         const productname = document.getElementById("productname");
         const description = document.getElementById("description");
@@ -139,7 +136,6 @@
         const stock = document.getElementById("stock");
         const category = document.getElementById("category");
         const Image = document.getElementById("Image");
-
 
         console.log(Image, "Image");
         addProductForm.addEventListener("submit", async (e) => {
@@ -149,8 +145,7 @@
             for (let i = 0; i < Image.files.length; i++) {
                 imgArr[i] = await convertBase64(Image.files[i]);
             }
-            console.log(imgArr, "imgArrrrrrrrrrrrrrrrrrrrrrrr");
-
+            // console.log(imgArr, "imgArrrrrrrrrrrrrrrrrrrrrrrr");
 
             const formData = {
                 name: productname.value,
@@ -165,17 +160,13 @@
                 .then(({ data }) => {
                     if (data) {
                         Swal.fire("Product Added", "Click the button", "success").then(() => {
-                            window.location.href = '/addProduct';
-
+                            window.location.href = '/products';
                         });
                     }
                 })
                 .catch((error) => {
                     console.log(error);
                 })
-
-
-
         });
 
         function convertBase64(file) {
@@ -190,8 +181,6 @@
                 };
             });
         }
-
-
 
         document.getElementById('addProductForm').addEventListener('submit', function (event) {
             const errorContainer = document.getElementById('errorContainer');

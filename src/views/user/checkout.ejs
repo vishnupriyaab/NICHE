@@ -125,14 +125,13 @@
               </div>
             </label>
           </div>
-
           <div class="relative">
             <input class="peer hidden" id="payment_cod" type="radio" name="payment_method" value="COD" />
             <label for="payment_cod"
               class="peer-checked:bg-black peer-checked:text-white peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-black flex items-center justify-between cursor-pointer border border-gray-300 rounded-lg p-4 transition duration-300 ease-in-out">
               <div class="ml-5">
                 <span class="font-semibold">Cash on Delivery (COD)</span>
-                <p class="text-gray-600 text-sm">Pay upon delivery</p>
+                <p class="text-gray-600 text-sm">Order above Rs 1000 should not be allowed for COD</p>
               </div>
             </label>
           </div>
@@ -413,7 +412,7 @@
               activeCoupon: activeCoupon,
             })
             .then(function (response) {
-              console.log("qwertyui");
+              console.log(response,"qwertyui");
               if (response.data?.order) {
                 var options = {
                   key: "rzp_test_wV96XGA4SLLOo7",
@@ -423,7 +422,7 @@
                   description: "Test Transaction",
                   image: "https://example.com/your_logo",
                   order_id: response.data?.order.id,
-                  callback_url: "/verifyrazorpay",
+                  callback_url: `/verifyrazorpay?id=${response.data.newOrder?._id}`,
                   prefill: {
                     name: "Gaurav Kumar",
                     email: "gaurav.kumar@example.com",
@@ -437,6 +436,9 @@
                   },
                 };
                 var rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed',function (response){
+                  window.location.href="/orders";
+                })
                 rzp1.open();
                 return;
               }

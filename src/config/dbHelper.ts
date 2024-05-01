@@ -111,6 +111,38 @@ export async function getAllCoupon(
   }
 }
 
+// export async function getAllCoupon(
+//   couponId: string | null = null,
+//   page?: number | null,
+//   sortField: string | null = null
+// ) {
+//   try {
+//     const skip = Number(page) ? Number(page) - 1 : 0;
+//     let query = { isDeleted: false };
+
+//     // If sorting is required, add sort options to the query
+//     const sortOptions :any = sortField ? { createdAt: sortField } : { createdAt: -1 }; // -1 for descending order
+
+//     // for updation of coupon we need details of the particular coupon
+//     if (couponId) {
+//       if (!isObjectIdOrHexString(couponId)) {
+//         return null;
+//       }
+//       return await CouponDb.findOne({ _id: couponId, isDeleted: false });
+//     }
+
+//     // Apply pagination and sorting to the query
+//     return await CouponDb.find(query)
+//       .sort(sortOptions)
+//       .skip(10 * skip)
+//       .limit(10);
+//   } catch (err) {
+//     throw err;
+//   }
+// }
+
+
+
 export async function getAllDeletedCoupons(couponId = null, page = null) {
   try {
     const skip = Number(page) ? Number(page) - 1 : 0;

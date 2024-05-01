@@ -3,10 +3,6 @@ import mongoose, { isObjectIdOrHexString } from "mongoose";
 import productDb from "../../model/productModel";
 import CartDb from "../../model/cartModel";
 
-
-
-
-
 export async function cart(req: Request, res: Response) {
   try {
     const user = req.session.userId;
@@ -85,20 +81,13 @@ export async function addToCart(req: Request, res: Response): Promise<void> {
     const itemIndex = cart.products.findIndex((p) => p.productId === productId);
     if (itemIndex > -1) {
       cart.products[itemIndex].quantity += quantity;
-      // console.log(typeof quantity,"quantity");
-      // console.log(quantity,"567");
-      
-
     } else {
       cart.products.push({
         productId,
         quantity: quantity,
         price: product.price,
       });
-      // cart.cartTotal += quantity*product.price;
     }
-    // console.log(typeof cart.cartTotal,"cart.carttotal");
-    
     await cart.save();
     res.status(201).json({ message: "Product added to cart" });
   } catch (error) {
@@ -207,7 +196,6 @@ export async function reloadTotalAmount(req: Request, res: Response) {
           total += Math.round(product.products.quantity * product.productsDetails.offerPrice) :
           total += Math.round(product.products.quantity * product.productsDetails.price);
       }
-      console.log(total, "999999999999999999999999999");
       return total;
     }, 0);
     

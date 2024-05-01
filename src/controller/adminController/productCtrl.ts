@@ -7,28 +7,35 @@ import { getListedProducts } from "../../config/dbHelper";
 import userDb from "../../model/userModel";
 import Offerdb from "../../model/offerModel";
 
+
+
 export async function getProducts(req: Request, res: Response) {
   try {
-    const products = await productDb
-      .find()
-      .populate("category")
-      .populate("offer");
+    const page = req.query.page ? parseInt(req.query.page as string) : 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
 
-    const page: boolean | undefined =
-      req.query.page === "true" ? true : undefined;
-    const product = await getListedProducts(page);
-    
-    const totalProducts = products.length;
-    res.render("admin/products", {
+    const product: Product[] = await productDb
+      .find()
+      .sort({ createdAt: -1 })
+      .populate('category')
+      .populate('offer')
+      .limit(limit)
+      .skip(skip);
+
+    const totalProducts = await productDb.countDocuments();
+    // console.log(product,totalProducts,page,"1234567890");
+
+    res.render('admin/products', {
       product,
       totalProducts,
-      currentPage: Number(req.query.page),
+      currentPage: page,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error(error);
+    res.status(500).send('Internal Server Error');
   }
 }
-
 export async function getEditProduct(req: Request, res: Response) {
   try {
     const product = await productDb.findOne({ _id: req.params.id }).populate('category');
@@ -55,8 +62,6 @@ export async function updateProduct(req: Request, res: Response) {
     const categoryname = await categoryDb.findOne({ name: { $regex: new RegExp(category, 'i') }},{_id: 1});
 
     const url = await cloudinaryUploadImage(imgArr);
-    console.log("zzzzzzzzzzzzzzzzzzzz");
-    
     await productDb.updateOne(
       { _id: req.params.id },
       {
@@ -131,8 +136,7 @@ export async function addProduct(req: Request, res: Response) {
     const catID = await categoryDb.findById(category);
 
     const url = await cloudinaryUploadImage(imgArr);
-    console.log(url);
-
+    // console.log(url);
     const newCat = new productDb({
       name,
       description,
@@ -164,7 +168,7 @@ export async function deleteProduct(
     const data = await productDb.findByIdAndUpdate(productId, {
       $set: { isHidden: true },
     });
-    console.log(data);
+    // console.log(data);
     return res.status(201).json({ message: "Product Deleted" });
   } catch (error) {
     console.error("Error deleting coupon:", error);
@@ -192,7 +196,6 @@ export async function productOfferListing(req: Request, res: Response) {
     const offerDetails = await Offerdb.find({
       expiryDate: { $gte: currentData },
     });
-
     //console.log("sdvsdv", offerDetails);
     res.status(200).json({ success: true, offerDetails });
   } catch (error) {
@@ -202,15 +205,9 @@ export async function productOfferListing(req: Request, res: Response) {
 }
 
 export async function offerApplyProduct(req: Request, res: Response) {
-  console.log("asdfghjk");
-
   try {
     const { offerName, productId } = req.body;
-    console.log(req.body, "Req.body");
-
     const productData = await productDb.findById(productId);
-    console.log(productData, "productData");
-
     if (!productData) {
       res.status(404).json({ success: false, message: "Product not found" });
       return;
@@ -218,8 +215,6 @@ export async function offerApplyProduct(req: Request, res: Response) {
     const productPrice = productData.price;
 
     const offer = await Offerdb.findOne({ offerName: offerName });
-
-    console.log(offer, "offer");
 
     if (!offer) {
       res.status(404).json({ success: false, message: "offer not found" });
@@ -242,8 +237,6 @@ export async function offerApplyProduct(req: Request, res: Response) {
       { _id: productId },
       { $push: { offer: offer }, offerApplied: true }
     );
-    console.log(sample);
-
     await productData.save();
     res.json({ success: true, message: "Offer applied successfully" });
   } catch (error) {
