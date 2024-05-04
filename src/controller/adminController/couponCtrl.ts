@@ -5,11 +5,10 @@ import categoryDb from "../../model/categoryModel";
 import CouponDb from "../../model/couponModel";
 import { Request, Response } from "express";
 import Category from "../../interface/categoryInterface";
-import { ObjectId } from "mongoose";
 
 function generateCouponCode() {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const length = 8;
+  const length = 5;
   let couponCode = "";
 
   for (let i = 0; i < length; i++) {
@@ -141,8 +140,8 @@ export async function updateCoupon(req: Request, res: Response): Promise<void> {
       coupondiscount,
       expiry,
     } = req.body;
-    console.log(req.body,"qwertyuijhgfdrtyujk");
-    
+    console.log(req.body, "qwertyuijhgfdrtyujk");
+
     const regexCode = new RegExp(couponCode, "i");
     // const duplicate = await Coupondb.findOne({
     //   couponCode: { $regex: regexCode },
@@ -150,17 +149,13 @@ export async function updateCoupon(req: Request, res: Response): Promise<void> {
 
     const duplicate = await CouponDb.findOne({
       couponCode: { $regex: new RegExp("^" + couponCode + "$", "i") },
-      _id: { $ne: req.params.id }, 
+      _id: { $ne: req.params.id },
     });
 
     if (!couponCode) {
       res.status(400).json({ errStatus: true, message: "Field is Required" });
       return;
     }
-    // if (!couponDescription) {
-    //   res.status(400).json({ errStatus: true, message: "Field is Required" });
-    //   return;
-    // }
 
     if (!category) {
       res.status(400).json({ errStatus: true, message: "Field is Required" });
@@ -216,8 +211,6 @@ export async function updateCoupon(req: Request, res: Response): Promise<void> {
     res.status(500).send("Internal Server Error");
   }
 }
-
-
 
 export async function adminDeletedCoupon(req: Request, res: Response) {
   try {
@@ -303,9 +296,13 @@ export async function checkCoupon(req: Request, res: Response) {
         message: "Coupon has reached its maximum usage limit.",
       });
     }
-    
+
     (req.session as SessionData).couponCode = coupon.couponCode;
-    const discount = sum - coupon.coupondiscount;
+    const couponValue = Math.floor(sum * (coupon.coupondiscount / 100));
+    console.log(couponValue,"couponValue");
+    const discount = Math.floor(sum-couponValue);
+    console.log(discount,"discount");
+    
     return res.json({
       isValid: true,
       discount,

@@ -14,6 +14,15 @@ const productSchema = new Schema<Product>({
     type: Number,
     required: true,
   },
+  color: {
+    type: String,
+    required: true,
+  },
+  size: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
   stock: {
     type: Number,
     required: true,

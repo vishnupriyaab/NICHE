@@ -58,7 +58,7 @@ export async function getUnlistedProduct(req: Request, res: Response) {
 
 export async function updateProduct(req: Request, res: Response) {
   try {
-    let { productname, description, price, stock, imgArr, category } = req.body;
+    let { productname, description, price, stock, imgArr, category, color, size } = req.body;
     const categoryname = await categoryDb.findOne({ name: { $regex: new RegExp(category, 'i') }},{_id: 1});
 
     const url = await cloudinaryUploadImage(imgArr);
@@ -70,6 +70,8 @@ export async function updateProduct(req: Request, res: Response) {
           description,
           price,
           stock,
+          color,
+          size,
           category: categoryname?._id,
         },
       }
@@ -131,7 +133,9 @@ export async function getAddProduct(req: Request, res: Response) {
 
 export async function addProduct(req: Request, res: Response) {
   try {
-    let { name, description, price, stock, imgArr, category } = req.body;
+    let { name, description, price, stock, imgArr, category, color, size } = req.body;
+
+    console.log(color, size,"qwertyuiop");
 
     const catID = await categoryDb.findById(category);
 
@@ -141,6 +145,8 @@ export async function addProduct(req: Request, res: Response) {
       name,
       description,
       price,
+      color,
+      size,
       stock,
       imgArr: url,
       category: catID,

@@ -10,6 +10,8 @@ export async function getShop(req: Request, res: Response) {
     const endPrice = Number(req.query.endPrice) || 0;
     const sortingInput: any = req.query.sorting || "default";
     let productSearch: any = "";
+    const isFrondEnd = Boolean(req.query.fromFrontEnd);
+
     let query: any = { unlistStatus: true };
 
     if (startingPrice && endPrice) {
@@ -19,9 +21,8 @@ export async function getShop(req: Request, res: Response) {
     } else if (endPrice) {
       query.price = { $lte: endPrice };
     } else {
-      query.price = { $gte: startingPrice };
+      query.price = { $gte: 0 };
     }
-
     if (req.query.category) {
       query.category = req.query.category;
     }
@@ -63,13 +64,20 @@ export async function getShop(req: Request, res: Response) {
     });
 
     const totalPages = Math.ceil(totalProducts / perProduct);
+    const match: any = {
+      $match: {
+        category: { $in: listedCategoryIds },
+      },
+    }
+
+    const color = req.query.color;
+
+    if(color){
+      match.$match.color = color;
+    }
 
     const product = await productDb.aggregate([
-      {
-        $match: {
-          category: { $in: listedCategoryIds },
-        },
-      },
+      match,
       {
         $lookup: {
           from: "categorydbs",
@@ -100,7 +108,6 @@ export async function getShop(req: Request, res: Response) {
       {
         $match: { effectivePrice: query.price },
       },
-
       {
         $sort: sorting,
       },
@@ -111,14 +118,14 @@ export async function getShop(req: Request, res: Response) {
         $limit: perProduct,
       },
     ]);
+    console.log(product,"productctcttctct");
+    
     const cart = await CartDb.findOne({ userId: user }).populate("products");
+    const distinctColors = await productDb.distinct("color");
+    const uniqueColors = distinctColors.filter(color => color);
+    
 
-    if (
-      !startingPrice &&
-      !endPrice &&
-      sortingInput === "default" &&
-      !productSearch
-    ) {
+    if (!isFrondEnd) {
       return res.render("user/shop", {
         user,
         cart,
@@ -127,6 +134,7 @@ export async function getShop(req: Request, res: Response) {
         totalPages,
         currentPage: page,
         sorting: sortingInput,
+        colors: uniqueColors,
       });
     } else {
       return res.status(200).json({

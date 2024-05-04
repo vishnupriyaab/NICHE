@@ -66,7 +66,5 @@ export async function   sendEmailWithOTP(email: string , otp:string): Promise<st
 
 
 export function verifyOtp(val: string,otp:string) {
-  console.log("33333");
-  
   return parseInt(val) === parseInt(otp);
 }

@@ -68,11 +68,16 @@
               Quantity: <%= orders[i].orderDetails.quantity %>
             </td>
             <td
-              class="py-2 px-4 border-b cursor-pointer"
-              onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'"
-            >
-              Product Price: ₹ <%= Math.round(orders[i].orderDetails.price) %>
-            </td>
+            class="py-2 px-4 border-b cursor-pointer"
+            onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'"
+        >
+            <% if (orders[i].orderDetails.price > orders[i].totalsum) { %>
+                Product Price: ₹ <%= Math.round(orders[i].totalsum) %>
+            <% } else { %>
+                Product Price: ₹ <%= Math.round(orders[i].orderDetails.price) %>
+            <% } %>
+        </td>
+        
             <td
               class="py-2 px-4 border-b cursor-pointer"
               onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'"

@@ -1,277 +1,219 @@
 <%- include('include/_header') %>
 
-<!-- Single Page Header start -->
-<div class="container-fluid page-header py-5">
-  <h1 class="text-center text-white display-6">Shop Detail</h1>
-  <ol class="breadcrumb justify-content-center mb-0">
-    <li class="breadcrumb-item"><a href="#">Home</a></li>
-    <li class="breadcrumb-item active text-white">Shop Detail</li>
-  </ol>
-</div>
-<!-- Single Page Header End -->
-<header>
-  <style>
-    .icon-hover:hover {
-      border-color: #000000 !important;
-      background-color: white !important;
-      color: #000000 !important;
-    }
+  <!-- Single Page Header start -->
+  <div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Shop Detail</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+      <li class="breadcrumb-item"><a href="#">Home</a></li>
+      <li class="breadcrumb-item active text-white">Shop Detail</li>
+    </ol>
+  </div>
+  <!-- Single Page Header End -->
+  <header>
+    <style>
+      .icon-hover:hover {
+        border-color: #000000 !important;
+        background-color: white !important;
+        color: #000000 !important;
+      }
 
-    .icon-hover:hover i {
-      color: #000000 !important;
-    }
+      .icon-hover:hover i {
+        color: #000000 !important;
+      }
 
-    .image {
-      overflow: hidden;
-      /* border: 5px solid #fff;
+      .image {
+        overflow: hidden;
+        /* border: 5px solid #fff;
         box-shadow: -1px 5px 15px #000; */
-    }
+      }
 
-    .image img {
-      width: 100%;
-      height: 100%;
-      -o-object-fit: cover;
-      object-fit: cover;
-      transform: scale(var(--zoom, 1));
-      transform-origin: var(--x, 50%) var(--y, 50%); /* Updated transform-origin */
-      transition: transform 0.3s ease;
-    }
-    .image:hover {
-      --zoom: 3;
-    }
-  </style>
-</header>
-<!-- content -->
-<section class="py-5">
-  <div class="container">
-    <div class="row gx-5">
-      <aside class="col-lg-6">
-        <div class="border rounded-4 mb-3 d-flex justify-content-center image">
-          <a
-            data-fslightbox="mygalley"
-            class="rounded-4"
-            target="_blank"
-            data-type="image"
-            href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big.webp"
-          >
-            <img
-              id="mainImage"
-              style="max-width:100%; max-height: 100vh; margin: auto"
-              class="rounded-4 fit"
-              src="<%= product.imgArr[0] %>"
-            />
-          </a>
-        </div>
-        <div class="d-flex justify-content-center mb-3">
-          <% for( let i=0; i < product.imgArr.length; i++ ) { %>
-          <div>
-            <a
-              data-fslightbox="mygalley"
-              class="border mx-1 rounded-2"
-              target="_blank"
-              data-type="image"
-              class="item-thumb"
-            >
-              <img
-                width="60"
-                height="60"
-                class="rounded-2"
-                src="<%= product.imgArr[i] %>"
-                onclick="showMainImage(this)"
-              />
+      .image img {
+        width: 100%;
+        height: 100%;
+        -o-object-fit: cover;
+        object-fit: cover;
+        transform: scale(var(--zoom, 1));
+        transform-origin: var(--x, 50%) var(--y, 50%);
+        /* Updated transform-origin */
+        transition: transform 0.3s ease;
+      }
+
+      .image:hover {
+        --zoom: 3;
+      }
+    </style>
+  </header>
+  <!-- content -->
+  <section class="py-5">
+    <div class="container">
+      <div class="row gx-5">
+        <aside class="col-lg-6">
+          <div class="border rounded-4 mb-3 d-flex justify-content-center image">
+            <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image"
+              href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big.webp">
+              <img id="mainImage" style="max-width:100%; max-height: 100vh; margin: auto" class="rounded-4 fit"
+                src="<%= product.imgArr[0] %>" />
             </a>
           </div>
-          <% } %>
-        </div>
-      </aside>
-      <main class="col-lg-6">
-        <div class="ps-lg-3">
-          <h4 class="title text-dark"><%= product.name %></h4>
-          <div class="d-flex flex-row my-3">
-            <div class="text-warning mb-1 me-2">
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fas fa-star-half-alt"></i>
-              <span class="ms-1"> 4.5 </span>
-            </div>
-            <% if (2 < product.stock) { %>
-            <span class="text-muted  text-danger"
-              ><i class="fas fa-shopping-basket fa-sm mx-1"></i><%=
-              product.stock %> orders</span
-            >
-
-            <% }else { %>
-            <p class="text-muted " 
-              ><i class="fas fa-shopping-basket fa-sm mx-1"></i><%=
-              product.stock %> orders</p
-            >
-
-           <% } %>
-            <% if (product.stock>0) { %>
-              <p class="text-success ms-2 fw-bold">In stock</p>
-            <% } else{%>
-              <p class="text-danger ms-2 fw-bold">Out of stock</p>
+          <div class="d-flex justify-content-center mb-3">
+            <% for( let i=0; i < product.imgArr.length; i++ ) { %>
+              <div>
+                <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image"
+                  class="item-thumb">
+                  <img width="60" height="60" class="rounded-2" src="<%= product.imgArr[i] %>"
+                    onclick="showMainImage(this)" />
+                </a>
+              </div>
               <% } %>
           </div>
-          <% if (product.offerApplied) { %>
-            <div class="mb-3">
-              <span style="font-style: normal; font-weight: bolder;"> ₹<%= Math.round(product.offerPrice) %></span>
-              <del><span style="color: red; font-style: normal; font-weight: bolder;">₹<%= product.price %></span></del>
-              <% product.offer.forEach(offer => { %>
-                <span style="color: red; font-size: small; font-style: normal; font-weight: bolder;">(<%= offer.discountPercentage %>% Off)</span>
-             <% }); %>
+        </aside>
+        <main class="col-lg-6">
+          <div class="ps-lg-3">
+            <h4 class="title text-dark">
+              <%= product.name %>
+            </h4>
+            <div class="d-flex flex-row my-3">
+              <% if (2 < product.stock) { %>
+                <span class="text-muted  text-danger"><i class="fas fa-shopping-basket fa-sm mx-1"></i>
+                  <%= product.stock %> orders
+                </span>
+                <% }else { %>
+                  <p class="text-muted "><i class="fas fa-shopping-basket fa-sm mx-1"></i>
+                    <%= product.stock %> orders
+                  </p>
+
+                  <% } %>
+                    <% if (product.stock>0) { %>
+                      <p class="text-success ms-2 fw-bold">In stock</p>
+                      <% } else{%>
+                        <p class="text-danger ms-2 fw-bold">Out of stock</p>
+                        <% } %>
             </div>
-          <% }else{ %>
-            <span class="h5">₹<%= product.price %></span>
-          <% } %>
-          <p><%= product.description %></p>
-          <div class="row">
-            <dt class="col-3">Type:</dt>
-            <dd class="col-9">Regular</dd>
-
-            <dt class="col-3">Color</dt>
-            <dd class="col-9">Brown</dd>
-
-            <dt class="col-3">Material</dt>
-            <dd class="col-9">Cotton, Jeans</dd>
-
-            <dt class="col-3">Brand</dt>
-            <dd class="col-9">Reebook</dd>
+            <% if (product.offerApplied) { %>
+              <div class="mb-3">
+                <span style="font-style: normal; font-weight: bolder;"> ₹<%= Math.round(product.offerPrice) %></span>
+                <del><span style="color: red; font-style: normal; font-weight: bolder;">₹<%= product.price %>
+                      </span></del>
+                <% product.offer.forEach(offer=> { %>
+                  <span style="color: red; font-size: small; font-style: normal; font-weight: bolder;">(<%=
+                      offer.discountPercentage %>% Off)</span>
+                  <% }); %>
+              </div>
+              <% }else{ %>
+                <span class="h5">₹<%= product.price %></span>
+                <% } %>
+                  <p>
+                    <%= product.description %>
+                  </p>
+                  <div class="row">
+                    <dt class="col-3">Type:</dt>
+                    <dd class="col-9">Regular</dd>
+                    <dt class="col-3">Color:</dt>
+                    <dd class="col-9">
+                      <%= product.color %>
+                    </dd>
+                    <dt class="col-3">Material</dt>
+                    <dd class="col-9">Cotton, Jeans</dd>
+                    <dt class="col-3">Brand</dt>
+                    <dd class="col-9">Reebook</dd>
+                  </div>
+                  <hr />
+                  <div class="row mb-4">
+                    <div class="col-md-4 col-6">
+                      <label class="mb-2">Available sizes</label>
+                      <select class="form-select border border-secondary" style="height: 35px; width: auto">
+                        <option>
+                          <%= product.size %>
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <button href="/checkout" class="btn btn-warning shadow-0">
+                    Buy now
+                  </button>
+                  <% if (product.stock>0) { %>
+                    <button onclick="addTocart('<%- product._id %>')"
+                      class="btn btn-primary border shadow-0 icon-hover">
+                      <i class="me-1 fa fa-shopping-basket"></i> Add to cart
+                    </button>
+                    <% } else{%>
+                      <button class=" btn bg-danger border shadow-0 icon-hover"></i> Out of Stock
+                      </button>
+                      <% } %>
+                        <a onclick="addToWishlist( '<%- product._id %>')" class="btn btn-light border icon-hover px-3">
+                          <i class="me-1 fa fa-heart fa-lg"></i> Wishlist
+                        </a>
           </div>
-          <hr />
-          <div class="row mb-4">
-            <div class="col-md-4 col-6">
-              <label class="mb-2">Size</label>
-              <select
-                class="form-select border border-secondary"
-                style="height: 35px; width: auto"
-              >
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-                <option>11</option>
-                <option>12</option>
-              </select>
-            </div>
-          </div>
-          <button href="/checkout" class="btn btn-warning shadow-0">
-            Buy now
-          </button>
-          <% if (product.stock>0) { %>
-            <button
-            onclick="addTocart('<%- product._id %>')"
-            class="btn btn-primary border shadow-0 icon-hover"
-          >
-            <i class="me-1 fa fa-shopping-basket"></i> Add to cart
-          </button>
-          <% } else{%>
-            <button
-            class=" btn bg-danger border shadow-0 icon-hover"
-          ></i> Out of Stock
-          </button>
-            <% } %>
-          <a
-            onclick="addToWishlist( '<%- product._id %>')"
-            class="btn btn-light border icon-hover px-3"
-          >
-            <i class="me-1 fa fa-heart fa-lg"></i> Wishlist
-          </a>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
-  </div>
-</section>
-<!-- content -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+  </section>
+  <!-- content -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
-  integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
+    integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
+  <script>
 
 
-toastr.options = {
-    closeButton: false,
-    debug: false,
-    newestOnTop: true,
-    progressBar: false,
-    positionClass: "toast-top-right",
-    preventDuplicates: false,
-    onclick: null,
-    showDuration: "300",
-    hideDuration: "1000",
-    timeOut: "5000",
-    extendedTimeOut: "1000",
-    showEasing: "swing",
-    hideEasing: "linear",
-    showMethod: "fadeIn",
-    hideMethod: "fadeOut",
-  };
+    toastr.options = {
+      closeButton: false,
+      debug: false,
+      newestOnTop: true,
+      progressBar: false,
+      positionClass: "toast-top-right",
+      preventDuplicates: false,
+      onclick: null,
+      showDuration: "300",
+      hideDuration: "1000",
+      timeOut: "5000",
+      extendedTimeOut: "1000",
+      showEasing: "swing",
+      hideEasing: "linear",
+      showMethod: "fadeIn",
+      hideMethod: "fadeOut",
+    };
 
-  function showMainImage(thumbnail) {
-    const mainImage = document.getElementById("mainImage");
-    mainImage.src = thumbnail.src;
-  }
+    function showMainImage(thumbnail) {
+      const mainImage = document.getElementById("mainImage");
+      mainImage.src = thumbnail.src;
+    }
 
-  function addTocart(id) {
-    axios
-      .post("/addtocart", { id })
-      .then((res) => {
-        console.log(res);
-        if (res.data.message === "Product already in cart") {
-          console.log(res, "response");
-          console.log(res.data, "response data");
-          toastr.info(res.data.message);
-          setTimeout(()=>{
-            window.location.href = "/cart";
-          },1000)
-        } else if (res.data.message === "Please Login") {
-          window.location.href = "/userLogin";
-        } else {
-          toastr.success(res.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-  }
-
-  function addToWishlist(productId) {
-    axios
-      .post("/addToWishlist", { productId })
-      .then((response) => {
-        // console.log(response);
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
+    function addTocart(id) {
+      axios
+        .post("/addtocart", { id })
+        .then((res) => {
+          console.log(res);
+          if (res.data.message === "Product already in cart") {
+            console.log(res, "response");
+            console.log(res.data, "response data");
+            toastr.info(res.data.message);
+            setTimeout(() => {
+              window.location.href = "/cart";
+            }, 1000)
+          } else if (res.data.message === "Please Login") {
+            window.location.href = "/userLogin";
+          } else {
+            toastr.success(res.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log("Error:", error);
         });
-        Toast.fire({
-          icon: "success",
-          title: "Product Added To Wishlist",
-        });
-        // Check if the product was successfully added or already exists
-        if (response.data.message === "Product already in wishlist") {
+    }
+
+    function addToWishlist(productId) {
+      axios
+        .post("/addToWishlist", { productId })
+        .then((response) => {
+          // console.log(response);
           const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
@@ -285,34 +227,51 @@ toastr.options = {
           });
           Toast.fire({
             icon: "success",
-            title: "Product Already in Wishlist",
+            title: "Product Added To Wishlist",
           });
-        } else {
-          console.log(response.data.message);
-        }
-      })
-      .catch((error) => {
-        // Handle error, log to console for simplicity
-        console.error("Error:", error);
-      });
-  }
+          // Check if the product was successfully added or already exists
+          if (response.data.message === "Product already in wishlist") {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+            });
+            Toast.fire({
+              icon: "success",
+              title: "Product Already in Wishlist",
+            });
+          } else {
+            console.log(response.data.message);
+          }
+        })
+        .catch((error) => {
+          // Handle error, log to console for simplicity
+          console.error("Error:", error);
+        });
+    }
 
-  document.querySelectorAll(".image").forEach((elem) => {
-    let width, height;
-    elem.onmouseenter = () => {
-      const size = elem.getBoundingClientRect();
-      width = size.width;
-      height = size.height;
-    };
+    document.querySelectorAll(".image").forEach((elem) => {
+      let width, height;
+      elem.onmouseenter = () => {
+        const size = elem.getBoundingClientRect();
+        width = size.width;
+        height = size.height;
+      };
 
-    elem.onmousemove = (e) => {
-      const horizontal = (e.offsetX / width) * 100;
-      const vertical = (e.offsetY / height) * 100;
+      elem.onmousemove = (e) => {
+        const horizontal = (e.offsetX / width) * 100;
+        const vertical = (e.offsetY / height) * 100;
 
-      elem.style.setProperty("--x", horizontal + "%");
-      elem.style.setProperty("--y", vertical + "%");
-    };
-  });
-</script>
+        elem.style.setProperty("--x", horizontal + "%");
+        elem.style.setProperty("--y", vertical + "%");
+      };
+    });
+  </script>
 
-<%- include('include/_footer') %>
+  <%- include('include/_footer') %>

@@ -73,13 +73,13 @@ export async function editCategory(req: Request, res: Response) {
 export async function listCategory(req: Request, res: Response) {
   try {
     console.log("zsdfghjkl");
-    
+
     const data = await categoryDb.findOneAndUpdate(
       { _id: req.body.id },
       { $set: { unlistStatus: false } }
     );
-    console.log(data,"dataaaa");
-    
+    console.log(data, "dataaaa");
+
     if (data) {
       res.status(200).json({ status: true });
     } else {
@@ -96,17 +96,16 @@ export async function listCategory(req: Request, res: Response) {
 export async function unlistCategory(req: Request, res: Response) {
   try {
     console.log("sdfghjk");
-    
+
     const data = await categoryDb.findOneAndUpdate(
       { _id: req.body.id },
       { $set: { unlistStatus: true } }
     );
-    console.log(data,"data22");
-    
+    console.log(data, "data22");
+
     if (data) {
       res.status(200).json({ status: true });
       console.log("wertyuio");
-      
     } else {
       res.status(401).json({
         message: "Invalid Id",
@@ -148,47 +147,46 @@ export async function categoryOfferControl(req: Request, res: Response) {
 export async function offerApplyCategory(req: Request, res: Response) {
   try {
     const { offerName, categoryId } = req.body;
-    console.log(req.body, "req.body");
+    // console.log(req.body, "req.body");
 
     const categoryData = await categoryDb.findById(categoryId);
-    console.log(categoryData, "categoryData");
+    // console.log(categoryData, "categoryData");
 
     if (!categoryData) {
       return res
         .status(404)
         .json({ success: false, message: "Category not found" });
     }
-    console.log("ONEEEEEE");
+    // console.log("ONEEEEEE");
 
     const offer = await Offerdb.findOne({ offerName: offerName });
-    console.log(offer, "offer");
+    // console.log(offer, "offer");
 
     if (!offer) {
       return res
         .status(404)
         .json({ success: false, message: "Offer not found" });
     }
-    console.log("Twooooooo");
+    // console.log("Twooooooo");
 
     const offerAlreadyApplied = categoryData.offer.some(
       (offerId) => offerId.toString() === offer._id.toString()
     );
-    console.log(offerAlreadyApplied, "offerAlreadyApplied");
+    // console.log(offerAlreadyApplied, "offerAlreadyApplied");
 
     if (offerAlreadyApplied) {
       return res.json({ success: true, message: "Offer already applied" });
     } else {
-      console.log("Threeeeeeeee");
+      // console.log("Threeeeeeeee");
 
       const products = await productDb.find({ category: categoryId });
-      console.log(products,"products");
+      // console.log(products,"products");
 
       await categoryDb.updateOne(
         { _id: categoryId },
         { $push: { offer: offer._id }, offerApplied: true }
       );
-console.log("Fourrrrrrrrrrrrr");
-
+      // console.log("Fourrrrrrrrrrrrr");
       for (const product of products) {
         const productDetails = await productDb.findByIdAndUpdate(
           { _id: product._id },
@@ -203,7 +201,6 @@ console.log("Fourrrrrrrrrrrrr");
           },
           { new: true } // Return updated document
         );
-
         if (!productDetails) {
           return res
             .status(404)
@@ -212,7 +209,6 @@ console.log("Fourrrrrrrrrrrrr");
         await productDetails.save();
       }
     }
-
     return res.json({ success: true, message: "Offer applied successfully" });
   } catch (error) {
     console.log("offerDetailsError", error);
@@ -222,21 +218,6 @@ console.log("Fourrrrrrrrrrrrr");
     });
   }
 }
-
-// function calculateHighestOfferPercentage(product: any) {
-//   console.log("111");
-
-// //  const woww =  offer.discountPercentage
-//   let highestPercentage = product.offer.discountPercentage;
-//   console.log(highestPercentage,"highestPercentage");
-
-//   product.offer.forEach((offer:any) => {
-//     if (offer.discountPercentage > highestPercentage) {
-//       highestPercentage = offer.discountPercentage;
-//     }
-//   });
-//   return highestPercentage;
-// }
 
 export async function offerRemoveCategory(req: Request, res: Response) {
   try {

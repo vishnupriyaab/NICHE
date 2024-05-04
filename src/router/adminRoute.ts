@@ -42,8 +42,6 @@ adminRoute.get("/salesReportExcel",salesReportExcel)
 adminRoute.get("/salesReportPDF", salesReportPDF);
 
 
-
-
 adminRoute.post("/adminlogin", adminLoginValidation, validateadminRegistration, isAdmin);
 adminRoute.post("/adminRegister", adminRegister);
 adminRoute.post("/addcategory", categoryValidation, validateCategory, addCategory);
@@ -64,11 +62,9 @@ adminRoute.post('/applyOfferToCategory', offerApplyCategory);
 adminRoute.post('/removeOfferCategory', offerRemoveCategory);
 
 
-
 adminRoute.post('/productOfferListing', productOfferListing);
 adminRoute.post('/applyOfferToProduct', offerApplyProduct);
 adminRoute.post('/removeOfferProduct', offerRemoveProduct);
-
 
 
 adminRoute.patch("/unlistCategory", unlistCategory);

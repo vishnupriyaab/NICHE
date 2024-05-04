@@ -5,6 +5,8 @@ export interface Product {
     description: string;
     price: number;
     stock: number;
+    color: string,
+    size: number,
     imgArr: string[];
     category: mongoose.Schema.Types.ObjectId;
     isHidden: boolean;

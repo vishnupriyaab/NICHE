@@ -90,39 +90,12 @@ interface AggregationStage {
   $limit?: number;
 }
 
-export async function getAllCoupon(
-  couponId: string | null = null,
-  page?: number | null
-) {
-  try {
-    const skip = Number(page) ? Number(page) - 1 : 0;
-    // for updation of coupon we need details of the particular coupon
-    if (couponId) {
-      if (!isObjectIdOrHexString(couponId)) {
-        return null;
-      }
-      return await CouponDb.findOne({ _id: couponId, isDeleted: false });
-    }
-    return await CouponDb.find({ isDeleted: false })
-      .skip(10 * skip)
-      .limit(10);
-  } catch (err) {
-    throw err;
-  }
-}
-
 // export async function getAllCoupon(
 //   couponId: string | null = null,
-//   page?: number | null,
-//   sortField: string | null = null
+//   page?: number | null
 // ) {
 //   try {
 //     const skip = Number(page) ? Number(page) - 1 : 0;
-//     let query = { isDeleted: false };
-
-//     // If sorting is required, add sort options to the query
-//     const sortOptions :any = sortField ? { createdAt: sortField } : { createdAt: -1 }; // -1 for descending order
-
 //     // for updation of coupon we need details of the particular coupon
 //     if (couponId) {
 //       if (!isObjectIdOrHexString(couponId)) {
@@ -130,16 +103,41 @@ export async function getAllCoupon(
 //       }
 //       return await CouponDb.findOne({ _id: couponId, isDeleted: false });
 //     }
-
-//     // Apply pagination and sorting to the query
-//     return await CouponDb.find(query)
-//       .sort(sortOptions)
+//     return await CouponDb.find({ isDeleted: false })
 //       .skip(10 * skip)
 //       .limit(10);
 //   } catch (err) {
 //     throw err;
 //   }
 // }
+
+export async function getAllCoupon(
+  couponId: string | null = null,
+  page?: number | null
+) {
+  try {
+    const skip = Number(page) ? Number(page) - 1 : 0;
+    // Determine the sort criteria
+    const sortCriteria:any = { updatedAt: -1 }; 
+
+    // for updation of coupon we need details of the particular coupon
+    if (couponId) {
+      if (!isObjectIdOrHexString(couponId)) {
+        return null;
+      }
+      return await CouponDb.findOne({ _id: couponId, isDeleted: false });
+    }
+
+    // Find coupons, sort them, skip and limit the results
+    return await CouponDb.find({ isDeleted: false })
+      .sort(sortCriteria) // Apply the sort criteria
+      .skip(10 * skip)
+      .limit(10);
+  } catch (err) {
+    throw err;
+  }
+}
+
 
 
 

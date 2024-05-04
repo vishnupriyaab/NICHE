@@ -50,7 +50,7 @@
 
                     <div class="d-flex align-items-center formRow">
                         <div class="w-50">
-                            <label for="discount" class="d-block">Coupon Discount (Price)</label>
+                            <label for="discount" class="d-block">Coupon Discount (%)</label>
                             <input type="number" name="discount" id="coupondiscount" min="1">
                             <p id="discountErr" style="color: red">
                             </p>
@@ -172,7 +172,7 @@
             } else if (parseInt(priceLimit) < 0) {
                 priceLimitError.innerText = "Enter limit in positive number";
                 flag = true;
-            }else if(priceLimit >= coupondiscount){
+            }else if(priceLimit <= coupondiscount){
                 priceLimitError.innerText = "Minimum rate is not lesser than Coupon discount";
                 flag = true;
             }

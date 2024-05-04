@@ -54,28 +54,31 @@
     opacity: 1;
   }
 </style>
+<style>
+  .color-palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    grid-gap: 10px;
+  }
+
+  .color-option {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .color-option:hover {
+    border: 2px solid #333;
+  }
+</style>
 
 <div class="container-fluid fruite ptop">
   <div class="container py-5">
     <div class="row g-4">
       <div class="col-lg-12">
         <div class="row g-4">
-          <!-- <div class="col-xl-3">
-            <div class="input-group w-100 mx-auto d-flex">
-              <input
-                id="searchInput"
-                type="search"
-                class="form-control p-3"
-                placeholder="keywords"
-                aria-describedby="search-icon-1"
-              />
-              <span id="search-icon-1" class="input-group-text p-3"
-                ><i class="fa fa-search"></i
-              ></span>
-            </div>
-          </div> -->
-          <!-- <div class="col-6"></div> -->
-          <div class="col-xl-3" >
+          <div class="col-xl-3">
             <div
               class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4"
             >
@@ -91,13 +94,6 @@
                 <option value="oldToNew">Old to New</option>
               </select>
             </div>
-            <!-- <div class="mb-3 justify-content-center d-flex">
-              <button
-                class="btn btn-dark rounded-2 text-white"
-                id="submitButton" >
-                Submit
-              </button>
-            </div> -->
           </div>
         </div>
         <div class="row g-4">
@@ -123,25 +119,42 @@
                   </ul>
                 </div>
               </div>
+
+              <div class="col-lg-12">
+                <div class="mb-3">
+                  <h4>Colors</h4>
+                  <div id="colorPalette" class="color-palette">
+                    <% colors.forEach(color => { %>
+                    <div
+                      class="color-option border"
+                      style="background-color: <%= color %>"
+                      data-color="<%= color %>"
+                    ></div>
+                    <% }); %>
+                  </div>
+                </div>
+              </div>
+
               <div class="col-lg-12">
                 <div class="mb-3">
                   <h4 class="mb-3">Price</h4>
-                  
-                  <div class="flex relative justify-center items-center h-20 w-full mx-auto rounded">
-                    <div class="d-flex gap-2">
 
-                    <p>Starting Price</p>
-                    <div class="min-value numberVal">
-                      <input
-                        type="number"
-                        class="rounded-2 text-center"
-                        min="0"
-                        max="100"
-                        value="0"
-                        disabled
-                      />
+                  <div
+                    class="flex relative justify-center items-center h-20 w-full mx-auto rounded"
+                  >
+                    <div class="d-flex gap-2">
+                      <p>Starting Price</p>
+                      <div class="min-value numberVal">
+                        <input
+                          type="number"
+                          class="rounded-2 text-center"
+                          min="0"
+                          max="100"
+                          value="0"
+                          disabled
+                        />
+                      </div>
                     </div>
-                  </div>
 
                     &nbsp;
                     <div class="range-slider">
@@ -152,10 +165,9 @@
                           type="range"
                           min="0"
                           max="10000"
-                          value="25"
+                          value="0"
                           id="startingPrice"
                         />
-                        <!-- <span class="range-min-value">0</span> -->
                       </span>
                       <span class="range-max-wrapper">
                         <input
@@ -163,10 +175,9 @@
                           type="range"
                           min="0"
                           max="10000"
-                          value="100"
+                          value="0"
                           id="endPrice"
                         />
-                        <!-- <span class="range-max-value">100</span> -->
                       </span>
                     </div>
                     &nbsp;
@@ -183,10 +194,14 @@
                         />
                       </div>
                     </div>
-                    <div class="mb-3 justify-content-center d-flex" style="margin-left:200px;">
+                    <div
+                      class="mb-3 justify-content-center d-flex"
+                      style="margin-left: 200px"
+                    >
                       <button
                         class="btn btn-dark rounded-2 text-white"
-                        id="submitButton" >
+                        id="submitButton"
+                      >
                         Submit
                       </button>
                     </div>
@@ -230,7 +245,6 @@
                           <span class="off-price"
                             >₹<%= Math.round(product[i].offerPrice) %></span
                           >
-
                           <del>
                             <span class="price" style="color: red"
                               >₹<%= product[i].price %>
@@ -277,6 +291,7 @@
                   <% for(let i=1; i<=totalPages; i++) { %>
                   <a
                     href="/shop?page=<%= i %>"
+                    data-page="<%= i %>"
                     class="<%= currentPage === i ? 'active' : '' %> rounded how-pagination1"
                     ><%= i %></a
                   >
@@ -286,28 +301,9 @@
                   >
                 </div>
               </div>
-
-              <!-- <div
-                class="pagination d-flex justify-content-center mt-5"
-                id="paginationLinks"
-              > -->
-              <!-- Pagination links will be generated dynamically here -->
-              <!-- </div> -->
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="flex-c-m flex-w w-full p-t-38" id="paginationLinks">
-        <% for (let i = 1; i <= totalPages; i++) { %>
-        <a
-          href="/products?page=<%= i %>"
-          id="renderPagination"
-          class="flex-c-m how-pagination1 trans-04 m-all-7<%= currentPage === i ? ' active-pagination1' : '' %>"
-        >
-          <%= i %>
-        </a>
-        <% } %>
       </div>
       <div class="flex-c-m flex-w w-full p-t-38">
         <!-- Pagination links will be generated dynamically here -->
@@ -317,6 +313,7 @@
 </div>
 <!-- Fruits Shop End-->
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   const range = document.querySelectorAll(".range-slider span input");
   progress = document.querySelector(".range-slider .progress");
@@ -346,25 +343,44 @@
 
 <script>
   $(document).ready(function () {
+    let selectedColor = "";
+
+    $(".color-option").click(function () {
+      selectedColor = $(this).data("color");
+      console.log(selectedColor, "Selected color");
+    });
+
     $("#submitButton").click(function () {
       const startingPrice = $("#startingPrice").val();
       const endPrice = $("#endPrice").val();
       const sorting = $("#sorting").val();
       const productSearch = $("#searchInput").val();
-      sendDataToBackend(startingPrice, endPrice, sorting, productSearch);
+      
+      sendDataToBackend(
+        startingPrice,
+        endPrice,
+        sorting,
+        productSearch,
+        1,
+        selectedColor
+      );
     });
 
     function sendDataToBackend(
       startingPrice,
       endPrice,
       sorting,
-      productSearch
+      productSearch,
+      page = 1,
+      selectedColor
     ) {
       console.log(
         startingPrice,
         endPrice,
         sorting,
         productSearch,
+        page,
+        selectedColor,
         "sexdrctfvgybhertfguyhj"
       );
 
@@ -372,15 +388,20 @@
         url: "/shop",
         method: "GET",
         data: {
+          fromFrontEnd: true,
           startingPrice: startingPrice,
           endPrice: endPrice,
           sorting: sorting,
           productSearch: productSearch,
+          page: page,
+          color: selectedColor,
         },
         success: function (response) {
+          console.log(response);
           if (response.success) {
             const product = response.product;
             let productHtml = "";
+            let pagenation = ``;
             if (product && product.length > 0) {
               for (let i = 0; i < product.length; i++) {
                 productHtml += `
@@ -476,7 +497,41 @@
 								<p>No products available.</p>
 							</div>`;
             }
+            const div = document.createElement("div");
+            div.classList.add("col-12");
+            const paginationDiv = document.createElement("div");
+            paginationDiv.classList.add("pagination");
+            paginationDiv.classList.add("d-flex");
+            paginationDiv.classList.add("justify-content-center");
+            paginationDiv.classList.add("mt-5");
+            div.append(paginationDiv);
+            const aTag = document.createElement("a");
+            aTag.textContent = "«";
+            aTag.href = "/shop?page=1";
+            aTag.classList.add("rounded");
+            paginationDiv.append(aTag);
+
+            for (let i = 1; i <= response.totalPages; i++) {
+              const a = document.createElement("a");
+              a.textContent = i;
+              a.href = `/shop?page=${i}`;
+              a.setAttribute("data-page", i);
+              if (response.currentPage === i) {
+                a.classList.add("active");
+              }
+              a.classList.add("rounded");
+              a.classList.add("how-pagination1");
+              paginationDiv.append(a);
+            }
+
+            const nextATag = document.createElement("a");
+            nextATag.href = `/shop?page=${response.totalPages}`;
+            nextATag.classList.add("rounded");
+            nextATag.textContent = "»;";
+            paginationDiv.append(nextATag);
+
             document.querySelector("#productLoad").innerHTML = productHtml;
+            document.querySelector("#productLoad").append(div);
             $("#paginationLinks").html(
               generatePaginationLinks(response.totalPages, response.currentPage)
             );
@@ -504,22 +559,31 @@
       }
       return paginationHtml;
     }
-
-    // Click event handler for pagination links
-    $(document).on("click", ".how-pagination1", function (e) {
-      e.preventDefault();
-      const pageNumber = $(this).data("page");
-      const startingPrice = $("#startingPrice").val();
-      const endPrice = $("#endPrice").val();
-      const sorting = $("#sorting").val();
-      const productSearch = $("#productSearch").val();
-      loadProductsForPage(
-        pageNumber,
-        startingPrice,
-        endPrice,
-        sorting,
-        productSearch
-      );
+    document.querySelectorAll(".how-pagination1").forEach((elem, index) => {
+      console.log(elem);
+      elem.addEventListener("click", (e) => {
+        e.preventDefault();
+        const pageNumber = elem.getAttribute("data-page");
+        const startingPrice = $("#startingPrice").val();
+        const endPrice = $("#endPrice").val();
+        const sorting = $("#sorting").val();
+        const productSearch = $("#productSearch").val();
+        console.log(
+          pageNumber,
+          startingPrice,
+          endPrice,
+          sorting,
+          productSearch,
+          "asdcfgbh"
+        );
+        sendDataToBackend(
+          startingPrice,
+          endPrice,
+          sorting,
+          productSearch,
+          pageNumber
+        );
+      });
     });
   });
 </script>

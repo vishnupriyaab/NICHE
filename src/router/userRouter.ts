@@ -60,7 +60,6 @@ import {
 } from "../controller/userController/wishlishctrl";
 import { checkCoupon, removeCoupon } from "../controller/adminController/couponCtrl";
 import { getShop } from "../controller/userController/shopCtrl";
-// import { getShop } from "../controller/userController/shopCtrl";
 
 const userRoute: Router = Router();
 
@@ -93,9 +92,6 @@ userRoute.get("/wishlist", getWishlist);
 userRoute.get("/wallet", isLoggedIn, wallet, refferalLinkGenerating);
 userRoute.get("/refferalLink", isLoggedIn, refferalLinkGenerating);
 userRoute.get("/search", searchProduct);
-
-
-
 
 
 userRoute.post("/downloadInvoice", downloadInvoice);

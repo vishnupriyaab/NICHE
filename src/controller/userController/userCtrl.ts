@@ -38,35 +38,6 @@ export async function getLogin(
 }
 
 
-
-// export async function getHome(
-//   req: Request<{}, {}, body>,
-//   res: Response
-// ): Promise<void> {
-//   try {
-//     const user = req.session.userId;
-//     const categories = await categoryDb.find({ unlistStatus: true });
-
-//     if (categories.length > 0) {
-//       const categoryIds = categories.map(category => category._id);
-//       const product = await productDb.find({ isHidden: false, category: { $in: categoryIds } })
-//                                         .populate("category")
-//                                         .populate("offer");
-
-//       const cart = await CartDb.findOne({ userId: user }).populate("products");
-
-//       res.render("user/home", { loginError, user, product, cart });
-//       loginError = null;
-//     } else {
-//       res.render("noCategoriesAvailable", { user });
-//     }
-//   } catch (error: any) {
-//     console.error(error);
-//   }
-// }
-
-
-
 export async function getHome(
   req: Request<{}, {}, body>,
   res: Response
@@ -74,20 +45,16 @@ export async function getHome(
   try {
     const user = req.session.userId;
     const categories = await categoryDb.find({ unlistStatus: true });
-
     if (categories.length > 0) {
       const categoryIds = categories.map(category => category._id);
-      // Modify the query to find products sorted by createdAt and limit to 4
       const product = await productDb
         .find({ isHidden: false, category: { $in: categoryIds } })
-        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-        .limit(4) // Limit to 4 products
+        .sort({ createdAt: -1 })
+        .limit(4) 
         .populate("category")
         .populate("offer");
-
       const cart = await CartDb.findOne({ userId: user }).populate("products");
-
-      res.render("user/home", { loginError, user, product, cart }); // Changed 'product' to 'products'
+      res.render("user/home", { loginError, user, product, cart });
       loginError = null;
     } else {
       res.render("noCategoriesAvailable", { user });
@@ -96,8 +63,6 @@ export async function getHome(
     console.error(error);
   }
 }
-
-
 
 
 export async function testimonial(req: Request, res: Response) {
@@ -142,7 +107,7 @@ export async function userRegister(
     const { Email, UserName, Password, Phone, otp } = req.body;
 
     const token = req.query.token;
-    console.log(typeof token, token, "token");
+    // console.log(typeof token, token, "token");
 
     req.session.Email = Email;
 
