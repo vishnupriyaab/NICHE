@@ -41,7 +41,7 @@ import {
   cancelOrder,
   checkAddress,
   checkout,
-  downloadInvoice,
+  downloadInvoicePDF,
   editAddress,
   orderInfo,
   orderRazorpayVerification,
@@ -94,7 +94,7 @@ userRoute.get("/refferalLink", isLoggedIn, refferalLinkGenerating);
 userRoute.get("/search", searchProduct);
 
 
-userRoute.post("/downloadInvoice", downloadInvoice);
+userRoute.get("/downloadInvoice/:orderId", downloadInvoicePDF);
 
 userRoute.post("/retryPayment", retryPayment);
 userRoute.post("/paymentRetryVerify", retryPaymentVerify);

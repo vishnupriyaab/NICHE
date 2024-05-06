@@ -10,6 +10,9 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import Walletdb from "../../model/walletModel";
 import CouponDb from "../../model/couponModel";
+import path from "path";
+import ejs from "ejs";
+import puppeteer from "puppeteer-core";
 
 export async function checkout(req: Request, res: Response) {
   try {
@@ -658,7 +661,9 @@ export async function returnOrder(req: Request, res: Response) {
         },
       ]);
 
-      const amount = Number(refundorder[0].orderDetails.price) * Number(refundorder[0].orderDetails.quantity);
+      const amount =
+        Number(refundorder[0].orderDetails.price) *
+        Number(refundorder[0].orderDetails.quantity);
 
       await Walletdb.updateOne(
         { userId: req.session.userId },
@@ -676,49 +681,61 @@ export async function returnOrder(req: Request, res: Response) {
   }
 }
 
-export async function downloadInvoice(req: Request, res: Response) {
+
+export async function downloadInvoicePDF(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const orderId = req.params.orderId;
+  console.log(orderId);
+  const order = await Orderdb.findById(orderId).populate("userId");
+
+  if (!order) {
+    res.status(404).send("Order not found.");
+    return;
+  }
+
+  const templatePath = path.join(__dirname, "../../views/user/invoicePDF.ejs");
+
+  const templateData = {
+    order,
+    currentDate: new Date().toDateString(),
+  };
+
   try {
-    console.log("qwertyuiop");
-
-    const sample = req.body.Orderid;
-    console.log(sample, "sampleeee");
-
-    const order = await Orderdb.findOne({ _id: sample });
-    console.log(order);
-
-    const d = order!.orderDetails;
-    console.log(d,"0000000")
-    const products = d.map((values) => {
-      return {
-        quantity: values.quantity,
-        description: values.pName,
-        "tax-rate": 0,
-        price: values.price,
-      };
+    const htmlTemplate = await ejs.renderFile(templatePath, templateData);
+    const browser = await puppeteer.launch({
+      headless: true,
+      executablePath: "/snap/bin/chromium",
     });
-    res.json({
-      order,
-      products,
-    });
-  } catch (error: any) {
-    console.log(error);
-    res.send(error);
+    const page = await browser.newPage();
+
+    await page.setContent(htmlTemplate);
+    const pdfBuffer = await page.pdf();
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="invoice_${orderId}.pdf"`
+    );
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    res.status(500).send("Error generating PDF.");
   }
 }
 
 export async function retryPayment(req: Request, res: Response): Promise<void> {
   try {
     const ordersId = req.query.id;
-    console.log("swdfrtgyyh", ordersId);
     const failedOrder = await Orderdb.findOne({ _id: ordersId });
     if (!failedOrder) {
       console.log("Order not found");
       res.status(404).send("Order not found");
       return;
     }
-
-    console.log("1234", failedOrder);
-    var instance = new Razorpay({                                         
+    var instance = new Razorpay({
       key_id: process.env.RZP_KEY_ID as string,
       key_secret: process.env.RZP_KEY_SECRET as string,
     });
@@ -727,7 +744,6 @@ export async function retryPayment(req: Request, res: Response): Promise<void> {
       currency: "INR",
       receipt: failedOrder._id.toString(),
     });
-    console.log("1234567890", order);
     res.json({ success: true, order, ordersId: failedOrder.id });
   } catch (error: any) {
     console.log(error);
@@ -735,20 +751,20 @@ export async function retryPayment(req: Request, res: Response): Promise<void> {
   }
 }
 
-
-
-export async function retryPaymentVerify(req:Request,res:Response):Promise<void>{
+export async function retryPaymentVerify(
+  req: Request,
+  res: Response
+): Promise<void> {
   try {
     const { orderId, paymentId, signature, newOrderId } = req.body;
-    console.log("bofopiuytr",  orderId, paymentId, signature, newOrderId);
 
-    const secret:any = process.env.RAZORPAY_KEY_SECRET;
+    const secret: any = process.env.RAZORPAY_KEY_SECRET;
 
     const generatedSignature = crypto
       .createHmac("sha256", secret)
       .update(orderId + "|" + paymentId)
       .digest("hex");
-    console.log("generatedSignature", generatedSignature);
+    // console.log("generatedSignature", generatedSignature);
 
     if (generatedSignature === signature) {
       await Orderdb.updateOne(
@@ -765,7 +781,7 @@ export async function retryPaymentVerify(req:Request,res:Response):Promise<void>
         .status(400)
         .json({ success: false, message: "Payment verification failed" });
     }
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error);
     res.send(error);
   }

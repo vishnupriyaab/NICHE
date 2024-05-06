@@ -118,7 +118,6 @@ export async function getShop(req: Request, res: Response) {
         $limit: perProduct,
       },
     ]);
-    console.log(product,"productctcttctct");
     
     const cart = await CartDb.findOne({ userId: user }).populate("products");
     const distinctColors = await productDb.distinct("color");
