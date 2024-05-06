@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Orderdb from "../../model/orderModel";
 import userDb from "../../model/userModel";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import { Parser } from "json2csv";
 import ejs from "ejs";
 import path from "path";
@@ -188,7 +188,6 @@ export async function salesReportPDF(
   const startDate = new Date(`${fromDate}T00:00:00`);
   const endDate = new Date(`${toDate}T23:59:59`);
 
-
   const templatePath = path.join(__dirname, "../../views/admin/salesPDF.ejs");
 
   const totalOrders = await Orderdb.aggregate([
@@ -238,7 +237,10 @@ export async function salesReportPDF(
   };
 
   const htmlTemplate = await ejs.renderFile(templatePath, templateData);
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: "/snap/bin/chromium",
+  });
   const page = await browser.newPage();
 
   await page.setContent(htmlTemplate);
