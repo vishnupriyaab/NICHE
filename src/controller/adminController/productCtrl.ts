@@ -6,6 +6,7 @@ import { Product } from "../../interface/productInterface";
 import { getListedProducts } from "../../config/dbHelper";
 import userDb from "../../model/userModel";
 import Offerdb from "../../model/offerModel";
+import Orderdb from "../../model/orderModel";
 
 
 
@@ -170,9 +171,14 @@ export async function deleteProduct(
 ): Promise<Response<any, Record<string, any>> | undefined> {
   try {
     const productId = req.params.id.trim(); // Trim any leading/trailing spaces
+    // const alreadyOrdered = await Orderdb.find()
     const data = await productDb.findByIdAndUpdate(productId, {
       $set: { isHidden: true },
     });
+    
+    if(data){
+      return res.status(201).json({message: "we can't "})
+    }
     // console.log(data);
     return res.status(201).json({ message: "Product Deleted" });
   } catch (error) {
