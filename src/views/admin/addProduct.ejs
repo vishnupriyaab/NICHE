@@ -147,7 +147,6 @@
     <script>
         document.querySelector('.submit').addEventListener('click', () => {
             document.querySelector('#form').submit();
-            console.log("12345");
         });
 
         // JavaScript for custom validation
@@ -171,9 +170,7 @@
         const stock = document.getElementById("stock");
         const category = document.getElementById("category");
         const Image = document.getElementById("Image");
-        console.log(category,"qwertyuiop");
 
-        console.log(Image, "Image");
         addProductForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -181,7 +178,6 @@
             for (let i = 0; i < Image.files.length; i++) {
                 imgArr[i] = await convertBase64(Image.files[i]);
             }
-            // console.log(imgArr, "imgArrrrrrrrrrrrrrrrrrrrrrrr");
 
             const formData = {
                 name: productname.value,
@@ -193,7 +189,6 @@
                 category: category.value,
                 imgArr: imgArr // Pass the array of base64 images
             };
-            console.log(formData,color.value,size.value,"00000");
 
             axios.post("/addproduct", formData)
                 .then(({ data }) => {
@@ -280,11 +275,7 @@
                 errorImage.innerHTML = '<p>Image is required</p>';
                 event.preventDefault();
             }
-
         });
-
-
-
     </script>
 
 

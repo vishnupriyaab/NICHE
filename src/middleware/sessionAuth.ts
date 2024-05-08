@@ -3,8 +3,7 @@ import userDb from "../model/userModel";
 
 export const isLoggedIn = (req:Request, res:Response, next:NextFunction) => {
     try {
-      console.log("isLoggedIn");
-      
+      // console.log("isLoggedIn");
       if (req.session.userId) {
         next();
       } else {
@@ -25,7 +24,6 @@ export const isLoggedIn = (req:Request, res:Response, next:NextFunction) => {
       }
     } catch (error) {
       console.log(error);
-      
     }
   };
  

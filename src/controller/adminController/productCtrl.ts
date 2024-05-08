@@ -134,8 +134,7 @@ export async function getAddProduct(req: Request, res: Response) {
 export async function addProduct(req: Request, res: Response) {
   try {
     let { name, description, price, stock, imgArr, category, color, size } = req.body;
-
-    console.log(color, size,"qwertyuiop");
+    // console.log(color, size,"qwertyuiop");
 
     const catID = await categoryDb.findById(category);
 

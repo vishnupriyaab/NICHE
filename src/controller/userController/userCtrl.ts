@@ -183,6 +183,7 @@ export async function postLogin(
 ): Promise<void> {
   try {
     const user = await userDb.findOne({ email: req.body.email });
+    console.log(user,"userrrEmail");
     if (user?.block == true) {
       // @ts-ignore
       req.flash("savedEmail", req.body.email);
