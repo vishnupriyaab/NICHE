@@ -7,7 +7,7 @@ export interface IOrder extends Document {
     pName: string;
     pImage: string;
     price: number;
-    originalProductPrice:number;
+    originalProductPrice: number;
     quantity: number;
     address: string;
     paymentMethod: string;
@@ -15,10 +15,10 @@ export interface IOrder extends Document {
     orderStatus: string;
     orderDate: Date;
     offerApplied: boolean;
+    paymentStatus: string;
   }[];
   couponApplied: boolean;
   fixedShippingCharge: number;
   totalsum: number;
-  couponDiscount:number;
-  paymentStatus:string
+  couponDiscount: number;
 }

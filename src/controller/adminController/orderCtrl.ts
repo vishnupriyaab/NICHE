@@ -42,6 +42,10 @@ export async function adminOrder(req: Request, res: Response) {
       },
     ]);
 
+
+    // console.log(orders,"orders");
+    
+
     res
       .status(200)
       .render("admin/adminOrders", {
@@ -59,19 +63,32 @@ export async function adminOrder(req: Request, res: Response) {
 export async function updateOrder(req: Request, res: Response) {
   try {
     const { orderId, orderStatus } = req.body;
-    const data = await Orderdb.aggregate([
-      {
-        $unwind: "$orderDetails",
-      },
-    ]);
+    // const data = await Orderdb.aggregate([
+    //   {
+    //     $unwind: "$orderDetails",
+    //   },
+    // ]);
     await Orderdb.updateOne(
       { "orderDetails._id": orderId },
       { $set: { "orderDetails.$.orderStatus": orderStatus } }
     );
-
     res.status(200).json({ message: "Successfully Changed!" });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
+}
+export async function returnAproval(req:Request,res:Response) {
+  try {
+    const {orderId} = req.body;
+    console.log(orderId,"00000000");
+    await Orderdb.updateOne(
+      { "orderDetails._id": orderId },
+      { $set: { "orderDetails.$.orderStatus": "Returned" } }
+    );
+    res.status(200).json({ message: "Successfully ReturnStatus is Changed!" });
+  } catch (error) {
+    console.log(error);
+  }
+  
 }

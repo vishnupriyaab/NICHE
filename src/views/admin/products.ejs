@@ -188,6 +188,7 @@
 
 
 
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
                     <script>
                         function offerListing(button) {
@@ -313,27 +314,37 @@
 
 
 
-                    <script>
+<script>
+    function deleteProduct(productId) {
+        Swal.fire({
+            title: 'Are you sure to Delete this product?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log(productId, "productId");
+                axios.delete(`/deleteProduct/${productId}`)
+                    .then(() => {
+                        Swal.fire(
+                            "Product Deleted Successfully",
+                            "Click the button",
+                            "success"
+                        ).then(() => {
+                            window.location.href = "/products";
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        });
+    }
+</script>
 
-                        function deleteProduct(productId) {
-                            console.log(productId, "productId");
-                            axios.delete(`/deleteProduct/${productId}`)
-                                .then((data) => {
-                                    if (data) {
-                                        Swal.fire(
-                                            "Product Deleted Successfully",
-                                            "Click the button",
-                                            "success"
-                                        ).then(() => {
-                                            window.location.href = "/products";
-                                        });
-                                    }
-                                })
-                                .catch((error) => {
-                                    console.log(error);
-                                });
-                        }
-                    </script>
 
                     <%- include('include/_footer') %>
 

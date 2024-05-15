@@ -107,9 +107,7 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
       coupondiscount,
       expiry,
     });
-
     await newCoupon.save();
-
     res.status(201).json({ message: "Coupon Added" });
   } catch (error) {
     console.error(error);

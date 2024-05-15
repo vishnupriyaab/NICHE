@@ -172,6 +172,9 @@ body {
 
 
 /* CONTENT */
+section {
+	margin-left: 200px;
+}
 #content {
 	position: relative;
 	width: calc(100% - 280px);

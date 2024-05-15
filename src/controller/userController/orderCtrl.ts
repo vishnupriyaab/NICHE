@@ -138,13 +138,7 @@ export async function checkAddress(req: Request, res: Response): Promise<void> {
 export async function placeOrder(req: Request, res: Response): Promise<void> {
   try {
     const { paymentMethod, address, price, activeCoupon } = req.body;
-    console.log(
-      paymentMethod,
-      address,
-      price,
-      activeCoupon,
-      "paymentMethod, address, price"
-    );
+ 
     const priceWithoutCurrency = price.replace(/[^\d.]/g, "");
     const totalsum = Number(priceWithoutCurrency);
     (req.session as any).sum = totalsum;
@@ -223,6 +217,7 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
           paymentMethod: (req.session as any).paymentMethod,
           orderStatus: "Ordered",
           orderDate: currentDate,
+          paymentStatus: "Pending",
         };
         return orderItem;
       });
@@ -233,7 +228,6 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
         orderDetails: orderItems,
         fixedShippingCharge: shippingCharge,
         totalsum: (req.session as any).sum,
-        paymentStatus: "Pending",
       });
 
       await newOrder.save();
@@ -310,6 +304,7 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
           paymentMethod: paymentMethod,
           orderStatus: "Ordered",
           orderDate: currentDate,
+          paymentStatus: "Completed",
         };
 
         return orderItem;
@@ -322,7 +317,6 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
         couponDiscount: couponAmount,
         couponApplied: true,
         fixedShippingCharge: shippingCharge,
-        paymentStatus: "Completed",
       });
       await newOrder.save();
       const a = await CouponDb.updateOne(
@@ -424,6 +418,7 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
             paymentMethod: paymentMethod,
             orderStatus: "Ordered",
             orderDate: currentDate,
+            paymentStatus: "Completed",
           };
 
           return orderItem;
@@ -436,7 +431,6 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
           couponDiscount: couponAmount,
           couponApplied: true,
           fixedShippingCharge: shippingCharge,
-          paymentStatus: "Completed",
         });
         await newOrder.save();
 
@@ -490,7 +484,7 @@ export async function orderRazorpayVerification(req: Request, res: Response) {
         { _id: orderId },
         { $set: { paymentStatus: "Completed" } }
       );
-      console.log(orderData, "orderData");
+      console.log(orderData, "orderDataaaaaaaaaaaaaaaaaaaa");
       res.status(200).redirect("/successpage");
     }
   } catch (error) {
@@ -619,6 +613,8 @@ export async function orderInfo(req: Request, res: Response) {
       { "orderDetails._id": new mongoose.Types.ObjectId(proid) },
       { "orderDetails.$": 1, _id: 1, userId: 1 }
     );
+    console.log(details,"details");
+    
     res.render("user/orderInfo", { details, user, cart });
   } catch (error) {
     console.error(error);
@@ -631,7 +627,7 @@ export async function returnOrder(req: Request, res: Response) {
   try {
     const order = await Orderdb.findOneAndUpdate(
       { "orderDetails._id": orderId },
-      { $set: { "orderDetails.$.orderStatus": "Returned" } },
+      { $set: { "orderDetails.$.orderStatus": "Returned request" } },
       { projection: { "orderDetails.$": 1 } }
     );
 
@@ -681,7 +677,6 @@ export async function returnOrder(req: Request, res: Response) {
   }
 }
 
-
 export async function downloadInvoicePDF(
   req: Request,
   res: Response
@@ -729,7 +724,9 @@ export async function downloadInvoicePDF(
 export async function retryPayment(req: Request, res: Response): Promise<void> {
   try {
     const ordersId = req.query.id;
+    // console.log(ordersId, "ordersId");
     const failedOrder = await Orderdb.findOne({ _id: ordersId });
+    console.log(failedOrder, "failedOrder");
     if (!failedOrder) {
       console.log("Order not found");
       res.status(404).send("Order not found");
@@ -740,11 +737,14 @@ export async function retryPayment(req: Request, res: Response): Promise<void> {
       key_secret: process.env.RZP_KEY_SECRET as string,
     });
     const order = await instance.orders.create({
-      amount: failedOrder.orderDetails[0].price * 100,
+      amount: failedOrder.totalsum * 100,
       currency: "INR",
       receipt: failedOrder._id.toString(),
     });
-    res.json({ success: true, order, ordersId: failedOrder.id });
+    // console.log(order, "order");
+    // console.log(order.amount, "123456789");
+
+    res.json({ success: true, order, ordersId: failedOrder.id, failedOrder });
   } catch (error: any) {
     console.log(error);
     res.send(error);
@@ -756,9 +756,12 @@ export async function retryPaymentVerify(
   res: Response
 ): Promise<void> {
   try {
-    const { orderId, paymentId, signature, newOrderId } = req.body;
+    const { orderId, paymentId, signature, newOrderId, productId } = req.body;
+    // console.log(req.body, "req.bodyyyyy");
+    // console.log(productId, "productId");
 
-    const secret: any = process.env.RAZORPAY_KEY_SECRET;
+    const secret: string = process.env.RZP_KEY_SECRET!;
+    console.log(signature, "signature", secret);
 
     const generatedSignature = crypto
       .createHmac("sha256", secret)
@@ -766,11 +769,14 @@ export async function retryPaymentVerify(
       .digest("hex");
     // console.log("generatedSignature", generatedSignature);
 
-    if (generatedSignature === signature) {
+    // return
+    if (generatedSignature == signature) {
+      // console.log("1234567890");
       await Orderdb.updateOne(
-        { orderId: newOrderId },
-        { $set: { paymentStatus: "completed" } }
+        { _id: newOrderId, "orderDetails.productId": productId },
+        { $set: { "orderDetails.$.paymentStatus": "completed" } }
       );
+      
       res.json({
         success: true,
         orderId: newOrderId,

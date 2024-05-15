@@ -31,6 +31,7 @@
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.0.1",
     "coupon-generator": "^1.0.4",
+    "cropperjs": "^1.6.2",
     "csv-parser": "^3.0.0",
     "dotenv": "^16.3.2",
     "easyinvoice": "^3.0.47",

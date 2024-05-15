@@ -6,7 +6,7 @@ import { adminLoggedIn } from "../middleware/sessionAuth";
 import { addCategory,  categoryOfferControl,  editCategory, getCategory, getCategorySearch, listCategory, offerApplyCategory, offerRemoveCategory, unlistCategory } from "../controller/adminController/categoryCtrl";
 import { addProduct, deleteImage, deleteProduct, getAddProduct, getEditProduct,  getProducts, getUnlistedProduct, offerApplyProduct, offerRemoveProduct, productOfferListing, restoreProduct, updateProduct } from "../controller/adminController/productCtrl";
 import { blockUser, getUsers, unblockUser} from "../controller/adminController/userCtrl";
-import { adminOrder, updateOrder} from "../controller/adminController/orderCtrl";
+import { adminOrder, returnAproval, updateOrder} from "../controller/adminController/orderCtrl";
 import { addCoupon, adminAddCoupon, adminCoupon, adminDeletedCoupon, adminEditCoupon, deleteCoupon, updateCoupon } from "../controller/adminController/couponCtrl";
 import { addOffer, createOffer, deleteOffer, editOffer, getEditoffer, getOffer, offerChangeStatus } from "../controller/adminController/offerCtrl";
 import { salesReport, salesReportExcel, salesReportPDF } from "../controller/adminController/salesReportCtrl";
@@ -54,7 +54,7 @@ adminRoute.post('/addCoupon', addCoupon);
 adminRoute.post('/addOffers', createOffer);
 adminRoute.post('/editOffer', editOffer);
 adminRoute.post('/changeStatus', offerChangeStatus);
-adminRoute.post('/admin/chartData',getDetailsChart)
+adminRoute.post('/admin/chartData',getDetailsChart);
 
 
 adminRoute.post('/categoryOfferListing', categoryOfferControl);
@@ -65,6 +65,7 @@ adminRoute.post('/removeOfferCategory', offerRemoveCategory);
 adminRoute.post('/productOfferListing', productOfferListing);
 adminRoute.post('/applyOfferToProduct', offerApplyProduct);
 adminRoute.post('/removeOfferProduct', offerRemoveProduct);
+adminRoute.post('/returnAproval', returnAproval);
 
 
 adminRoute.patch("/unlistCategory", unlistCategory);

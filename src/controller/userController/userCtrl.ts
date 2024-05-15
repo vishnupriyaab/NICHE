@@ -107,7 +107,6 @@ export async function userRegister(
     const { Email, UserName, Password, Phone, otp } = req.body;
 
     const token = req.query.token;
-    // console.log(typeof token, token, "token");
 
     req.session.Email = Email;
 
@@ -183,7 +182,6 @@ export async function postLogin(
 ): Promise<void> {
   try {
     const user = await userDb.findOne({ email: req.body.email });
-    console.log(user,"userrrEmail");
     if (user?.block == true) {
       // @ts-ignore
       req.flash("savedEmail", req.body.email);
@@ -326,7 +324,6 @@ export async function updateAddress(
 }
 
 
-
 export async function wallet(req: Request, res: Response) {
   try {
     const user = req.session.userId;
@@ -340,13 +337,12 @@ export async function wallet(req: Request, res: Response) {
       { $match: { userId: new mongoose.Types.ObjectId(user) } },
       { $unwind: { path: "$transactions" } },
       { $sort: { "transactions.transactionDate": -1 } },
-      { $skip: skip }, // Skip records based on pagination
-      { $limit: limit }, // Limit records based on pagination
+      { $skip: skip }, 
+      { $limit: limit },
     ]);
 
     const cart = await CartDb.findOne({ userId: user }).populate("products");
     
-    // Render the view with wallet, user, cart, and paginated transactions
     res.render("user/wallet", { wall, user, cart, currentPage: page, wallet });
   } catch (error) {
     console.error(error);
@@ -370,7 +366,7 @@ export async function addToWallet(req: Request, res: Response): Promise<void> {
     });
 
     var options = {
-      amount: money * 100, // amount in the smallest currency unit
+      amount: money * 100,
       currency: "INR",
       receipt: "order_rcptid_11",
     };
@@ -379,7 +375,6 @@ export async function addToWallet(req: Request, res: Response): Promise<void> {
       return res.json({ order });
     });
 
-    // const walletdb = await Walletdb.find();
   } catch (error) {
     console.error("Error adding to wallet:", error);
     res.status(500).send("Internal Server Error");
@@ -427,7 +422,6 @@ export async function walletRazorpayVerification(
       res.redirect("/wallet");
     }
   } catch (error) {
-    // If there's an error, send an error response
     delete (req.session as any)?.amount;
     console.error("Error while verifying", error);
     res.status(500).send("Error verifiying razorpay payment");
@@ -439,7 +433,6 @@ export async function refferalLinkGenerating(
   res: Response
 ): Promise<void> {
   try {
-    // const userId = req.session.userId;
     const UserData = await userDb.findOne({ _id: req.session.userId });
     if (UserData?.refferalOfferToken) {
       res.json({ success: false, message: "Link already generated" });

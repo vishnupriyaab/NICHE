@@ -68,29 +68,28 @@
               Quantity: <%= orders[i].orderDetails.quantity %>
             </td>
             <td
-            class="py-2 px-4 border-b cursor-pointer"
-            onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'"
-        >
-            <% if (orders[i].orderDetails.price > orders[i].totalsum) { %>
-                Product Price: ₹ <%= Math.round(orders[i].totalsum) %>
-            <% } else { %>
-                Product Price: ₹ <%= Math.round(orders[i].orderDetails.price) %>
-            <% } %>
-        </td>
-        
-            <td
               class="py-2 px-4 border-b cursor-pointer"
               onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'"
             >
-              <span class="bg-green-500 text-white py-1 px-2 rounded">
+              <% if (orders[i].orderDetails.price > orders[i].totalsum) { %>
+              Product Price: ₹ <%= Math.round(orders[i].totalsum) %> <% } else {
+              %> Product Price: ₹ <%= Math.round(orders[i].orderDetails.price)
+              %> <% } %>
+            </td>
+
+            <td
+              class="py-2 px-5 border-b cursor-pointer"
+              onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'"
+            >
+              <span class="bg-green-500 text-white py-1 px-2 rounded ">
                 <%= orders[i].orderDetails.orderStatus %>
               </span>
             </td>
-            <% if(orders[i].paymentStatus === 'Pending'){ %>
+            <% if(orders[i].orderDetails.paymentStatus === 'Pending'){ %>
             <td class="py-2 px-4 border-b">
               <button
-                class="bg-blue-500 text-white py-1 px-2 rounded"
-                onclick="retryPayment('<%= orders[i]._id %>')"
+                class="bg-blue-500 text-white py-1 px-4 rounded"
+                onclick="retryPayment('<%= orders[i]._id %>','<%= orders[i].orderDetails.productId %>')"
               >
                 Retry Payment
               </button>
@@ -193,7 +192,7 @@
                       Close
                     </button>
                     <button
-                      class="bg-blue-500 text-white px-4 py-2 rounded-md"
+                      class="bg-blue-500 text-white px-5 py-2 rounded-md"
                       onclick="returnOrder('<%= orders[i].orderDetails._id %>')"
                     >
                       Submit
@@ -211,7 +210,6 @@
   </div>
 </div>
 
-// <script src="https://unpkg.com/easyinvoice/dist/easyinvoice.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
@@ -230,8 +228,8 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-  async function retryPayment(ordersId) {
-    console.log(ordersId, "dfghjkl");
+  async function retryPayment(ordersId, productId) {
+    console.log(ordersId, productId, "dfghjkl");
     Swal.fire({
       title: "Are you sure?",
       text: "You want to be Retry the Payment!",
@@ -240,17 +238,17 @@
       confirmButtonColor: "#000000",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes Retry!",
-    }).then(async(result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await axios.post(`/retryPayment?id=${ordersId}`);
-        if(response.data?.order) {
-          razorPayPayment(response.data.order);
+        if (response.data?.order) {
+          razorPayPayment(response.data.order, productId);
         }
       }
     });
   }
 
-  function razorPayPayment(order) {
+  function razorPayPayment(order, productId) {
     console.log("11111");
     var options = {
       key: "rzp_test_wV96XGA4SLLOo7",
@@ -260,10 +258,8 @@
       description: "Test Transaction",
       image: "https://example.com/your_logo",
       order_id: order.id,
-      // callback_url: `/verifyrazorpay?id=${response.data.newOrder?._id}`,
-      handler: function(response){
-        console.log("razorrr",response);
-        verifyRetryPayment(response, order)
+      handler: function (response) {
+        verifyRetryPayment(response, order, productId);
       },
       prefill: {
         name: "Gaurav Kumar",
@@ -285,201 +281,61 @@
     return;
   }
 
-
-  function verifyRetryPayment(response, order) {
-      var settings = {
-        "url": "/paymentRetryVerify",
-        "method": "POST",
-        "timeout": 0,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "data": JSON.stringify({
-          orderId: order.id,
-          paymentId: response.razorpay_payment_id,
-          signature: response.razorpay_signature,
-          newOrderId: order.receipt,
-        }),
-      };
-      $.ajax(settings).done(function(data) {
-        console.log('bifhiejv', data);
+  function verifyRetryPayment(response, order, productId) {
+    var settings = {
+      url: "/paymentRetryVerify",
+      method: "POST",
+      timeout: 0,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify({
+        orderId: order.id,
+        paymentId: response.razorpay_payment_id,
+        signature: response.razorpay_signature,
+        newOrderId: order.receipt,
+        productId,
+      }),
+    };
+    $.ajax(settings)
+      .done(function (data) {
         if (data.success) {
-          toastr.success(data.message, "Success!");
           window.location.reload();
         } else {
-          alert("Payment verification failed. please try again.")
+          alert("Payment verification failed. please try again.");
         }
-      }).fail(function(jqXHR, textStatus, errorThrown) {
-        console.error(("Error verifying Payment", textStatus, errorThrown));
-        alert("An error occurred while verifying your payment. Please try again.")
       })
-    }
-
+      .fail(function (jqXHR, textStatus, errorThrown) {
+        console.error(("Error verifying Payment", textStatus, errorThrown));
+        alert(
+          "An error occurred while verifying your payment. Please try again."
+        );
+      });
+  }
 </script>
 
 <script>
   async function downloadInvoice(orderId) {
-  try {
-    console.log("111111111111");
-    const response = await fetch(`/downloadInvoice/${orderId}`); // Sending orderId as part of the URL
-    console.log(response,"response");
-    if (!response.ok) {
-      throw new Error('Failed to download invoice.');
+    try {
+      const response = await fetch(`/downloadInvoice/${orderId}`);
+      console.log(response, "response");
+      if (!response.ok) {
+        throw new Error("Failed to download invoice.");
+      }
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `invoice_${orderId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading invoice:", error);
     }
-    const blob = await response.blob();
-    
-    // Create a link element to trigger the download
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `invoice_${orderId}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Error downloading invoice:', error);
   }
-}
-
-
 </script>
-
-// <script>
-//   function downloadInvoice(id) {
-//     const Orderid = id;
-//     console.log("kk", Orderid);
-
-//     // Show loading spinner
-//     // const spinner = new Spinner().spin(document.getElementById('loading-container'));
-
-//     $.ajax({
-//       url: `/downloadInvoice`,
-//       type: "POST",
-//       data: { Orderid: Orderid },
-//       success: function (response) {
-//         console.log("hiiii", response);
-//         showInvoice(response);
-//       },
-//       error: function (xhr, status, error) {
-//         console.error("Request failed:", status, error);
-//       },
-//       complete: function () {
-//         spinner.stop();
-//       },
-//     });
-//   }
-
-//   function showInvoice(values) {
-//     var data = {
-//       // If not using the free version, set your API key
-//       // "apiKey": "123abc", // Get apiKey through: https://app.budgetinvoice.com/register
-
-//       // Customize enables you to provide your own templates
-//       // Please review the documentation for instructions and examples
-//       customize: {
-//         //  "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html
-//       },
-//       images: {
-//         // The logo on top of your invoice
-//         logo: "https://public.budgetinvoice.com/img/logo_en_original.png",
-//         // The invoice background
-//         // "background": "https://public.budgetinvoice.com/img/watermark-draft.jpg"
-//       },
-//       // Your own data
-//       sender: {
-//         company: "NICHE",
-//         address: "Yelp - Taher Mardini Street, Paris",
-//         // zip: "560100", 
-//         city: "Chikaas",
-//         country: "UK",
-//         //"custom1": "custom value 1",
-//         //"custom2": "custom value 2",
-//         //"custom3": "custom value 3"
-//       },
-//       // Your recipient
-//       client: {
-        
-//         company: "Danish",
-//         address: "Abc house",
-//         zip: "koduvally street",
-//         city: "Kannur",
-//         country: "India",
-//         // "custom1": "custom value 1",
-//         // "custom2": "custom value 2",
-//         // "custom3": "custom value 3"
-//       },
-//       information: {
-//         // Invoice number
-//         // number: "2021.0001",
-//         // Invoice data
-//         date: "24-04-2024",
-//         // Invoice due date
-//         // "due-date": "31-12-2021",
-//       },
-//       // The products you would like to see on your invoice
-//       // Total values are being calculated automatically
-//       products: values.products,
-//       //  [
-//       //     {
-//       //         "quantity": 2,
-//       //         "description": "Product 1",
-//       //         "Coupe discount": 6,
-//       //         "price": 33.87
-//       //     },
-//       //     {
-//       //         "quantity": 4.1,
-//       //         "description": "Product 2",
-//       //         "tax-rate": 6,
-//       //         "price": 12.34
-//       //     },
-//       //     {
-//       //         "quantity": 4.5678,
-//       //         "description": "Product 3",
-//       //         "tax-rate": 21,
-//       //         "price": 6324.453456
-//       //     }
-//       // ],
-//       // The message you would like to display on the bottom of your invoice
-
-//       // "bottom-notice": "Kindly pay your invoice within 15 days.",
-//       // Settings to customize your invoice
-//       settings: {
-//         currency: "INR", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
-//         // "locale": "nl-NL", // Defaults to en-US, used for number formatting (See documentation 'Locales and Currency')
-//         // "margin-top": 25, // Defaults to '25'
-//         // "margin-right": 25, // Defaults to '25'
-//         // "margin-left": 25, // Defaults to '25'
-//         // "margin-bottom": 25, // Defaults to '25'
-//         // "format": "A4", // Defaults to A4, options: A3, A4, A5, Legal, Letter, Tabloid
-//         // "height": "1000px", // allowed units: mm, cm, in, px
-//         // "width": "500px", // allowed units: mm, cm, in, px
-//         // "orientation": "landscape", // portrait or landscape, defaults to portrait
-//       },
-//       // Translate your invoice to your preferred language
-//       translate: {
-//         // "invoice": "FACTUUR",  // Default to 'INVOICE'
-//         // "number": "Nummer", // Defaults to 'Number'
-//         // "date": "Datum", // Default to 'Date'
-//         // "due-date": "Verloopdatum", // Defaults to 'Due Date'
-//         // "subtotal": "Subtotaal", // Defaults to 'Subtotal'
-//         // "products": "Producten", // Defaults to 'Products'
-//         // "quantity": "Aantal", // Default to 'Quantity'
-//         // "price": "Prijs", // Defaults to 'Price'
-//         // "product-total": "Totaal", // Defaults to 'Total'
-//         // "total": "Totaal", // Defaults to 'Total'
-//         // "vat": "btw" // Defaults to 'vat'
-//       },
-//     };
-
-//     //Create your invoice! Easy!
-//     easyinvoice.createInvoice(data, function (result) {
-//       //The response will contain a base64 encoded PDF file
-//       console.log("PDF base64 string: ", result.pdf);
-
-//       easyinvoice.download("invoice.pdf");
-//     });
-//   }
-// </script>
 
 <script>
   async function goBack() {
@@ -487,7 +343,6 @@
   }
 
   function cancelOrder(orderId) {
-    console.log("asdfghjk");
     axios
       .post("/cancelOrder", { orderId })
       .then((data) => {
@@ -498,7 +353,6 @@
             }
           );
         }
-        console.log("cancelled");
       })
       .catch((error) => {
         console.error("Error cancelling order:", error);
@@ -541,13 +395,6 @@
     document.getElementById("returnModalBackdrop").classList.add("hidden");
     document.body.classList.remove("overflow-hidden");
   }
-
-  //  function submitCancellation() {
-  // Add your cancellation submission logic here
-  // For example, you can retrieve the reason entered in the textarea and send it to the server
-  // Then, close the modal
-  // closeModal();
-  // }
 </script>
 
 <%- include('include/_footer') %>

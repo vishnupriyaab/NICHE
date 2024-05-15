@@ -56,6 +56,9 @@ const orderSchema = new mongoose.Schema<IOrder>({
         type: Date,
         default: Date.now(),
       },
+      paymentStatus:{
+        type: String,
+      }
     },
   ],
   totalsum: {                                                                                                                                               
@@ -72,9 +75,7 @@ const orderSchema = new mongoose.Schema<IOrder>({
   fixedShippingCharge:{
     type: Number,
   },
-  paymentStatus:{
-    type: String,
-  }
+ 
   
 });
 

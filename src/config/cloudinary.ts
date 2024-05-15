@@ -13,7 +13,7 @@ if (!cloudName || !apiKey || !apiSecret) {
   );
 }
 
-export default async function cloudinaryUploadImage(imgArr: string[]) {
+export default async function cloudinaryUploadImage(imgArr: any[]) {
   cloudinary.config({
     cloud_name: cloudName,
     api_key: apiKey,

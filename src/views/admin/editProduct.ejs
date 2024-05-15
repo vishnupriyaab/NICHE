@@ -1,17 +1,17 @@
 <%- include('include/_header') %>
 
-    <div class="container" style="margin-left: 85px;">
+    <div class="container" style="margin-left: 310px;">
         <h1>Edit Product</h1>
         <form action="/updateproduct/<%= product._id %>" id="updateForm" enctype="multipart/form-data">
-            <div class="row mb-3">
+            <div class="row mb-3 mt-10">
                 <div class="col-md-6">
-                    <label for="name" class="form-label">Product Name:</label>
+                    <label for="name" class="form-label fw-bold">Product Name:</label>
                     <input type="text" class="form-control" id="name" name="name" value="<%= product.name %>">
                 </div>
             </div>
             <div class="d-flex gap-4">
                 <div class="mb-3">
-                    <label for="price" class="form-label">Price:</label>
+                    <label for="price" class="form-label fw-bold">Price:</label>
                     <div class="input-group">
                         <span class="input-group-text">₹</span>
                         <input type="number" class="form-control" id="price" name="price" min="0"
@@ -20,12 +20,12 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="stock" class="form-label">Stock:</label>
+                    <label for="stock" class="form-label fw-bold">Stock:</label>
                     <input type="number" class="form-control" id="stock" name="stock" min="0"
                         value="<%= product.stock %>">
                 </div>
                 <div class="mb-3">
-                    <label for="category" class="form-label">Category:</label>
+                    <label for="category" class="form-label fw-bold">Category:</label>
                     <select class="form-select" name="category" id="category">
                         <% category.forEach(category=> { %>
                             <option <%=category._id.toString()===product.category._id.toString() ? 'selected' : '' %> >
@@ -35,12 +35,11 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="color" class="form-label">Color:</label>
-                    <input type="text" class="form-control" id="color" name="color"
-                        value="<%= product.color %>">
+                    <label for="color" class="form-label fw-bold">Color:</label>
+                    <input type="text" class="form-control" id="color" name="color" value="<%= product.color %>">
                 </div>
                 <div class="mb-3">
-                    <label for="size" class="form-label">Size:</label>  
+                    <label for="size" class="form-label fw-bold">Size:</label>
                     <select class="form-select" name="size" id="size">
                         <option value="3">3</option>
                         <option value="4">4</option>
@@ -48,18 +47,18 @@
                         <option value="6">6</option>
                         <option value="6">7</option>
                         <option value="6">8</option>
-                </select>
+                    </select>
                 </div>
             </div>
             <div class="mb-4">
-                <label class="form-label">Description</label>
+                <label class="form-label fw-bold">Description</label>
                 <textarea placeholder="Type here" name="description" class="form-control" rows="4"
                     id="description"><%= product.description %></textarea>
             </div>
 
 
             <div class="mb-3">
-                <label for="images" class="form-label">Images:</label>
+                <label for="images" class="form-label fw-bold">Upload new images:</label>
                 <input type="file" class="form-control" id="images" name="images" multiple>
                 <small class="text-muted">Drag and drop multiple images or click to select.</small>
             </div>
@@ -69,11 +68,12 @@
                     <h5>Existing Images:</h5>
                     <ul>
                         <% product.imgArr.forEach((image, i)=> { %>
-                            <li>
+                            <li style="display: flex;align-items: center; gap: 20px;">
                                 <img src="<%= image %>" width="100" alt="Product Image">
-                                <a href="#" data-image-url="<%= image %>" class="remove-image btn btn-sm btn-danger">
-                                    <button onclick="deleteImage('<%= i %>', '<%= product._id %>')">Delete
-                                        Image</button></a>
+                                <a href="#" data-image-url="<%= image %>">
+                                    <i class="fa fa-trash" aria-hidden="true"
+                                        onclick="deleteImage('<%= i %>', '<%= product._id %>')"></i>
+                                </a>
                             </li>
                             <% }); %>
                     </ul>
@@ -84,9 +84,11 @@
                         Product</button>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
         integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
     <script>
+
         const removeImageButtons = document.getElementsByClassName('remove-image');
 
         Array.from(removeImageButtons).forEach((button) => {
@@ -131,17 +133,30 @@
             });
         }
 
+
         function deleteImage(i, productId) {
-            console.log(i);
-            console.log(productId);
-            axios.delete(`/deleteimage/${i}/${productId}`)
-                .then(response => {
-                    console.log('Image deleted successfully');
-                    location.reload();
-                })
-                .catch(error => {
-                    console.error('Error deleting image:', error);
-                });
+            Swal.fire({
+                title: 'Are you sure to Delete this image?',
+                text: 'You won\'t be able to revert this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log(i);
+                    console.log(productId);
+                    axios.delete(`/deleteimage/${i}/${productId}`)
+                        .then(response => {
+                            console.log('Image deleted successfully');
+                            location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error deleting image:', error);
+                        });
+                }
+            });
         }
 
     </script>

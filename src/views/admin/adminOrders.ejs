@@ -1,47 +1,44 @@
 <%- include('include/_header') %>
 
   <link rel="stylesheet" href="/css/adminorder.css">
-<style>
-  .page-link {
-  cursor: pointer !important;
-}
-.pagination {
-    display: inline-flex;
-    list-style: none;
-    padding: 0;
-  }
+  <style>
+    .page-link {
+      cursor: pointer !important;
+    }
 
-  .page-item {
-    margin: 0 0.25rem;
-  }
+    .pagination {
+      display: inline-flex;
+      list-style: none;
+      padding: 0;
+    }
 
-  .page-link {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 0.25rem;
-    text-decoration: none;
-    color: #333;
-    transition: background-color 0.3s;
-  }
+    .page-item {
+      margin: 0 0.25rem;
+    }
 
-  .page-link:hover {
-    background-color: #f0f0f0;
-  }
+    .page-link {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.25rem;
+      text-decoration: none;
+      color: #333;
+      transition: background-color 0.3s;
+    }
 
-  .active .page-link {
-    background-color: #007bff;
-    color: #fff;
-  }
+    .page-link:hover {
+      background-color: #f0f0f0;
+    }
 
-</style>
+    .active .page-link {
+      background-color: #007bff;
+      color: #fff;
+    }
+  </style>
   <section class="content-main">
     <div class="content-header">
       <div>
         <h2 class="content-title card-title">Orders List</h2>
       </div>
-      <!-- <div>
-        <input type="text" placeholder="Search order ID" class="form-control bg-white" />
-      </div> -->
     </div>
     <table class="table mb-4">
       <thead class="card-header">
@@ -127,7 +124,7 @@
               <div class="proImg d-flex">
                 <div class="description d-flex align-items-center">
                   <div class="userInfo">
-                    <p class="m-0 p-0 fs-6">₹<%= ((orders[i].totalsum))%>
+                    <p class="m-0 p-0 fs-6">₹<%= ((orders[i].orderDetails.price))%>
                     </p>
                     <p class="m-0 p-0 d-none"></p>
                   </div>
@@ -142,34 +139,43 @@
 
                 <div class="actions d-flex align-items-center">
                   <div class="d-flex gap-3">
-                    
+
 
                     <% if ((orders[i].orderDetails.orderStatus==="Delivered" ) ||
                       (orders[i].orderDetails.orderStatus==="Cancelled" ) ) { %>
                       <p class="me-2 <%= (orders[i].orderDetails.orderStatus === 'Cancelled')?'text-danger':'' %>">
                         <%= orders[i].orderDetails.orderStatus %>
                       </p>
-                      <% } else if((orders[i].orderDetails.orderStatus==="Returned" )) { %>
-                        
-                        <button style="color: white; background-color: black; width: 100px; height: 30px; border-radius: 9px; border: black;">User Returned</button>
-                        
-                        <% } else { %>
-                          <select name="orderStatus" class="statusfiller" id="filler_<%= orders[i].orderDetails._id %>"
-                          class="bg-white border-1 border-black"
-                          onchange="changeOrderStatus('<%= orders[i].orderDetails._id %>')">
-                          <option value="Ordered" <%=(orders[i].orderDetails.orderStatus==="Ordered" )?"selected":"" %>
-                            >Ordered</option>
-                          <option value="Shipped" <%=(orders[i].orderDetails.orderStatus==="Shipped" )?"selected":"" %>
-                            >Shipped</option>
-                          <option value="Delivered">Delivered</option>
-                          <option value="Cancelled">Cancelled</option>
-                        </select>
-                        <% } %>
-                        
+                      <% } else if((orders[i].orderDetails.orderStatus==="Returned request" )) { %>
+                        <button
+                          style="color: white; background-color: rgb(251, 0, 0); width: 120px; height: 30px; border-radius: 9px; border: black;"
+                          onclick="returnRequestApproval('<%= orders[i].orderDetails._id %>')">Return Approve</button>
+
+                        <% } else if((orders[i].orderDetails.orderStatus==="Returned" )) { %>
+                          <button
+                            style="color: white; background-color: black; width: 100px; height: 30px; border-radius: 9px; border: black;">User
+                            Returned</button>
+
+                          <% } else { %>
+                            <select name="orderStatus" class="statusfiller"
+                              id="filler_<%= orders[i].orderDetails._id %>" class="bg-white border-1 border-black"
+                              onchange="changeOrderStatus('<%= orders[i].orderDetails._id %>')">
+                              <option value="Ordered" <%=(orders[i].orderDetails.orderStatus==="Ordered" )?"selected":""
+                                %>
+                                >Ordered</option>
+                              <option value="Shipped" <%=(orders[i].orderDetails.orderStatus==="Shipped" )?"selected":""
+                                %>
+                                >Shipped</option>
+                              <option value="Delivered">Delivered</option>
+                              <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <% } %>
+
                   </div>
                 </div>
                 <% }else if((orders[i].orderDetails.orderStatus==="Delivered" )) {%>
-                  <button style="color: white; background-color: #3bb77e; border-radius: 9px; width: 100px; height: 30px; border: #3bb77e;">Delivered</button>
+                  <button
+                    style="color: white; background-color: #3bb77e; border-radius: 9px; width: 100px; height: 30px; border: #3bb77e;">Delivered</button>
                   <%} %>
             </td>
 
@@ -189,17 +195,17 @@
     <!-- card-body end// -->
     </div>
     <!-- card end// -->
-   
+
     <nav aria-label="Page navigation" style="justify-content: center;">
       <ul class="pagination">
-        
+
         <% for(let i=1; i <=totalPages; i++) { %>
-          
+
           <li class="page-item <%= currentPage === i ? 'active' : '' %>">
-            
+
             <a class="page-link" href="/adminOrder?page=<%= i %>">
-              <%= i %> 
-            
+              <%= i %>
+
             </a>
           </li>
           <% } %>
@@ -210,8 +216,19 @@
   </section>
 
   <script>
+    function returnRequestApproval(orderId) {
+      console.log(orderId, "orderId");
+      axios.post("/returnAproval", { orderId })
+        .then(response => {
+          window.location.reload();
+          // console.log("123456789");
+        }).catch(error => {
+          console.log(error);
+        })
+    }
+  </script>
 
-    
+  <script>
     function changeOrderStatus(orderId) {
       const orderStatus = document.querySelector(`#filler_${orderId}`).value;
       axios.post('/updateOrderStatus', { orderId, orderStatus })
@@ -220,9 +237,8 @@
 
           if (orderStatusElement) {
             orderStatusElement.textContent = `Order Status: ${orderStatus}`;
+            window.location.reload();
           }
-          // console.log(response.data);
-
         })
         .catch(error => {
           console.error(error);
