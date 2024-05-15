@@ -1,49 +1,6 @@
-<%- include('include/_header') %>
+<%#- include('include/_header') %>
 
-
-    <style>
-        .image-container {
-            display: inline-block;
-            margin-right: 10px;
-            /* Add some margin between images */
-            position: relative;
-        }
-
-        .image-container img:hover {
-            filter: grayscale(100%);
-        }
-
-        .change-img-text {
-            display: none;
-        }
-
-        .image-container img:hover .change-img-text {
-            display: block;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            color: #ff0000;
-        }
-
-        .edit-icon {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            cursor: pointer;
-            color: white;
-            background-color: black;
-            border-radius: 50%;
-            padding: 5px;
-        }
-    </style>
-
-
-    <section class="content-main">
+    <!-- <section class="content-main">
         <div class="row">
             <div class="row-auto">
                 <div class="content-header">
@@ -79,7 +36,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-lg-4" style="width: 50%;">
-
+                           
                                     <div class="mb-4">
                                         <label class="form-label">Color</label>
                                         <div class="row gx-2">
@@ -95,14 +52,14 @@
                                     <div class="mb-4">
                                         <label class="form-label">Size</label>
                                         <div class="row gx-2">
-                                            <select class="form-select" name="size" id="size">
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="6">7</option>
-                                                <option value="6">8</option>
-                                            </select>
+                                                    <select class="form-select" name="size" id="size">
+                                                            <option value="3">3</option>
+                                                            <option value="4">4</option>
+                                                            <option value="5">5</option>
+                                                            <option value="6">6</option>
+                                                            <option value="6">7</option>
+                                                            <option value="6">8</option>
+                                                    </select>
                                             <div>
                                                 <h2 class="text-danger" id="errorSize"></h2>
                                             </div>
@@ -149,9 +106,7 @@
                                             </div>
                                             <input name="images" class="form-control" type="file" id="Image" multiple />
                                         </div>
-                                        <div id="imagePreviewContainer" class="mb-4"></div>
                                     </div>
-
                                     <div class="card mb-4">
                                         <div class="card-header">
                                             <h4>Category</h4>
@@ -178,7 +133,6 @@
                     </div>
                 </div>
             </div>
-            <!-- card end// -->
         </div>
         </div>
     </section>
@@ -187,15 +141,7 @@
         integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script src="path/to/cropper.js"></script>
-    <link href="path/to/cropper.css" rel="stylesheet">
-
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-
 
     <script>
         document.querySelector('.submit').addEventListener('click', () => {
@@ -204,7 +150,7 @@
 
         // JavaScript for custom validation
         document.getElementById('addProductForm').addEventListener('submit', function (event) {
-            const form = event.target;
+        const form = event.target;
 
             if (!form.checkValidity()) {
                 event.preventDefault();
@@ -329,134 +275,7 @@
                 event.preventDefault();
             }
         });
-    </script>
-   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
-
-    <script>
-        const imageInput = document.getElementById("Image");
-        const previewContainer = document.getElementById("imagePreviewContainer");
-        let imageUrls = [];
-        function createCropper(img, file) {
-            console.log('create cropper event started')
-            const cropper = new Cropper(img, {
-                aspectRatio: 1,
-                viewMode: 1,
-                zoomable: true,
-            });
-            return function (idx) {
-                previewContainer.innerHTML = "";
-                const canvas = cropper.getCroppedCanvas();
-                canvas.toBlob(async (blob) => {
-                    const croppedFile = new File([blob], file.name, { type: file.type });
-                    imageUrls.splice(idx, 1, croppedFile);
-                    await resetPreview(imageUrls);
-                    updateImageInputFiles();
-                });
-            };
-        }
-
-        imageInput.addEventListener("change", async (e) => {
-            const files = e.target.files;
-            if (files) {
-                await resetPreview(files, true)
-            }
-        });
-
-        async function resetPreview(files, inputEvent = false){
-            await [...files].forEach((file, index) => {
-                    if (file.type.startsWith('image/')) { // Check if it's an image
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                            const imgContainer = document.createElement("div");
-                            imgContainer.classList.add("image-container");
-
-                            const img = document.createElement("img");
-                            img.src = reader.result;
-                            img.classList.add("preview-image");
-                            img.onload = () => {
-                                if (img.width > 150 || img.height > 150) {
-                                    if (img.width > img.height) {
-                                        img.style.width = "150px";
-                                        img.style.height = "auto";
-                                    } else {
-                                        img.style.height = "150px";
-                                        img.style.width = "auto";
-                                    }
-                                }
-                            };
-
-                            let urlIndex;
-                            if (inputEvent) {
-                                urlIndex = imageUrls.push(file) - 1;
-                            } else {
-                                urlIndex = index;
-                            }
-                             
-                            updateImageInputFiles();
-                            imgContainer.dataset.index = urlIndex;
-
-                            const editIcon = document.createElement("i");
-                            editIcon.classList.add("fas", "fa-edit", "edit-icon");
-                            editIcon.setAttribute("aria-hidden", "true");
-                            const submitBtn = document.createElement("button");
-                            submitBtn.classList.add("d-none");
-                            editIcon.addEventListener("click", (event) => {
-                                submitBtn.classList.remove('d-none')
-                                // Check if cropper already exists
-                                if (!img.dataset.cropperInitialized) {
-                                    const cropper = createCropper(img, file);
-                                    submitBtn.addEventListener('click', (e) => {
-                                        e.preventDefault();
-                                        cropper(urlIndex);
-                                    });
-                                    img.dataset.cropperInitialized = true;
-                                }
-                            });
-
-                            const actionDiv = document.createElement('div');
-                            actionDiv.classList.add("d-flex", "justify-content-between");
-                            const deleteIcon = document.createElement("i");
-                            deleteIcon.classList.add("fas", "fa-trash", "delete-icon");
-                            deleteIcon.setAttribute("aria-hidden", "true");
-                            submitBtn.type = "button";
-                            submitBtn.textContent = "Crop"
-                            submitBtn.style.backgroundColor = "black";
-                            submitBtn.style.color = "white";
-                            submitBtn.style.borderRadius = "5px";
+    </script> -->
 
 
-                            deleteIcon.addEventListener("click", (event) => {
-                                const urlIndex = parseInt(imgContainer.dataset.index);
-                                if (!isNaN(urlIndex)) {
-                                    imageUrls.splice(urlIndex, 1);
-                                    imgContainer.remove();
-                                    updateImageInputFiles();
-                                }
-                            })
-
-                            imgContainer.appendChild(img);
-                            imgContainer.appendChild(editIcon);
-                            actionDiv.appendChild(deleteIcon);
-                            actionDiv.appendChild(submitBtn);
-                            imgContainer.appendChild(actionDiv);
-
-                            previewContainer.appendChild(imgContainer);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-        }
-        function updateImageInputFiles() {
-            imageInput.value = "";
-            const dataTransfer = new DataTransfer();
-            imageUrls.forEach(file => {
-                dataTransfer.items.add(file);
-            });
-            imageInput.files = dataTransfer.files;
-        }
-
-    </script>
-
-
-    <%- include('include/_footer') %>
+    <%#- include('include/_footer') %>
