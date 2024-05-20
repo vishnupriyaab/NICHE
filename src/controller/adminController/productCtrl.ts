@@ -25,7 +25,6 @@ export async function getProducts(req: Request, res: Response) {
       .skip(skip);
 
     const totalProducts = await productDb.countDocuments();
-    // console.log(product,totalProducts,page,"1234567890");
 
     res.render('admin/products', {
       product,
@@ -80,7 +79,7 @@ export async function updateProduct(req: Request, res: Response) {
 
     await productDb.updateOne(
       { _id: req.params.id },
-      { $push: { imgArr: { $each: url } } },
+      { $set: { imgArr: url } },
       { upsert: true }
     );
 
@@ -89,6 +88,19 @@ export async function updateProduct(req: Request, res: Response) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
+}
+
+export async function gettingProduct(req:Request,res:Response) {
+  try {
+    const productDetails = await productDb.findById(req.params.productId, {imgArr: 1, _id: 0})
+    res.status(200).json({
+      success: true,
+      imgArr: productDetails?.imgArr
+    });
+  } catch (error) {
+    console.log(error);
+    res.json("Internal Srver Error")
+  }  
 }
 
 export async function deleteImage(req: Request, res: Response) {

@@ -72,8 +72,8 @@
               onclick="location.href = '/orderinformation/<%= orders[i].orderDetails._id %>'"
             >
               <% if (orders[i].orderDetails.price > orders[i].totalsum) { %>
-              Product Price: ₹ <%= Math.round(orders[i].totalsum) %> <% } else {
-              %> Product Price: ₹ <%= Math.round(orders[i].orderDetails.price)
+              Product Price: ₹ <%= Math.ceil(orders[i].totalsum) %> <% } else {
+              %> Product Price: ₹ <%= Math.ceil(orders[i].orderDetails.price)
               %> <% } %>
             </td>
 
@@ -86,14 +86,14 @@
               </span>
             </td>
             <% if(orders[i].orderDetails.paymentStatus === 'Pending'){ %>
-            <td class="py-2 px-4 border-b">
-              <button
-                class="bg-blue-500 text-white py-1 px-4 rounded"
-                onclick="retryPayment('<%= orders[i]._id %>','<%= orders[i].orderDetails.productId %>')"
-              >
-                Retry Payment
-              </button>
-            </td>
+                <td class="py-2 px-4 border-b">
+                  <button
+                    class="bg-blue-500 text-white py-1 px-4 rounded"
+                    onclick="retryPayment('<%= orders[i]._id %>','<%= orders[i].orderDetails.productId %>')"
+                  >
+                    Retry Payment
+                  </button>
+                </td>
             <% } %> <% if((orders[i].orderDetails.orderStatus==='Ordered' ) ||
             (orders[i].orderStatus==='Shipped' ) ) { %>
             <td class="py-2 px-4 border-b">
@@ -135,7 +135,7 @@
                     </button>
                     <button
                       class="bg-blue-500 text-white px-4 py-2 rounded-md"
-                      onclick="cancelOrder('<%= orders[i].orderDetails._id %>')"
+                      onclick="cancelOrder('<%= orders[i]._id %>','<%= orders[i].orderDetails._id %>')"
                     >
                       Submit
                     </button>
@@ -342,9 +342,9 @@
     window.history.back();
   }
 
-  function cancelOrder(orderId) {
+  function cancelOrder(orderId, singleOrderId) {
     axios
-      .post("/cancelOrder", { orderId })
+      .post("/cancelOrder", { orderId , singleOrderId })
       .then((data) => {
         if (data) {
           Swal.fire("Order Cancelled", "Click the button", "success").then(

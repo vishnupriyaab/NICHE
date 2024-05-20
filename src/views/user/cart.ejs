@@ -18,10 +18,7 @@
 
     button.btn:hover {
       background-color: #0000006e;
-      /* Change to desired background color */
       color: #333;
-      /* Change to desired text color */
-      /* You can add more styles for hover effect as needed */
     }
   </style>
 
@@ -42,93 +39,89 @@
       <div class="table-responsive">
 
 
-<% if (0 < products.length ) { %>
- 
-
-
-
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">Products</th>
-              <th scope="col">Name</th>
-              <th scope="col" style="text-align: center;">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
-              <th scope="col">Handle</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% products.forEach((element, i)=> { %>
+        <% if (0 < products.length ) { %>
+          <table class="table">
+            <thead>
               <tr>
-                <th scope="row">
-                  <div class="d-flex align-items-center">
-                    <img src="<%=  element.productsDetails.imgArr[0] %>" class="img-fluid me-5 rounded-circle"
-                      style="width: 80px; height: 80px" alt="" />
-                  </div>
-                </th>
-                <td>
-                  <p class="mb-0 mt-4">
-                    <%= element.productsDetails.name %>
-                  </p>
-                </td>
-                <td>
-                  <% if (element.productsDetails.offerApplied===true) { %>
-                    <p class="mb-0 mt-4" style="text-align:center;">
-                      <del>
-                        <span style="color: red;">₹<%= element.productsDetails.price %> </span>
-                      </del>
-                      <span> ₹<%= Math.round(element.productsDetails.offerPrice) %></span>
-                    </p>
-                    <% }else{%>
-                      <p class="mb-0 mt-4" style="text-align:center;">
-                        <span>₹<%= element.productsDetails.price %> </span>
-                      </p>
-                      <% } %>
-                </td>
-                <td>
-                  <div class="input-group quantity mt-4" style="width: 100px">
-                    <div class="input-group-btn">
-                      <button class="btn btn-sm btn-minus rounded-circle bg-light border decBtn"
-                        onclick="updateQuantity(-1, '<%= element.products.productId %>', '<%= i %>')">
-                        <i class="fa fa-minus"></i>
-                      </button>
-                    </div>
-                    <input type="number" id="quantityInput<%= element.products.productId %>" data-decimal="0"
-                      name="updateQty" min="1" max="<%= element.products.quantity %>" pattern="[0-9]*" readonly
-                      class="form-control form-control-sm text-center border-0 quantityInput"
-                      value="<%= element.products.quantity %>" />
-                    <div class="input-group-btn">
-                      <button class="btn btn-sm btn-plus rounded-circle bg-light border incBtn"
-                        onclick="updateQuantity(1, '<%= element.products.productId %>', '<%= i %>')">
-                        <i class="fa fa-plus"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <p class="text-danger mt-2" id="errMesg<%= element.products.productId %>"></p>
-                </td>
-                <td>
-                  <% if (element.productsDetails.offerApplied) { %>
-                    <p class="mb-0 mt-4 snglTotalAmount">
-                      ₹<%= Math.round(element.productsDetails.offerPrice * element.products.quantity) %>
-                  </p>
-                    <% } else { %>
-                    <p class="mb-0 mt-4 snglTotalAmount">
-                      ₹<%= element.productsDetails.price * element.products.quantity%>
-                    </p>
-                      <% } %>
-                </td>
-                <td>
-                  <button onclick="removeProduct('<%=  element.userId %>','<%= element.products.productId %>')"
-                    class="btn btn-md rounded-circle bg-light border mt-4">
-                    <i class="fa fa-times text-danger"></i>
-                  </button>
-                </td>
+                <th scope="col">Products</th>
+                <th scope="col">Name</th>
+                <th scope="col" style="text-align: center;">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total</th>
+                <th scope="col">Handle</th>
               </tr>
+            </thead>
+            <tbody>
+              <% products.forEach((element, i)=> { %>
+                <tr>
+                  <th scope="row">
+                    <div class="d-flex align-items-center">
+                      <img src="<%=  element.productsDetails.imgArr[0] %>" class="img-fluid me-5 rounded-circle"
+                        style="width: 80px; height: 80px" alt="" />
+                    </div>
+                  </th>
+                  <td>
+                    <p class="mb-0 mt-4">
+                      <%= element.productsDetails.name %>
+                    </p>
+                  </td>
+                  <td>
+                    <% if (element.productsDetails.offerApplied===true) { %>
+                      <p class="mb-0 mt-4" style="text-align:center;">
+                        <del>
+                          <span style="color: red;">₹<%= element.productsDetails.price %> </span>
+                        </del>
+                        <span> ₹<%= Math.ceil(element.productsDetails.offerPrice) %></span>
+                      </p>
+                      <% }else{%>
+                        <p class="mb-0 mt-4" style="text-align:center;">
+                          <span>₹<%= element.productsDetails.price %> </span>
+                        </p>
+                        <% } %>
+                  </td>
+                  <td>
+                    <div class="input-group quantity mt-4" style="width: 100px">
+                      <div class="input-group-btn">
+                        <button class="btn btn-sm btn-minus rounded-circle bg-light border decBtn"
+                          onclick="updateQuantity(-1, '<%= element.products.productId %>', '<%= i %>')">
+                          <i class="fa fa-minus"></i>
+                        </button>
+                      </div>
+                      <input type="number" id="quantityInput<%= element.products.productId %>" data-decimal="0"
+                        name="updateQty" min="1" max="<%= element.products.quantity %>" pattern="[0-9]*" readonly
+                        class="form-control form-control-sm text-center border-0 quantityInput"
+                        value="<%= element.products.quantity %>" />
+                      <div class="input-group-btn">
+                        <button class="btn btn-sm btn-plus rounded-circle bg-light border incBtn"
+                          onclick="updateQuantity(1, '<%= element.products.productId %>', '<%= i %>')">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <p class="text-danger mt-2" id="errMesg<%= element.products.productId %>"></p>
+                  </td>
+                  <td>
+                    <% if (element.productsDetails.offerApplied) { %>
+                      <p class="mb-0 mt-4 snglTotalAmount">
+                        ₹<%= Math.ceil(Math.ceil(element.productsDetails.offerPrice) * element.products.quantity) %>
+                      </p>
+                      <% } else { %>
+                        <p class="mb-0 mt-4 snglTotalAmount">
+                          ₹<%= Math.ceil(element.productsDetails.price * element.products.quantity)%>
+                        </p>
+                        <% } %>
+                  </td>
+                  <td>
+                    <button onclick="removeProduct('<%=  element.userId %>','<%= element.products.productId %>')"
+                      class="btn btn-md rounded-circle bg-light border mt-4">
+                      <i class="fa fa-times text-danger"></i>
+                    </button>
+                  </td>
+                </tr>
 
-              <% }) %>
-          </tbody>
-        </table>
+                <% }) %>
+            </tbody>
+          </table>
       </div>
       <div class="row g-4 justify-content-end">
         <div class="col-8"></div>
@@ -141,35 +134,36 @@
               <div class="d-flex justify-content-between mb-4">
                 <h5 class="mb-0 me-4">Subtotal:</h5>
                 <p class="mb-0 totalAmt">
-                  ₹<%= Math.round(products.reduce((total, element) => {
-                      if (element.productsDetails.offerApplied) {
-                          return total + element.productsDetails.offerPrice * element.products.quantity;
-                      } else {
-                          return total + element.productsDetails.price * element.products.quantity;
-                      }
-                  }, 0)) %>
-              </p>
+                  ₹<%= Math.ceil(products.reduce((total, element)=> {
+                    if (element.productsDetails.offerApplied) {
+                    return total + Math.ceil(element.productsDetails.offerPrice) * element.products.quantity;
+                    } else {
+                    return total + element.productsDetails.price * element.products.quantity;
+                    }
+                    }, 0)) %>
+                </p>
               </div>
               <div class="d-flex justify-content-between">
                 <h5 class="mb-0 me-4">Shipping</h5>
                 <div class="">
-                  <p class="mb-0">₹ <%= shipping %></p>
+                  <p class="mb-0">₹ <%= shipping %>
+                  </p>
                 </div>
               </div>
             </div>
             <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
               <h5 class="mb-0 ps-4 me-4">Total</h5>
               <p class="mb-0 pe-4 totalAmt" id="totalAmt">
-                ₹<%= Math.round(products.reduce((total, element) => {
-                    if (element.productsDetails.offerApplied) {
-                        return total + (element.productsDetails.offerPrice * element.products.quantity);
-                    } else {
-                        return total + (element.productsDetails.price * element.products.quantity);
-                    }
-                }, 0)+shipping) %>
-            </p>
-            
-            
+                ₹<%= Math.ceil(products.reduce((total, element)=> {
+                  if (element.productsDetails.offerApplied) {
+                  return total + (Math.ceil(element.productsDetails.offerPrice) * element.products.quantity);
+                  } else {
+                  return total + (element.productsDetails.price * element.products.quantity);
+                  }
+                  }, 0)+shipping) %>
+              </p>
+
+
             </div>
             <div>
               <a id="checkoutLink" href="/checkout">
@@ -183,18 +177,8 @@
           </div>
         </div>
         <% }else{ %>
-
-
-<h2 style="color: rgb(5, 63, 5); text-align: center;">Add Products to Cart! 👟</h2>
-
-
+          <h2 style="color: rgb(5, 63, 5); text-align: center;">Add Products to Cart! 👟</h2>
           <% } %>
-
-
-
-
-
-
       </div>
     </div>
   </div>
@@ -205,21 +189,17 @@
         <div class="stock" data-stock="<%= stock %>"></div>
         <% }); %>
 
-          <!-- Cart Page End -->
           <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
           <link rel="stylesheet" type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
           <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-
-
           <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
           <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
           <script>
-
             toastr.options = {
               closeButton: false,
               debug: false,
@@ -238,7 +218,6 @@
               hideMethod: "fadeOut",
             };
 
-
             document.addEventListener("DOMContentLoaded", function () {
               document
                 .getElementById("checkoutButton")
@@ -251,8 +230,7 @@
                   const quantity = parseInt(
                     document.querySelector(".quantityInput").value
                   );
-                  if (quantity < stock) {
-
+                  if (quantity <= stock) {
                     document
                       .getElementById("outOfStockMessage")
                       .classList.add("hidden");
@@ -265,8 +243,6 @@
                 });
             });
 
-
-
             async function updateQuantity(change, productId, index) {
               let quantityInput = document.getElementById(
                 "quantityInput" + productId
@@ -276,10 +252,8 @@
                 quantityInput += change;
                 if (quantityInput <= 1) {
                   return alert('JHFKJHF')
-                  // currentValue = 1;
                 }
                 await reloadContent(productId, change);
-                // Reload total amount after updating the quantity
                 reloadTotalAmount(index, productId, change);
               }
             }
@@ -291,7 +265,11 @@
                 change; console.log(quantity, "quantity");
               if (quantity < 1) {
                 document.getElementById("quantityInput" + productId).value = 2
-                return alert('errrrrr');
+                toastr.error("Quantity cannot decrease below 1")
+                setTimeout(()=>{
+                  location.reload()
+                },500);
+                return;
               }
               axios
                 .post("/updatequantity", {
@@ -299,7 +277,7 @@
                   quantity,
                 })
                 .then(function (response) {
-                 
+
                   if (response.data === true) {
                     errMesg.textContent = "";
                   }
@@ -329,27 +307,22 @@
             }
 
             function reloadTotalAmount(index, productId, change) {
-              console.log("c");
-              console.log(index, productId);
+              // console.log("c");
+              // console.log(index, productId);
               axios
                 .post(`/getUpdatedTotalAmount/${productId}`, { change })
                 .then((response) => {
-                  console.log(response , "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+                  console.log(response, 'skjkdjlksjflskjlkj');
                   const totalAmountValueElement = document.querySelectorAll(".totalAmt")
                   const a = document.getElementById("totalAmt").innerHTML
                   const snglTotalAmount = document.querySelectorAll(".snglTotalAmount")
-                  // alert(a)
-                  console.log();
-                  console.log(response);
-                  console.log(response.data.updatedTotalAmount);
                   if (totalAmountValueElement.length > 0) {
-                    snglTotalAmount[index].textContent = `$${response.data.amt}`;
-                    totalAmountValueElement[0].textContent = `$${response.data.updatedTotalAmount}`;
-                    totalAmountValueElement[1].textContent = `$${response.data.updatedTotalAmount}`;
+                    snglTotalAmount[index].textContent = `₹${response.data.amt}`;
+                    totalAmountValueElement[0].textContent = `₹${response.data.updatedTotalAmount}`;
+                    totalAmountValueElement[1].textContent = `₹${response.data.updatedTotalAmount}`;
                   }
                 })
                 .catch((error) => {
-                  console.log("err j=herr");
                   console.error("Error fetching updated total amount:", error);
                 });
             }
@@ -368,7 +341,7 @@
                 const response = await axios
                   .patch("/removeFromCart", { userId, productId })
                   .then((res) => {
-                    console.log(res.message);
+                    // console.log(res.message);
                     toastr.success(res.message, "Product is deleted Successfully")
                     setTimeout(() => {
                       window.location.reload()

@@ -17,49 +17,7 @@
         #existingImageList li a {
             margin-top: 10px;
         }
-
-        .image-container {
-            object-fit: cover;
-            object-position: center;
-            display: inline-block;
-            margin-right: 10px;
-            /* Add some margin between images */
-            position: relative;
-        }
-
-        .image-container img:hover {
-            filter: grayscale(100%);
-        }
-
-        .change-img-text {
-            display: none;
-        }
-
-        .image-container img:hover .change-img-text {
-            display: block;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            color: #ff0000;
-        }
-
-        .edit-icon {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            cursor: pointer;
-            color: white;
-            background-color: black;
-            border-radius: 50%;
-            padding: 5px;
-        }
     </style>
-    
 
     <div class="container" style="margin-left: 310px;">
         <h1>Edit Product</h1>
@@ -135,8 +93,19 @@
             <% if (product.imgArr.length> 0) { %>
                 <div class="mb-3">
                     <h5>Existing Images:</h5>
-                    <ul id="existingImageList">    
-                        <div id="imagePreviewContainer" class="mb-4"></div>
+                    <ul id="existingImageList">
+                        <% product.imgArr.forEach((image, i)=> { %>
+                            <li>
+                                <img src="<%= image %>" width="100" alt="Product Image">
+                                <a href="#" data-image-url="<%= image %>">
+                                    <i class="fa fa-trash" aria-hidden="true"
+                                        onclick="deleteImage('<%= i %>', '<%= product._id %>')"></i>
+                                </a>
+                                <button type="button" class="crop-button" onclick="cropExistingImage('<%= i %>', '<%= image %>')">Crop</button>
+                            </li>
+                            <% }); %>
+                                <div id="imagePreviewContainer" class="d-flex flex-wrap"
+                                    style="width: 100px; height: 100px;"></div>
                     </ul>
                 </div>
 
@@ -152,38 +121,222 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 
+    <!-- 
     <script>
+        const removeImageButtons = document.getElementsByClassName('remove-image');
+
+        Array.from(removeImageButtons).forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const imageUrl = button.dataset.imageUrl;
+            });
+        });
+
+        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return false;
+            }
+
+            let uploadedImage = [];
+
+            for (let i = 0; i < document.getElementById('images').files.length; i++) {
+                uploadedImage[i] = await convertBase64(document.getElementById('images').files[i]);
+            }
+
+            axios
+                .put(document.getElementById('updateForm').getAttribute('action'), {
+                    productname: document.getElementById('name').value,
+                    category: document.getElementById('category').value,
+                    price: document.getElementById('price').value,
+                    color: document.getElementById('color').value,
+                    size: document.getElementById('size').value,
+                    stock: document.getElementById('stock').value,
+                    description: document.getElementById('description').value,
+                    imgArr: uploadedImage,
+                }).then((response) => {
+                    console.log(response, "responseeesesesees");
+                    window.location.href = '/products'
+                })
+        });
+
+        function validateForm() {
+            resetErrors();
+
+            let isValid = true;
+
+            // Get form input values
+            const productName = document.getElementById('name').value;
+            const category = document.getElementById('category').value;
+            const price = document.getElementById('price').value;
+            const color = document.getElementById('color').value;
+            const size = document.getElementById('size').value;
+            const stock = document.getElementById('stock').value;
+            const description = document.getElementById('description').value;
+            const imgArr = document.getElementById('images').files;
+            const imageList = document.getElementById('existingImageList');
+
+            // Perform validation checks
+            if (!productName) {
+                displayError('name', 'Please enter product name');
+                isValid = false;
+            } else if (/^\s*$/.test(productName)) {
+                displayError('name', 'Product name cannot be only spaces');
+                isValid = false;
+            } else if (!/^[a-zA-Z\s]+$/.test(productName)) {
+                displayError('name', 'Product Name cannot contain numbers or special characters');
+                isValid = false;
+            } else if (productName.length > 30) {
+                displayError('name', 'Product Name should be almost 30 characters long');
+                isValid = false;
+            }
+
+            if (!category) {
+                displayError('category', 'Please select a category');
+                isValid = false;
+            }
+
+            if (!price) {
+                displayError('price', 'Please enter price');
+                isValid = false;
+            } else if (isNaN(price)) {
+                displayError('price', 'Price must be a valid number');
+                isValid = false;
+            } else if (price < 0 || price > 10000) {
+                displayError('price', 'Price must be between 0 and 10000');
+                isValid = false;
+            }
+
+
+            if (!stock) {
+                displayError('stock', 'Please enter Stock');
+                isValid = false;
+            } else if (isNaN(stock)) {
+                displayError('stock', 'Stock must be a valid number');
+                isValid = false;
+            } else if (isNaN(stock < 0 || stock > 1000)) {
+                displayError('stock', 'Stock must be between 0 and 1000');
+                isValid = false;
+            }
+
+            if (!color) {
+                displayError('color', 'Please enter color');
+                isValid = false;
+            } else if (/^\s*$/.test(color)) {
+                displayError('color', 'Color cannot be fully spaces');
+                isValid = false;
+            }
+
+            if (!description) {
+                displayError('description', 'Please enter description');
+                isValid = false;
+            } else if (description.length > 30) {
+                displayError('description', 'Description cannot exceed 30 characters');
+                isValid = false;
+            } else if (/^\s*$/.test(description)) {
+                displayError('description', 'Description cannot be fully spaces');
+                isValid = false;
+            }
+
+            if (!size) {
+                displayError('size', 'Please enter size');
+                isValid = false;
+            }
+
+
+            const imageCount = imageList.getElementsByTagName('li').length;
+            console.log(imageCount, "imageCount");
+
+
+            // Image validation
+            for (let i = 0; i < imgArr.length; i++) {
+                const file = imgArr[i];
+                const result = imgArr[i];
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                const maxFiles = 3
+                const allowableImages = maxFiles - imageCount;
+                console.log(allowableImages, "allowableImages");
+
+                if (allowableImages > maxFiles || allowableImages <= 0) {
+                    displayError('imgArr', `Totally ${maxFiles} images are allowed, already ${imageCount} images are exists`);
+                    isValid = false;
+                }
+                if (file.size > maxSize) {
+                    displayError('imgArr', `Image ${file.name} exceeds the maximum size of 5MB`);
+                    isValid = false;
+                }
+                if (!allowedTypes.includes(file.type)) {
+                    displayError('imgArr', 'Only jpeg, png, gif file types are allowed to image');
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        function displayError(fieldId, errorMessage) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            errorElement.textContent = errorMessage;
+            errorElement.style.display = 'block';
+        }
+
+        function resetErrors() {
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach((element) => {
+                element.textContent = '';
+                element.style.display = 'none';
+            });
+        }
 
 
 
+        function convertBase64(file) {
+            return new Promise((resolve, reject) => {
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
+                fileReader.onload = () => {
+                    resolve(fileReader.result);
+                };
+                fileReader.onerror = (error) => {
+                    reject(error);
+                };
+            });
+        }
 
+
+        function deleteImage(i, productId) {
+            Swal.fire({
+                title: 'Are you sure to Delete this image?',
+                text: 'You won\'t be able to revert this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log(i);
+                    console.log(productId);
+                    axios.delete(`/deleteimage/${i}/${productId}`)
+                        .then(response => {
+                            console.log('Image deleted successfully');
+                            location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error deleting image:', error);
+                        });
+                }
+            });
+        }
+
+    </script> -->
+
+    <script>
         const imageInput = document.getElementById("images");
         const previewContainer = document.getElementById("imagePreviewContainer");
         let imageUrls = [];
-
-        document.addEventListener('DOMContentLoaded', async function() {
-            const urlPath = window.location.pathname;
-            const urlParts = urlPath.split('/');
-            const productId = urlParts[urlParts.length - 1];
-
-            const res = await axios.get(`/gettingProduct/${productId}`);
-            if(res.data.success){
-                for (let i = 0; i < res.data.imgArr?.length; i++) {
-                    const url = res.data.imgArr[i];
-                    const response = await fetch(url);
-                    const blob = await response.blob();
-
-                    const filename = url.substring(url.lastIndexOf('/') + 1);
-
-                    // Create a File object
-                    const file = new File([blob], filename, { type: blob.type });
-
-                    imageUrls.push(file);
-                }
-                resetPreview(imageUrls);
-            }
-
-        });
 
         function createCropper(img, file) {
             const cropper = new Cropper(img, {
@@ -204,18 +357,13 @@
 
         imageInput.addEventListener("change", async (e) => {
             const files = e.target.files;
-            if (files && files.length > 0) {
+            if (files) {
                 await resetPreview(files, true);
-            }else{
-                updateImageInputFiles();
             }
-        });   
-
-        function loadExistingImg(arr){
-            console.log(arr);
-        }
+        });
 
         async function resetPreview(files, inputEvent = false) {
+            previewContainer.innerHTML = ""; // Clear previous previews
             await [...files].forEach((file, index) => {
                 if (file.type.startsWith('image/')) { // Check if it's an image
                     const reader = new FileReader();
@@ -226,17 +374,6 @@
                         const img = document.createElement("img");
                         img.src = reader.result;
                         img.classList.add("preview-image");
-                        img.onload = () => {
-                            if (img.width > 150 || img.height > 150) {
-                                if (img.width > img.height) {
-                                    img.style.width = "150px";
-                                    img.style.height = "auto";
-                                } else {
-                                    img.style.height = "150px";
-                                    img.style.width = "auto";
-                                }
-                            }
-                        };
 
                         let urlIndex;
                         if (inputEvent) {
@@ -245,17 +382,22 @@
                             urlIndex = index;
                         }
 
-                        updateImageInputFiles();
                         imgContainer.dataset.index = urlIndex;
+                        updateImageInputFiles();
 
                         const editIcon = document.createElement("i");
                         editIcon.classList.add("fas", "fa-edit", "edit-icon");
                         editIcon.setAttribute("aria-hidden", "true");
                         const submitBtn = document.createElement("button");
                         submitBtn.classList.add("d-none");
+                        submitBtn.textContent = "Crop";
+                        submitBtn.type = "button";
+                        submitBtn.style.backgroundColor = "black";
+                        submitBtn.style.color = "white";
+                        submitBtn.style.borderRadius = "5px";
+
                         editIcon.addEventListener("click", (event) => {
-                            submitBtn.classList.remove('d-none')
-                            // Check if cropper already exists
+                            submitBtn.classList.remove('d-none');
                             if (!img.dataset.cropperInitialized) {
                                 const cropper = createCropper(img, file);
                                 submitBtn.addEventListener('click', (e) => {
@@ -268,15 +410,10 @@
 
                         const actionDiv = document.createElement('div');
                         actionDiv.classList.add("d-flex", "justify-content-between");
+
                         const deleteIcon = document.createElement("i");
                         deleteIcon.classList.add("fas", "fa-trash", "delete-icon");
                         deleteIcon.setAttribute("aria-hidden", "true");
-                        submitBtn.type = "button";
-                        submitBtn.textContent = "Crop"
-                        submitBtn.style.backgroundColor = "black";
-                        submitBtn.style.color = "white";
-                        submitBtn.style.borderRadius = "5px";
-
 
                         deleteIcon.addEventListener("click", (event) => {
                             const urlIndex = parseInt(imgContainer.dataset.index);
@@ -285,7 +422,7 @@
                                 imgContainer.remove();
                                 updateImageInputFiles();
                             }
-                        })
+                        });
 
                         imgContainer.appendChild(img);
                         imgContainer.appendChild(editIcon);
@@ -467,6 +604,10 @@
             }
 
 
+            const imageCount = imageList.getElementsByTagName('li').length;
+            console.log(imageCount, "imageCount");
+
+
             // Image validation
             for (let i = 0; i < imgArr.length; i++) {
                 const file = imgArr[i];
@@ -474,9 +615,11 @@
                 const maxSize = 5 * 1024 * 1024; // 5MB
                 const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
                 const maxFiles = 3
+                const allowableImages = maxFiles - imageCount;
+                console.log(allowableImages, "allowableImages");
 
-                if (imageUrls.length > maxFiles || imageUrls.length <= 0) {
-                    displayError('imgArr', `Totally ${maxFiles} images are allowed`);
+                if (allowableImages > maxFiles || allowableImages <= 0) {
+                    displayError('imgArr', `Totally ${maxFiles} images are allowed, already ${imageCount} images are exists`);
                     isValid = false;
                 }
                 if (file.size > maxSize) {

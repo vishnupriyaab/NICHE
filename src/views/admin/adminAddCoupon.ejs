@@ -143,10 +143,12 @@
             if (!couponDescription) {
                 descriptionError.innerText = "Please enter Coupon description";
                 flag = true;
+            } else if (/^\s*$/.test(couponDescription)) {
+                descriptionError.innerText = "Coupon description cannot be fully spaces";
+                flag = true;
             }
 
             if (!maxUse) {
-
                 maxUseError.innerText = "Please enter usage limit.";
                 flag = true;
             } else if (parseInt(maxUse) < 0) {
@@ -154,18 +156,14 @@
                 flag = true;
             }
 
-            // Validate Coupon Code
             if (!priceLimit) {
-
                 priceLimitError.innerText = "Please enter Price Limit";
                 flag = true;
             } else if (parseInt(priceLimit) < 0) {
                 priceLimitError.innerText = "Enter limit in positive number";
                 flag = true;
-            }
-            else if (priceLimit < coupondiscount) {
-                console.log(coupondiscount, "xdcfgvhj", priceLimit);
-                priceLimitError.innerText = "Minimum rate is not lesser than Coupon discount";
+            } else if (priceLimit > 1000) {
+                priceLimitError.innerText = "Minimum rate must be allow on below ₹1000";
                 flag = true;
             }
 
@@ -176,11 +174,13 @@
             } else if (parseInt(coupondiscount) < 0) {
                 discountError.innerText = "Discount must be a positive number.";
                 flag = true;
+            } else if (parseInt(coupondiscount) > 99) {
+                discountError.innerText = 'Discount must be applied on below 99%';
+                flag = true;
             }
 
             // Validate Expiry Date
             if (!expiry) {
-
                 expiryError.innerText = "Please select an expiry date.";
                 flag = true;
             } else {

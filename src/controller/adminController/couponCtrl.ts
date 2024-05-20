@@ -64,7 +64,6 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
       coupondiscount,
       expiry,
     } = req.body;
-    // Generate a random coupon code
     const couponCode = generateCouponCode();
 
     console.log("Generated Coupon Code:", couponCode);
@@ -74,9 +73,6 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
     const duplicate = await CouponDb.findOne({
       couponCode: { $regex: regexCode },
     });
-
-    console.log(duplicate, "3");
-
     if (
       !couponDescription ||
       !category ||
@@ -90,14 +86,12 @@ export async function addCoupon(req: Request, res: Response): Promise<void> {
         .json({ errStatus: true, message: "Content cannot be empty" });
       return;
     }
-
     if (duplicate) {
       res
         .status(401)
         .json({ errStatus: true, message: "Coupon already exist" });
       return;
     }
-
     const newCoupon = new CouponDb({
       couponCode,
       couponDescription,
@@ -120,6 +114,8 @@ export async function adminEditCoupon(req: Request, res: Response) {
     const id = req.params.id;
     const coupon = await CouponDb.findById(id);
     const category = await categoryDb.find();
+    console.log(coupon,"couponnnnn");
+    
     res.render("admin/adminEditCoupon", { coupon, category });
   } catch (error) {
     console.error(error);
@@ -138,8 +134,6 @@ export async function updateCoupon(req: Request, res: Response): Promise<void> {
       coupondiscount,
       expiry,
     } = req.body;
-    console.log(req.body, "qwertyuijhgfdrtyujk");
-
     const regexCode = new RegExp(couponCode, "i");
     // const duplicate = await Coupondb.findOne({
     //   couponCode: { $regex: regexCode },
@@ -249,9 +243,11 @@ export async function deleteCoupon(
 }
 
 export async function checkCoupon(req: Request, res: Response) {
-  const { couponCode, totalPrice } = req.body;
+  const { couponCode, totalPrice, numericalValue } = req.body;
   const cart = await CartDb.find({ userId: req.session.userId });
-  let sum: number = totalPrice;
+  let sum: number = Number(totalPrice) - 60;
+  console.log(totalPrice,numericalValue,"sumin Chekout");
+
   try {
     const coupon = await CouponDb.findOne({ couponCode: couponCode });
 
@@ -296,14 +292,17 @@ export async function checkCoupon(req: Request, res: Response) {
     }
 
     (req.session as SessionData).couponCode = coupon.couponCode;
-    const couponValue = Math.floor(sum * (coupon.coupondiscount / 100));
+    
+    const couponValue = Math.ceil(sum * (coupon.coupondiscount / 100));
     console.log(couponValue,"couponValue");
-    const discount = Math.floor(sum-couponValue);
+    const discount = Math.ceil((sum + 60)-couponValue);
+    
     console.log(discount,"discount");
     
     return res.json({
       isValid: true,
       discount,
+      couponValue,
       message: "coupon applied..!!!",
     });
   } catch (error) {
@@ -312,16 +311,4 @@ export async function checkCoupon(req: Request, res: Response) {
   }
 }
 
-export async function removeCoupon(req: Request, res: Response): Promise<void> {
-  try {
-    const coupon = await CouponDb.findOne({
-      couponCode: (req.session as SessionData).couponCode,
-    });
-    const result = req.body.totalPrice + coupon?.coupondiscount;
-    res.json({ success: result });
-  } catch (error) {
-    console.error("Error removing coupon:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-    return;
-  }
-}
+

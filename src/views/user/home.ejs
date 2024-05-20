@@ -129,7 +129,7 @@
                                   <div class="d-flex justify-content-between flex-lg-wrap">
                                     <% if (product[i].offerApplied) { %>
                                       <p class="text-dark fs-5 fw-bold mb-0">
-                                        <span class="off-price">₹<%= Math.round(product[i].offerPrice) %></span>
+                                        <span class="off-price">₹<%= Math.ceil(product[i].offerPrice) %></span>
 
                                         <del>
                                           <span class="price" style="color: red;">₹<%= product[i].price %> </span>

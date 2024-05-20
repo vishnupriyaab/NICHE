@@ -341,6 +341,9 @@ export async function wallet(req: Request, res: Response) {
       { $limit: limit },
     ]);
 
+    console.log(wall);
+    
+
     const cart = await CartDb.findOne({ userId: user }).populate("products");
     
     res.render("user/wallet", { wall, user, cart, currentPage: page, wallet });

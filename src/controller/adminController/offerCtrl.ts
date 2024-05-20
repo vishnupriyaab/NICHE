@@ -22,67 +22,71 @@ export async function addOffer(req: Request, res: Response) {
   }
 }
 
-
-export async function createOffer(req: Request, res: Response): Promise<void> {
+export async function createOffer(req:Request, res:Response) {
   try {
     const { title, percentage, startDate, endDate, description } = req.body;
 
+    const errors:any = {};
     const numericChecking = /^\d+$/;
-    const titleChecking = /^[a-zA-Z]+(\s+[a-zA-Z]+)*$/;
-    const descriptionWords = description.split(/\s+/);
+    const titleChecking = /^[a-zA-Z\s]+$/; // Adjusted to allow spaces between words
+    const descriptionWords = description ? description.split(/\s+/) : [];
 
-    console.log(req.body, "createOffersssss");
-    if (!title || !percentage || !startDate || !endDate || !description) {
-      res
-        .status(200)
-        .json({ success: false, message: "All fields are required." });
+    // Validate title
+    if (!title) {
+      errors.title = "Title is required.";
+    } else if (!titleChecking.test(title)) {
+      errors.title = "Title must contain only letters and spaces.";
+    }else if(/^\s*$/.test(title)){
+      errors.title = "Title cannot be fully spaces";
+    }
+
+    // Validate percentage
+    if (!percentage) {
+      errors.percentage = "Percentage is required.";
+    } else if (!numericChecking.test(percentage)) {
+      errors.percentage = "Percentage must be a positive number.";
+    }else if(/^\s*$/.test(title)){
+      errors.percentage = "Percentage cannot be fully spaces";
+    }
+
+    // Validate start date
+    const currentDate = new Date();
+    if (!startDate) {
+      errors.startDate = "Start Date is required.";
+    } else if (new Date(startDate) < currentDate) {
+      errors.startDate = "Start Date cannot be in the past.";
+    }
+
+    // Validate end date
+    if (!endDate) {
+      errors.endDate = "End Date is required.";
+    } else if (new Date(endDate) <= new Date(startDate)) {
+      errors.endDate = "End Date must be after the Start Date.";
+    }
+
+    // Validate description
+    if (!description) {
+      errors.description = "Description is required.";
+    } else if (descriptionWords.length < 2 || descriptionWords.length > 15) {
+      errors.description = "Description must contain between 2 and 15 words.";
+    }else if(/^\s*$/.test(title)){
+      errors.description = "Description cannot be fully spaces";
+    }
+
+    // Check if there are any errors
+    if (Object.keys(errors).length > 0) {
+      res.status(200).json({ success: false, errors });
       return;
     }
 
-    if (!titleChecking.test(title)) {
-      res.status(200).json({
-        status: false,
-        message:
-          "Title must contain only letters and be at least 4 characters long.",
-      });
-      return ;
-    }
-
-    if (!numericChecking.test(percentage)) {
-      res.status(200).json({
-        success: false,
-        message:
-          "Coupon code must be exactly 6 characters long and can only contain alphabets and numbers.",
-      });
-      return ;
-    }
-
-    if (descriptionWords.length < 2 || descriptionWords.length > 15) {
-      res.status(200).json({
-        success: false,
-        message: "Description must contain between 2 and 15 words.",
-      });
-      return ;
-    }
-
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    if (new Date(startDate) < currentDate) {
-       res.status(200).json({
-        success: false,
-        message: "The expiry date must not be earlier than today.",
-      });
-      return ;
-    }
-
+    // Check if the offer already exists
     const existingOffer = await Offerdb.findOne({ offerName: title });
     if (existingOffer) {
-       res
-        .status(200)
-        .json({ success: false, message: "Offer already exist." });
-        return ;
+      res.status(200).json({ success: false, errors: { title: "Offer already exists." } });
+      return;
     }
 
+    // Create a new offer
     const newOffer = new Offerdb({
       offerName: title,
       discountPercentage: percentage,
@@ -92,20 +96,21 @@ export async function createOffer(req: Request, res: Response): Promise<void> {
       isActive: true,
     });
 
+    // Save the new offer to the database
     const savedOffer = await newOffer.save();
-    //console.log("savedcoupon", savedOffer);
 
+    // Send a success response
     res.status(201).json({
       success: true,
       message: "Offer added successfully.",
       data: savedOffer,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 }
+
 
 
 export async function getEditoffer(req: Request, res: Response) {
@@ -127,100 +132,202 @@ export async function getEditoffer(req: Request, res: Response) {
   }
 }
 
-export async function editOffer(req:Request,res:Response):Promise<void> {
+// export async function editOffer(req:Request,res:Response):Promise<void> {
+//   try {
+//     const { title, percentage, startDate, endDate, description } = req.body;
+//      console.log("couponBodyData", startDate, endDate);
+//      const numericRegex = /^\d+$/; // Adjust this regex if you want to allow alphabets as well
+//      const titleRegex = /^[a-zA-Z]+(\s+[a-zA-Z]+)*$/;
+ 
+//      if (!title || !percentage || !startDate || !endDate || !description) {
+//         res
+//          .status(200)
+//          .json({ success: false, message: "All fields are required." });
+//          return ;
+
+//      }
+ 
+//      if (!titleRegex.test(title)) {
+//         res.status(200).json({
+//          status: false,
+//          message: "Title must contain only letters and at least 4 characters",
+//        });
+//        return ;
+//      }
+ 
+//      if (!numericRegex.test(percentage)) {
+//         res.status(200).json({
+//          success: false,
+//          message: "Percentage must be valid numbers.",
+//        });
+//        return ;
+//      }
+ 
+//      const descriptionWords = description.split(/\s+/);
+//      if (descriptionWords.length < 2 || descriptionWords.length > 15) {
+//         res.status(200).json({
+//          success: false,
+//          message: "Description must contain between 2 and 15 words.",
+//        });
+//        return ;
+//      }
+ 
+//      const currentDate = new Date();
+//      currentDate.setHours(0, 0, 0, 0);
+//      if (new Date(startDate) < currentDate) {
+//         res.status(200).json({
+//          success: false,
+//          message: "The start and expiry date must not be earlier than today.",
+//        });
+//        return ;
+//      }
+ 
+//      const existingOffer = await Offerdb.findOne({ offerName: title });
+//      if (existingOffer) {
+//        const hasChanges = existingOffer.discountPercentage !== percentage ||
+//                            existingOffer.startingDate.toISOString() !== new Date(startDate).toISOString() ||
+//                            existingOffer.expiryDate.toISOString() !== new Date(endDate).toISOString() ||
+//                            existingOffer.offerDescription !== description;
+ 
+//        if (hasChanges) {
+//          existingOffer.discountPercentage = percentage;
+//          existingOffer.startingDate = new Date(startDate);
+//          existingOffer.expiryDate = new Date(endDate);
+//          existingOffer.offerDescription = description;
+//          existingOffer.isActive = true;
+ 
+//          const updatedOffer = await existingOffer.save();
+ 
+//           res.status(200).json({
+//            success: true,
+//            message: "Offer updated successfully.",
+//            data: updatedOffer,
+//          });
+//          return;
+//        } else {
+//           res.status(200).json({
+//            success: false,
+//            message: "No changes detected. Please make some changes to update the offer.",
+//          });
+//          return;
+//        }
+//      } else {
+//         res.status(200).json({
+//          success: false,
+//          message: "Offer not found. Please check the offer name.",
+//        });
+//        return;
+//      }
+//   } catch (error) {
+//     console.error("Error editing offer:", error);
+//      res.status(500).json({
+//        success: false,
+//        message: "An error occurred while editing the offer.",
+//      });
+//   }
+// }
+
+
+
+export async function editOffer(req:Request, res:Response) {
   try {
     const { title, percentage, startDate, endDate, description } = req.body;
-     console.log("couponBodyData", startDate, endDate);
-     const numericRegex = /^\d+$/; // Adjust this regex if you want to allow alphabets as well
-     const titleRegex = /^[a-zA-Z]+(\s+[a-zA-Z]+)*$/;
- 
-     if (!title || !percentage || !startDate || !endDate || !description) {
-        res
-         .status(200)
-         .json({ success: false, message: "All fields are required." });
-         return ;
+    const errors:any = {};
+    const numericRegex = /^\d+$/;
+    const titleRegex = /^[a-zA-Z]+(\s+[a-zA-Z]+)*$/;
 
-     }
- 
-     if (!titleRegex.test(title)) {
+    // Validate title
+    if (!title) {
+      errors.title = "Title is required.";
+    } else if (!titleRegex.test(title)) {
+      errors.title = "Title must contain only letters and spaces.";
+    }
+
+    // Validate percentage
+    if (!percentage) {
+      errors.percentage = "Percentage is required.";
+    } else if (!numericRegex.test(percentage)) {
+      errors.percentage = "Percentage must be a valid number.";
+    }
+
+    // Validate start date
+    const currentDate = new Date();
+    if (!startDate) {
+      errors.startDate = "Start Date is required.";
+    } else if (new Date(startDate) < currentDate) {
+      errors.startDate = "Start Date cannot be in the past.";
+    }
+
+    // Validate end date
+    if (!endDate) {
+      errors.endDate = "End Date is required.";
+    } else if (new Date(endDate) <= new Date(startDate)) {
+      errors.endDate = "End Date must be after the Start Date.";
+    }
+
+    // Validate description
+    if (!description) {
+      errors.description = "Description is required.";
+    } else {
+      const descriptionWords = description.split(/\s+/);
+      if (descriptionWords.length < 2 || descriptionWords.length > 15) {
+        errors.description = "Description must contain between 2 and 15 words.";
+      }
+    }
+
+    // Check if there are any errors
+    if (Object.keys(errors).length > 0) {
+      res.status(200).json({ success: false, errors });
+      return;
+    }
+
+    // Check if the offer already exists
+    const existingOffer = await Offerdb.findOne({ offerName: title });
+    if (existingOffer) {
+      const hasChanges = existingOffer.discountPercentage !== percentage ||
+                          existingOffer.startingDate.toISOString() !== new Date(startDate).toISOString() ||
+                          existingOffer.expiryDate.toISOString() !== new Date(endDate).toISOString() ||
+                          existingOffer.offerDescription !== description;
+
+      if (hasChanges) {
+        existingOffer.discountPercentage = percentage;
+        existingOffer.startingDate = new Date(startDate);
+        existingOffer.expiryDate = new Date(endDate);
+        existingOffer.offerDescription = description;
+        existingOffer.isActive = true;
+
+        const updatedOffer = await existingOffer.save();
+
         res.status(200).json({
-         status: false,
-         message: "Title must contain only letters and at least 4 characters",
-       });
-       return ;
-     }
- 
-     if (!numericRegex.test(percentage)) {
+          success: true,
+          message: "Offer updated successfully.",
+          data: updatedOffer,
+        });
+        return;
+      } else {
         res.status(200).json({
-         success: false,
-         message: "Percentage must be valid numbers.",
-       });
-       return ;
-     }
- 
-     const descriptionWords = description.split(/\s+/);
-     if (descriptionWords.length < 2 || descriptionWords.length > 15) {
-        res.status(200).json({
-         success: false,
-         message: "Description must contain between 2 and 15 words.",
-       });
-       return ;
-     }
- 
-     const currentDate = new Date();
-     currentDate.setHours(0, 0, 0, 0);
-     if (new Date(startDate) < currentDate) {
-        res.status(200).json({
-         success: false,
-         message: "The start and expiry date must not be earlier than today.",
-       });
-       return ;
-     }
- 
-     const existingOffer = await Offerdb.findOne({ offerName: title });
-     if (existingOffer) {
-       const hasChanges = existingOffer.discountPercentage !== percentage ||
-                           existingOffer.startingDate.toISOString() !== new Date(startDate).toISOString() ||
-                           existingOffer.expiryDate.toISOString() !== new Date(endDate).toISOString() ||
-                           existingOffer.offerDescription !== description;
- 
-       if (hasChanges) {
-         existingOffer.discountPercentage = percentage;
-         existingOffer.startingDate = new Date(startDate);
-         existingOffer.expiryDate = new Date(endDate);
-         existingOffer.offerDescription = description;
-         existingOffer.isActive = true;
- 
-         const updatedOffer = await existingOffer.save();
- 
-          res.status(200).json({
-           success: true,
-           message: "Offer updated successfully.",
-           data: updatedOffer,
-         });
-         return;
-       } else {
-          res.status(200).json({
-           success: false,
-           message: "No changes detected. Please make some changes to update the offer.",
-         });
-         return;
-       }
-     } else {
-        res.status(200).json({
-         success: false,
-         message: "Offer not found. Please check the offer name.",
-       });
-       return;
-     }
+          success: false,
+          message: "No changes detected. Please make some changes to update the offer.",
+        });
+        return;
+      }
+    } else {
+      res.status(200).json({
+        success: false,
+        message: "Offer not found. Please check the offer name.",
+      });
+      return;
+    }
   } catch (error) {
     console.error("Error editing offer:", error);
-     res.status(500).json({
-       success: false,
-       message: "An error occurred while editing the offer.",
-     });
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while editing the offer.",
+    });
   }
 }
+
+
 
  
 export async function deleteOffer(req: Request, res: Response) {

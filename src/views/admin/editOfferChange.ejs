@@ -1,14 +1,8 @@
 <%- include('include/_header') %>
 
 <style>
-    .card {
-        padding-left: 298px;
-        padding-top: 51px;
-    }
-    .error-message {
-        color: red;
-        font-size: 0.9em;
-        margin-top: 5px;
+    .card{
+        padding: 70px;
     }
 </style>
 
@@ -20,9 +14,10 @@
         <div class="row">
           <div class="col-sm-12">
               <div class="card">
-                  <h2 style="padding-left: 50px;">Create Offer</h2>
+                  <h2 style="padding-left:  270px;">Edit Offer</h2>
                   <div class="card-body">
-                <div class="title-header option-title"></div>
+                <div class="title-header option-title">
+                </div>
                 <div class="tab-content" id="pills-tabContent">
                   <div class="tab-pane fade show active" id="pills-home" role="tabpanel">
                     <form class="theme-form theme-form-2 mega-form" id="offerForm" action="#" method="post">
@@ -32,53 +27,48 @@
 
                       <div class="row">
                         <div class="mb-4 row align-items-center">
-                          <label class="form-label-title col-lg-2 col-md-3 mb-0">Offer Title</label>
+                          <label class="form-label-title col-lg-2 col-md-3 mb-0">Offer
+                            Title</label>
                           <div class="col-md-9 col-lg-10">
-                            <input class="form-control" id="title" name="title" type="text">
-                            <p class="error-message" id="titleError"></p>
+                            <input class="form-control" name="title" type="text" value="<%= offer.offerName %>">
                           </div>
                         </div>
 
                         <div class="mb-4 row align-items-center">
                           <label class="col-lg-2 col-md-3 col-form-label form-label-title">Percentage</label>
                           <div class="col-md-9 col-lg-10">
-                            <input class="form-control" id="percentage" name="percentage" type="number">
-                            <p class="error-message" id="percentageError"></p>
+                            <input class="form-control" placeholder="" name="percentage" type="number" value="<%= offer.discountPercentage %>">
                           </div>
                         </div>
 
                         <div class="mb-4 row align-items-center">
-                          <label class="col-lg-2 col-md-3 col-form-label form-label-title">Start Date</label>
+                          <label class="col-lg-2 col-md-3 col-form-label form-label-title">Start
+                            Date</label>
                           <div class="col-md-9 col-lg-10">
-                            <input class="form-control" id="startDate" name="startDate" type="date">
-                            <p class="error-message" id="startDateError"></p>
+                            <input class="form-control" name="startDate" type="date" value="<%=offer.startingDate.toISOString().split('T')[0] %>">
                           </div>
                         </div>
-
                         <div class="mb-4 row align-items-center">
-                          <label class="col-lg-2 col-md-3 col-form-label form-label-title">Expiry Date</label>
+                          <label class="col-lg-2 col-md-3 col-form-label form-label-title">Expiry
+                            Date</label>
                           <div class="col-md-9 col-lg-10">
-                            <input class="form-control" id="endDate" name="endDate" type="date">
-                            <p class="error-message" id="endDateError"></p>
+                            <input class="form-control" name="endDate" type="date" value="<%= offer.expiryDate.toISOString().split('T')[0] %>">
                           </div>
                         </div>
-
+                      
                         <div class="mb-4 row align-items-center">
                           <label class="col-lg-2 col-md-3 col-form-label form-label-title">Description</label>
                           <div class="col-md-9 col-lg-10">
-                            <textarea class="form-control" id="description" name="description" rows="2"></textarea>
-                            <p class="error-message" id="descriptionError"></p>
+                            <textarea class="form-control" name="description" rows="2" ><%= offer.offerDescription %></textarea>
                           </div>
                         </div>
-
                         <br><br>
                         <div class="right-options">
                           <ul>
                             <li>
-                              <div class="d-flex justify-content-end">
-                                <a href="/addOffers">
-                                  <button class="btn btn-solid" style="background-color: #3BB77E; color: white;" type="submit">Add Offer</button>
-                                </a>
+                              <div class="d-flex justify-content-end" >
+                                <button class="btn btn-solid" style="background-color: #3BB77E; 
+                                color: white;" type="submit">Edit Offer</button>
                               </div>
                             </li>
                           </ul>
@@ -102,52 +92,53 @@
 
 <%- include('include/_footer') %>
 
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 <script>
- 
+    toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": true,
+    "progressBar": false,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  };
 
   $('#offerForm').submit(function(event) {
     event.preventDefault();
-    
+
     const formData = $(this).serialize();
 
     $.ajax({
-      url: '/addOffers',
+      url: '/editOffer',
       type: 'POST',
       data: formData,
       success: function(response) {
         if (response.success) {
-          window.location.href = '/offerList?success=true&message=' + encodeURIComponent(response.message);
+            window.location.href = '/offerList?success=true&message=' + encodeURIComponent(response.message);
         } else {
-          // Clear previous error messages
-          $('.error-message').text('');
-          // Display errors
-          if (response.errors) {
-            if (response.errors.title) {
-              $('#titleError').text(response.errors.title);
-            }
-            if (response.errors.percentage) {
-              $('#percentageError').text(response.errors.percentage);
-            }
-            if (response.errors.startDate) {
-              $('#startDateError').text(response.errors.startDate);
-            }
-            if (response.errors.endDate) {
-              $('#endDateError').text(response.errors.endDate);
-            }
-            if (response.errors.description) {
-              $('#descriptionError').text(response.errors.description);
-            }
-          } else {
             toastr.error(response.message, 'Info!');
-          }
         }
+
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        console.error(jqXHR, textStatus, errorThrown);
+        console.error(jqXHR,textStatus, errorThrown);
         alert('Error adding Offer. Please try again.');
       }
     });
+
   });
 </script>
+

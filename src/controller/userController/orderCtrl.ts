@@ -14,6 +14,8 @@ import path from "path";
 import ejs from "ejs";
 import puppeteer from "puppeteer-core";
 
+
+
 export async function checkout(req: Request, res: Response) {
   try {
     const user = req.session.userId;
@@ -21,11 +23,9 @@ export async function checkout(req: Request, res: Response) {
     const wallet = await Walletdb.find({ userId: req.session.userId });
     const address = await Addressdb.find({ userId: user });
     const coupon = await CouponDb.find({ isDeleted: false });
-
     const productid = await CartDb.findOne({
       userId: new mongoose.Types.ObjectId(user),
     });
-
     const products = await CartDb.aggregate([
       {
         $match: { userId: new mongoose.Types.ObjectId(user) },
@@ -56,12 +56,12 @@ export async function checkout(req: Request, res: Response) {
         Math.round(
           product.products.quantity *
             (product.productsDetails.offerApplied
-              ? product.productsDetails.offerPrice
+              ? Math.ceil(product.productsDetails.offerPrice)
               : product.productsDetails.price)
         )
       );
     }, 0);
-
+    
     res.status(200).render("user/checkout", {
       address,
       shipping,
@@ -78,6 +78,7 @@ export async function checkout(req: Request, res: Response) {
     res.status(500).send("Error during checkout");
   }
 }
+
 
 export async function addAddress(req: Request, res: Response) {
   try {
@@ -161,9 +162,6 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
         currency: "INR",
         receipt: "order_rcptid_11",
       });
-      // instance.orders.create(options, function (err, order) {
-      //   return res.json({ order });
-      // });
       let user = req.session.userId;
 
       const userId = await userDb.findById(user);
@@ -476,15 +474,16 @@ export async function orderRazorpayVerification(req: Request, res: Response) {
       .createHmac("sha256", process.env.RZP_KEY_SECRET as string)
       .update(body_data)
       .digest("hex");
-
     const isValid = generated_signature === razorpay_signature;
 
     if (isValid) {
-      const orderData = await Orderdb.updateOne(
-        { _id: orderId },
-        { $set: { paymentStatus: "Completed" } }
-      );
-      console.log(orderData, "orderDataaaaaaaaaaaaaaaaaaaa");
+      const orderData = await Orderdb.findOne({ _id: orderId });
+
+      orderData?.orderDetails.forEach((order) => {
+        order.paymentStatus = "Completed";
+      });
+
+      orderData?.save();
       res.status(200).redirect("/successpage");
     }
   } catch (error) {
@@ -531,11 +530,12 @@ async function decreaseProductStock(productId: any, quantity: number) {
 export async function cancelOrder(req: Request, res: Response) {
   console.log("wertyu");
   const orderId = req.body.orderId;
-  console.log(orderId, "orderId");
+  const singleOrderId = req.body.singleOrderId
+  console.log(orderId,singleOrderId, "orderId","singleOrderId");
   try {
     const order = await Orderdb.findOneAndUpdate(
-      { "orderDetails._id": new mongoose.Types.ObjectId(orderId) },
-      { $set: { "orderDetails.$.orderStatus": "Cancelled" } },
+      { "orderDetails._id": singleOrderId, _id: orderId  },
+      { $set: { "orderDetails.$.orderStatus": "Cancelled", "orderDetails.$.paymentStatus": "Cancelled" } },
       { projection: { "orderDetails.$": 1 } }
     );
 
@@ -724,7 +724,6 @@ export async function downloadInvoicePDF(
 export async function retryPayment(req: Request, res: Response): Promise<void> {
   try {
     const ordersId = req.query.id;
-    // console.log(ordersId, "ordersId");
     const failedOrder = await Orderdb.findOne({ _id: ordersId });
     console.log(failedOrder, "failedOrder");
     if (!failedOrder) {
@@ -736,13 +735,12 @@ export async function retryPayment(req: Request, res: Response): Promise<void> {
       key_id: process.env.RZP_KEY_ID as string,
       key_secret: process.env.RZP_KEY_SECRET as string,
     });
+
     const order = await instance.orders.create({
       amount: failedOrder.totalsum * 100,
       currency: "INR",
       receipt: failedOrder._id.toString(),
     });
-    // console.log(order, "order");
-    // console.log(order.amount, "123456789");
 
     res.json({ success: true, order, ordersId: failedOrder.id, failedOrder });
   } catch (error: any) {
@@ -757,8 +755,6 @@ export async function retryPaymentVerify(
 ): Promise<void> {
   try {
     const { orderId, paymentId, signature, newOrderId, productId } = req.body;
-    // console.log(req.body, "req.bodyyyyy");
-    // console.log(productId, "productId");
 
     const secret: string = process.env.RZP_KEY_SECRET!;
     console.log(signature, "signature", secret);
@@ -767,15 +763,14 @@ export async function retryPaymentVerify(
       .createHmac("sha256", secret)
       .update(orderId + "|" + paymentId)
       .digest("hex");
-    // console.log("generatedSignature", generatedSignature);
 
-    // return
     if (generatedSignature == signature) {
-      // console.log("1234567890");
-      await Orderdb.updateOne(
+      console.log("1234567890");
+      const updatedOrder = await Orderdb.updateOne(
         { _id: newOrderId, "orderDetails.productId": productId },
         { $set: { "orderDetails.$.paymentStatus": "completed" } }
       );
+      // console.log(updatedOrder,'12345678');
       
       res.json({
         success: true,

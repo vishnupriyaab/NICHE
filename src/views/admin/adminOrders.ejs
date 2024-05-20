@@ -149,8 +149,7 @@
                       <% } else if((orders[i].orderDetails.orderStatus==="Returned request" )) { %>
                         <button
                           style="color: white; background-color: rgb(251, 0, 0); width: 120px; height: 30px; border-radius: 9px; border: black;"
-                          onclick="returnRequestApproval('<%= orders[i].orderDetails._id %>')">Return Approve</button>
-
+                          onclick="returnRequestApproval('<%= orders[i]._id %>','<%= orders[i].orderDetails._id %>')">Return Approve</button>
                         <% } else if((orders[i].orderDetails.orderStatus==="Returned" )) { %>
                           <button
                             style="color: white; background-color: black; width: 100px; height: 30px; border-radius: 9px; border: black;">User
@@ -216,10 +215,11 @@
   </section>
 
   <script>
-    function returnRequestApproval(orderId) {
+    function returnRequestApproval(orderId , singleOrderId) {
       console.log(orderId, "orderId");
-      axios.post("/returnAproval", { orderId })
+      axios.post("/returnAproval", { orderId , singleOrderId })
         .then(response => {
+          console.log(response);
           window.location.reload();
           // console.log("123456789");
         }).catch(error => {

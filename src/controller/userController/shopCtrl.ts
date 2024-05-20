@@ -9,8 +9,10 @@ export async function getShop(req: Request, res: Response) {
     const startingPrice = Number(req.query.startingPrice) || 0;
     const endPrice = Number(req.query.endPrice) || 0;
     const sortingInput: any = req.query.sorting || "default";
-    let productSearch: any = "";
+    let productSearch: any = req.query.productSearch || "";  // Get the search query
     const isFrondEnd = Boolean(req.query.fromFrontEnd);
+
+    console.log(productSearch,"productSearch");
 
     let query: any = { unlistStatus: true };
 
@@ -23,11 +25,12 @@ export async function getShop(req: Request, res: Response) {
     } else {
       query.price = { $gte: 0 };
     }
+
     if (req.query.category) {
       query.category = req.query.category;
     }
-    let sorting: any = {};
 
+    let sorting: any = {};
     switch (sortingInput) {
       case "lowToHigh":
         sorting = { effectivePrice: 1 };
@@ -68,6 +71,9 @@ export async function getShop(req: Request, res: Response) {
       $match: {
         category: { $in: listedCategoryIds },
       },
+    }
+    if (productSearch) {
+      match.$match.name = { $regex: new RegExp(`^${productSearch}`, "i") };
     }
 
     const color = req.query.color;
@@ -118,11 +124,10 @@ export async function getShop(req: Request, res: Response) {
         $limit: perProduct,
       },
     ]);
-    
+
     const cart = await CartDb.findOne({ userId: user }).populate("products");
     const distinctColors = await productDb.distinct("color");
     const uniqueColors = distinctColors.filter(color => color);
-    
 
     if (!isFrondEnd) {
       return res.render("user/shop", {
@@ -149,5 +154,11 @@ export async function getShop(req: Request, res: Response) {
     }
   } catch (error: any) {
     console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
   }
 }
+
+

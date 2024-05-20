@@ -179,7 +179,7 @@ export async function reloadTotalAmount(req: Request, res: Response) {
     const sum = products.reduce((total, product) => {
       if (product.products && product.productsDetails) {
         if (String(product.products.productId) === req.params.productId) {
-          if (product.productsDetails.offerPrice) {
+          if (product.productsDetails.offerPrice && product.productsDetails.offerPrice[0]) {
             // Round the offer price calculation
             return (total +=
               Math.round((product.products.quantity + req.body.change) *
@@ -204,15 +204,27 @@ export async function reloadTotalAmount(req: Request, res: Response) {
       (product) => String(product.products.productId) === req.params.productId
     );
 
+    let inventory = await productDb.findOne({ _id: req.params.productId });
+
+    if(inventory!.stock < updatedProduct.products.quantity + req.body.change){
+      req.body.change = 0;
+    }
+
     let amt =
       (updatedProduct.products.quantity + req.body.change) *
       updatedProduct.productsDetails.offerPrice
 
-      amt == 0  ?   amt =
-      (updatedProduct.products.quantity + req.body.change) *
-      updatedProduct.productsDetails.price :   amt =
-      (updatedProduct.products.quantity + req.body.change) *
-      updatedProduct.productsDetails.offerPrice
+      if(!amt){
+        amt = (updatedProduct.products.quantity + req.body.change) * updatedProduct.productsDetails.price;
+      }else{
+        amt = (updatedProduct.products.quantity + req.body.change) * updatedProduct.productsDetails.offerPrice;
+      }
+
+      // amt==0  ?   amt =
+      // (updatedProduct.products.quantity + req.body.change) *
+      // updatedProduct.productsDetails.price :   amt =
+      // (updatedProduct.products.quantity + req.body.change) *
+      // updatedProduct.productsDetails.offerPrice
       amt = Math.round(amt) 
 
     res.status(200).json({ updatedTotalAmount: sum, amt });

@@ -91,7 +91,7 @@
             </div>
             <% if (product.offerApplied) { %>
               <div class="mb-3">
-                <span style="font-style: normal; font-weight: bolder;"> ₹<%= Math.round(product.offerPrice) %></span>
+                <span style="font-style: normal; font-weight: bolder;"> ₹<%= Math.ceil(product.offerPrice) %></span>
                 <del><span style="color: red; font-style: normal; font-weight: bolder;">₹<%= product.price %>
                       </span></del>
                 <% product.offer.forEach(offer=> { %>
@@ -128,9 +128,6 @@
                       </select>
                     </div>
                   </div>
-                  <button href="/checkout" class="btn btn-warning shadow-0">
-                    Buy now
-                  </button>
                   <% if (product.stock>0) { %>
                     <button onclick="addTocart('<%- product._id %>')"
                       class="btn btn-primary border shadow-0 icon-hover">

@@ -17,9 +17,10 @@
             </p>
             <!-- Product Price -->
             <p class="text-gray-700 mb-2" id="prdsum">
-              Price : ₹<%= Math.round(product.productsDetails.offerApplied ? (product.productsDetails.offerPrice *
-                  product.products.quantity) : (product.productsDetails.price * product.products.quantity)) %>
-          </p>
+              Price : ₹<%= Math.ceil(product.productsDetails.offerApplied ?
+                (Math.ceil(product.productsDetails.offerPrice )* product.products.quantity) :
+                (product.productsDetails.price * product.products.quantity)) %>
+            </p>
             <!-- Product Quantity -->
             <p class="text-gray-700 mb-2" id="prdquantity">
               Quantity: <%= product.products.quantity %>
@@ -164,7 +165,7 @@
             <% for (let i of coupon) { %>
               <% if (i.priceLimit <=sum) { %>
                 <option value="<%= i._id %>">
-                  <%= i.couponCode %> - <%= i.couponDescription %>
+                  <%= i.couponCode %> - <%= i.couponDescription %> - <%= i.coupondiscount %>%
                 </option>
                 <% } %>
                   <% } %>
@@ -176,12 +177,17 @@
       <div class="border-t border-b py-2">
         <div class="flex items-center justify-between">
           <p class="text-sm font-medium text-gray-700">Subtotal</p>
-          <p class="font-semibold text-gray-700">₹<%= sum %>
+          <p class="font-semibold text-gray-700" id="subTotal">₹<%= sum %>
+          </p>
+        </div>
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium text-gray-700">Discount</p>
+          <p class="font-semibold text-gray-700" id="CouponDiscount">₹0
           </p>
         </div>
         <div class="flex items-center justify-between">
           <p class="text-sm font-medium text-gray-700">Shipping Charge</p>
-          <p class="font-semibold text-blue-700">₹60</p>
+          <p class="font-semibold text-blue-700">+ ₹60</p>
         </div>
         <!-- Coupon Discount Display -->
         <div id="couponDiscount" class="flex items-center justify-between hidden">
@@ -222,14 +228,8 @@
     document
       .getElementById("removeCouponButton")
       .addEventListener("click", async () => {
-        await axios
-          .post("/removeCoupon", {
-            totalPrice,
-          })
-          .then((response) => {
-            const totalSum = response.data.success;
-            document.getElementById("totalSum1").innerText = totalSum;
-          });
+        document.getElementById("totalSum1").innerText = `₹${Number(totalPrice)}`;
+        document.getElementById("CouponDiscount").innerText = '₹0';
       });
   </script>
 
@@ -258,19 +258,27 @@
         const couponCode = document.getElementById("couponCode").value;
 
         const totalPrice = document.getElementById("hy").innerHTML;
+        const SubtotalValue = document.getElementById("subTotal").innerHTML;
+        const numericalValue = SubtotalValue.replace(/[^0-9]/g, '');
+        console.log(numericalValue); // Output: 11230
+
 
         try {
           const response = await axios.post("/api/checkCoupon", {
             couponCode,
             totalPrice,
+            numericalValue,
           });
-          const { isValid, discount } = response.data;
+          const { isValid, discount, couponValue } = response.data;
+          console.log(couponValue, "couponValue", discount);
           if (isValid) {
             const totalPrice = document.querySelectorAll(".prdsum");
             document.getElementById("totalSum1").innerHTML = `₹  ${discount}`;
+            document.getElementById("CouponDiscount").innerHTML = `₹${couponValue}`
             let total = 0;
             totalPrice.forEach((value) => (total += Number(value.innerHTML)));
-            const discountedvalue = Math.floor(total / discount);
+            console.log(totalPrice, "000999090909");
+            const discountedvalue = Math.ceil(total / discount);
             console.log(Number(discountedvalue));
             // Update UI to show discount
             document.getElementById("couponDiscountValue").textContent =
@@ -278,7 +286,7 @@
             if (!discountedvalue) {
               discountedvalue = 0;
             }
-            totalSum.innerHTML = total - Number(discountedvalue);
+            totalSum.innerHTML = numericalValue - Number(discountedvalue);
             document.getElementById("couponDiscount").classList.remove("hidden");
           } else {
             toastr.error(response.data.message);
@@ -372,7 +380,7 @@
       const totalSum = sum;
       const selectedAddress =
         document.getElementById("selectedAddress").innerText;
-        console.log(selectedAddress,"00000000000000000");
+      console.log(selectedAddress, "00000000000000000");
       const image = document.getElementById("imageproduct").src;
 
       const name = document.getElementById("prdname").innerText;
@@ -380,11 +388,11 @@
       const price = document.getElementById("totalSum1").innerText;
 
       const quantity = document.getElementById("prdquantity").innerText;
-      console.log(activeCoupon,"qwertyuijhgfdcvbjk");
+      console.log(activeCoupon, "qwertyuijhgfdcvbjk");
 
-      if(!selectedAddress){
+      if (!selectedAddress) {
         toastr["info"](`Please select an address.`, "Info!");
-      return;
+        return;
       }
 
       if (selectedPaymentMethod) {
@@ -397,7 +405,7 @@
           paymentMethod === razorpay ||
           paymentMethod === wallet
         ) {
-          if(paymentMethod === cod && totalSum >= 1000){
+          if (paymentMethod === cod && totalSum >= 1000) {
             return toastr.error('Total price above Rs 1000 should not be allowed for COD!');
           }
           axios
@@ -412,7 +420,7 @@
               activeCoupon: activeCoupon,
             })
             .then(function (response) {
-              console.log(response,"qwertyui");
+              console.log(response, "qwertyui");
               if (response.data?.order) {
                 var options = {
                   key: "rzp_test_wV96XGA4SLLOo7",
@@ -436,8 +444,8 @@
                   },
                 };
                 var rzp1 = new Razorpay(options);
-                rzp1.on('payment.failed',function (response){
-                  window.location.href="/orders";
+                rzp1.on('payment.failed', function (response) {
+                  window.location.href = "/orders";
                 })
                 rzp1.open();
                 return;
@@ -451,14 +459,14 @@
                 // }
                 if (response?.data?.message) {
                   window.location.href = "/successpage";
-                return;
+                  return;
                 }
               }
 
               if (paymentMethod === wallet) {
                 if (response?.data?.message) {
                   window.location.href = "/successpage";
-                return;
+                  return;
                 }
               }
             })

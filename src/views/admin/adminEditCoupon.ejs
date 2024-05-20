@@ -33,7 +33,7 @@
             >
               <div class="d-flex align-items-center formRow">
                 <div class="w-50">
-                  <label for="code" class="d-block">Coupon Code</label>
+                  <label for="code" class="d-block">Coupon Name & Description</label>
                   <div
                     class="position-relative z-10 top-5 py-1.5 px-3 rounded-lg text-danger d-none"
                     id="errorpopup"
@@ -42,9 +42,9 @@
                     type="text"
                     name="code"
                     id="couponcode"
-                    value="<%= coupon.couponCode %>"
+                    value="<%= coupon.couponDescription %>"
                   />
-                  <p id="couponCodeErr" style="color: red"></p>
+                  <p id="couponDescriptionErr" style="color: red"></p>
                 </div>
                 <div class="w-50">
                   <label for="Category" class="d-block">Category</label>
@@ -133,22 +133,20 @@
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         let flag = false;
-        const couponCode = document.getElementById("couponcode").value.trim();
+        const couponCode = document.getElementById("couponcode").value;
         const category = document.getElementById("category").value.trim();
         const maxUse = document.getElementById("Maxuse").value.trim();
         const priceLimit = document.getElementById("pricelimit").value.trim();
-        const coupondiscount = document
-          .getElementById("coupondiscount")
-          .value.trim();
+        const coupondiscount = document.getElementById("coupondiscount").value.trim();
         const expiry = document.getElementById("expiry").value.trim();
 
         // Clear previous error messages
-        const couponCodeErr = document.getElementById("couponCodeErr");
+        const couponDescriptionErr = document.getElementById("couponDescriptionErr");
         const couponDiscountErr = document.getElementById("couponDiscountErr");
         const couponExpiryErr = document.getElementById("couponExpiryErr");
         const maxUseErr = document.getElementById("maxUseErr");
         const priceLimitErr = document.getElementById("priceLimitErr");
-        couponCodeErr.innerText = "";
+        couponDescriptionErr.innerText = "";
         couponDiscountErr.innerText = "";
         couponExpiryErr.innerText = "";
         maxUseErr.innerText = "";
@@ -156,26 +154,31 @@
 
         // Validate Coupon Code
         if (!couponCode) {
-          couponCodeErr.innerText = "Enter Coupon Code";
+          couponDescriptionErr.innerText = "Enter Coupon Code";
           flag = true;
-        }
+        }else if (/^\s*$/.test(couponCode)) {
+          couponDescriptionErr.innerText = "Coupon description cannot be fully spaces";
+                flag = true;
+            }
 
         if (!maxUse) {
           maxUseErr.innerText = "Please enter usage limit.";
           flag = true;
         } else if (parseInt(maxUse) < 0) {
-          maxUseError.innerText = "Usage limit must be a positive number.";
+          maxUseErr.innerText = "Usage limit must be a positive number.";
           flag = true;
         }
 
-        // Validate Coupon Code
         if (!priceLimit) {
           priceLimitErr.innerText = "Enter Price Limit";
           flag = true;
         } else if (parseInt(priceLimit) < 0) {
           priceLimitErr.innerText = "Enter limit in positive number";
           flag = true;
-        }
+        }else if (priceLimit > 1000) {
+                priceLimitErr.innerText = "Minimum rate must be allow on below ₹1000";
+                flag = true;
+            }
 
         // Validate Discount
         if (!coupondiscount) {
@@ -184,8 +187,8 @@
         } else if (parseInt(coupondiscount) < 0) {
           couponDiscountErr.innerText = "Discount must be a positive number.";
           flag = true;
-        } else if (parseInt(coupondiscount) > 1000) {
-          couponDiscountErr.innerText = "Discount must be less than 1000";
+        } else if (parseInt(coupondiscount) > 99) {
+          couponDiscountErr.innerText = "Discount must be applied on below 99%";
           flag = true;
         }
 

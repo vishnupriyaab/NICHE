@@ -4,7 +4,7 @@ import { adminLoginValidation, checkAdmin, validateadminRegistration } from "../
 import { categoryValidation, editCategoryValidation, editValidateCategory,validateCategory } from "../middleware/categoryAuth";
 import { adminLoggedIn } from "../middleware/sessionAuth";
 import { addCategory,  categoryOfferControl,  editCategory, getCategory, getCategorySearch, listCategory, offerApplyCategory, offerRemoveCategory, unlistCategory } from "../controller/adminController/categoryCtrl";
-import { addProduct, deleteImage, deleteProduct, getAddProduct, getEditProduct,  getProducts, getUnlistedProduct, offerApplyProduct, offerRemoveProduct, productOfferListing, restoreProduct, updateProduct } from "../controller/adminController/productCtrl";
+import { addProduct, deleteImage, deleteProduct, getAddProduct, getEditProduct,  getProducts, getUnlistedProduct, gettingProduct, offerApplyProduct, offerRemoveProduct, productOfferListing, restoreProduct, updateProduct } from "../controller/adminController/productCtrl";
 import { blockUser, getUsers, unblockUser} from "../controller/adminController/userCtrl";
 import { adminOrder, returnAproval, updateOrder} from "../controller/adminController/orderCtrl";
 import { addCoupon, adminAddCoupon, adminCoupon, adminDeletedCoupon, adminEditCoupon, deleteCoupon, updateCoupon } from "../controller/adminController/couponCtrl";
@@ -40,6 +40,7 @@ adminRoute.get("/editOffer",getEditoffer);
 adminRoute.get("/salesReport",salesReport)
 adminRoute.get("/salesReportExcel",salesReportExcel)
 adminRoute.get("/salesReportPDF", salesReportPDF);
+adminRoute.get("/gettingProduct/:productId",gettingProduct)
 
 
 adminRoute.post("/adminlogin", adminLoginValidation, validateadminRegistration, isAdmin);

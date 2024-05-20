@@ -94,10 +94,8 @@ export async function checkBlocked(
   res: Response,
   next: NextFunction
 ) {
-  console.log("checkBlocked");
-
+  // console.log("checkBlocked");
   const userid = req.session.userId;
-
   const user = await userDb.findOne({ _id: userid });
 
   if (!userid || user?.block === true) {

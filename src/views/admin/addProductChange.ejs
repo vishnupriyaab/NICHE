@@ -178,7 +178,6 @@
                     </div>
                 </div>
             </div>
-            <!-- card end// -->
         </div>
         </div>
     </section>
@@ -186,152 +185,255 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
         integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script src="path/to/cropper.js"></script>
-    <link href="path/to/cropper.css" rel="stylesheet">
-
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 
 
     <script>
-        document.querySelector('.submit').addEventListener('click', () => {
-            document.querySelector('#form').submit();
-        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const addProductForm = document.getElementById("addProductForm");
 
-        // JavaScript for custom validation
-        document.getElementById('addProductForm').addEventListener('submit', function (event) {
-            const form = event.target;
-
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-
-            form.classList.add('was-validated');
-        });
-
-        const addProductForm = document.getElementById("addProductForm");
-        const productname = document.getElementById("productname");
-        const description = document.getElementById("description");
-        const color = document.getElementById("color");
-        const size = document.getElementById("size");
-        const price = document.getElementById("price");
-        const stock = document.getElementById("stock");
-        const category = document.getElementById("category");
-        const Image = document.getElementById("Image");
-
-        addProductForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            let imgArr = []
-            for (let i = 0; i < Image.files.length; i++) {
-                imgArr[i] = await convertBase64(Image.files[i]);
-            }
-
-            const formData = {
-                name: productname.value,
-                description: description.value,
-                price: price.value,
-                color: color.value,
-                size: size.value,
-                stock: stock.value,
-                category: category.value,
-                imgArr: imgArr // Pass the array of base64 images
+            const inputs = {
+                productname: document.getElementById("productname"),
+                description: document.getElementById("description"),
+                color: document.getElementById("color"),
+                size: document.getElementById("size"),
+                price: document.getElementById("price"),
+                stock: document.getElementById("stock"),
+                category: document.getElementById("category"),
+                Image: document.getElementById("Image")
             };
 
-            axios.post("/addproduct", formData)
-                .then(({ data }) => {
-                    if (data) {
-                        Swal.fire("Product Added", "Click the button", "success").then(() => {
-                            window.location.href = '/products';
-                        });
+            const errorMessages = {
+                productname: document.getElementById('errorName'),
+                description: document.getElementById('errorDescription'),
+                color: document.getElementById('errorColor'),
+                size: document.getElementById('errorSize'),
+                price: document.getElementById('errorPrice'),
+                stock: document.getElementById('errorStock'),
+                category: document.getElementById('errorCategory'),
+                Image: document.getElementById('errorImage')
+            };
+
+            const validateProductName = (input, errorMessage) => {
+                const value = input.value;
+                if (!value) {
+                    errorMessage.innerHTML = '<p>name field is required</p>';
+                    return false;
+                } else if (value.length > 30) {
+                    errorMessage.innerHTML = '<p>Product Name should be almost 30 characters long</p>';
+                    return false;
+                } else if (/^\s*$/.test(value)) {
+                    errorMessage.innerHTML = '<p>Product Name cannot be only spaces</p>';
+                    return false;
+                } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+                    errorMessage.innerHTML = '<p>Product Name cannot contain numbers or special characters</p>';
+                    return false;
+                } else {
+                    errorMessage.innerHTML = '';
+                    return true;
+                }
+            };
+
+            const validateDescription = (input, errorMessage) => {
+                const value = input.value;
+                if (!value) {
+                    errorMessage.innerHTML = '<p>description field is required</p>';
+                    return false;
+                } else if (value.length > 30) {
+                    errorMessage.innerHTML = '<p>Description cannot exceed 30 characters</p>';
+                    return false;
+                } else if (/^\s*$/.test(value)) {
+                    errorMessage.innerHTML = '<p>Description cannot be fully spaces</p>';
+                    return false;
+                } else {
+                    errorMessage.innerHTML = '';
+                    return true;
+                }
+            };
+            const validateColor = (input, errorMessage) => {
+                const value = input.value;
+                if (!value) {
+                    errorMessage.innerHTML = '<p>Color field is required</p>';
+                    return false;
+                } else if (/^\s*$/.test(value)) {
+                    errorMessage.innerHTML = '<p>Color cannot be fully spaces</p>';
+                    return false;
+                } else {
+                    errorMessage.innerHTML = '';
+                    return true;
+                }
+            };
+            const validatePrice = (input, errorMessage) => {
+                const value = input.value;
+                const numericValue = parseFloat(value);
+                // console.log(numericValue, "numberic");
+                if (!value) {
+                    errorMessage.innerHTML = '<p>Price field is required</p>';
+                    return false;
+                } else if (isNaN(numericValue)) {
+                    errorMessage.innerHTML = '<p>Price must be a valid number</p>';
+                    return false;
+                } else if (numericValue < 0 || numericValue > 10000) {
+                    errorMessage.innerHTML = '<p>Price must be between 0 and 10000</p>';
+                    return false;
+                } else {
+                    errorMessage.innerHTML = '';
+                    return true;
+                }
+            };
+            const validateStock = (input, errorMessage) => {
+                const value = input.value;
+                const numericValue = parseFloat(value);
+                console.log(numericValue, "numberic");
+                if (!value) {
+                    errorMessage.innerHTML = '<p>Stock field is required</p>';
+                    return false;
+                } else if (isNaN(numericValue)) {
+                    errorMessage.innerHTML = '<p>Stock must be a valid number</p>';
+                    return false;
+                } else if (numericValue < 0 || numericValue > 1000) {
+                    errorMessage.innerHTML = '<p>Stock must be between 0 and 1000</p>';
+                    return false;
+                } else {
+                    errorMessage.innerHTML = '';
+                    return true;
+                }
+            };
+
+
+            const validateImage = (input, errorMessage) => {
+                const files = input.files;
+                console.log(files.length,"qwertyuiop");
+                const maxFileSize = 5 * 1024 * 1024; // 5MB
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                const maxFiles = 3
+
+                if (files.length > maxFiles) {
+                    errorMessage.innerHTML = `<p>Only ${maxFiles} images are allowed</p>`;
+                    return false;
+                }
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (!allowedTypes.includes(file.type)) {
+                        errorMessage.innerHTML = '<p>Only JPEG, PNG, and GIF images are allowed</p>';
+                        return false;
                     }
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-        });
+                    if (file.size > maxFileSize) {
+                        errorMessage.innerHTML = '<p>File size exceeds the limit (5MB)</p>';
+                        return false;
+                    }
+                }
+                errorMessage.innerHTML = '';
+                return true;
+            };
 
-        function convertBase64(file) {
-            return new Promise((resolve, reject) => {
-                const fileReader = new FileReader();
-                fileReader.readAsDataURL(file);
-                fileReader.onload = () => {
-                    resolve(fileReader.result);
-                };
-                fileReader.onerror = (error) => {
-                    reject(error);
-                };
+            for (let key in inputs) {
+                const input = inputs[key];
+                const errorMessage = errorMessages[key];
+                input.addEventListener('input', () => {
+                    switch (key) {
+                        case 'productname':
+                            validateProductName(input, errorMessage);
+                            break;
+                        case 'description':
+                            validateDescription(input, errorMessage);
+                            break;
+                        case 'color':
+                            validateColor(input, errorMessage);
+                            break;
+                        case 'price':
+                            validatePrice(input, errorMessage);
+                            break;
+                        case 'stock':
+                            validateStock(input, errorMessage);
+                            break;
+                        case 'Image':
+                            validateImage(input, errorMessage);
+                            break;
+
+                    }
+                });
+            }
+            addProductForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                let isValid = true;
+                for (let key in inputs) {
+                    const input = inputs[key];
+                    const errorMessage = errorMessages[key];
+                    switch (key) {
+                        case 'productname':
+                            if (!validateProductName(input, errorMessage)) isValid = false;
+                            break;
+                        case 'description':
+                            if (!validateDescription(input, errorMessage)) isValid = false;
+                            break;
+                        case 'color':
+                            if (!validateColor(input, errorMessage)) isValid = false;
+                            break;
+                        case 'price':
+                            if (!validatePrice(input, errorMessage)) isValid = false;
+                            break;
+                        case 'stock':
+                            if (!validateStock(input, errorMessage)) isValid = false;
+                            break;
+                        case 'Image':
+                            if (!validateImage(input, errorMessage)) isValid = false;
+                            break;
+
+                    }
+                }
+
+                if (isValid) {
+                    let imgArr = []
+                    for (let i = 0; i < inputs.Image.files.length; i++) {
+                        imgArr[i] = await convertBase64(inputs.Image.files[i]);
+                    }
+
+                    const formData = {
+                        name: productname.value,
+                        description: description.value,
+                        price: price.value,
+                        color: color.value,
+                        size: size.value,
+                        stock: stock.value,
+                        category: category.value,
+                        imgArr: imgArr // Pass the array of base64 images
+                    };
+                    console.log(formData);
+
+                    axios.post("/addproduct", formData)
+                        .then(({ data }) => {
+                            if (data) {
+                                Swal.fire("Product Added", "Click the button", "success").then(() => {
+                                    window.location.href = '/products';
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                }
             });
+
+            function convertBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const fileReader = new FileReader();
+                    fileReader.readAsDataURL(file);
+                    fileReader.onload = () => {
+                        resolve(fileReader.result);
+                    };
+                    fileReader.onerror = (error) => {
+                        reject(error);
+                    };
+                });
+            }
         }
-
-        document.getElementById('addProductForm').addEventListener('submit', function (event) {
-            const errorContainer = document.getElementById('errorContainer');
-            const errorName = document.getElementById('errorName');
-            const errorDescription = document.getElementById('errorDescription');
-            const errorPrice = document.getElementById('errorPrice');
-            const errorStock = document.getElementById('errorStock');
-            const errorImage = document.getElementById('errorImage');
-            const errorCategory = document.getElementById('errorCategory');
-            errorContainer.innerHTML = '';
-            errorName.innerHTML = '';
-            errorDescription.innerHTML = '';
-            errorPrice.innerHTML = '';
-            errorStock.innerHTML = '';
-            errorImage.innerHTML = '';
-            errorCategory.innerHTML = '';
-
-            // Validate form fields (You can also use HTML5 validation attributes)
-            const name = productname.value;
-            const desc = description.value;
-            const pricevalue = price.value;
-            const stockvalue = stock.value;
-            const cat = category.value;
-            const imgArr = Image.value;
-
-
-            if (!name || !desc || !pricevalue || !stockvalue || !cat || !imgArr) {
-
-                errorContainer.innerHTML = '<p>All fields are required</p>';
-                event.preventDefault();
-            }
-
-            if (!name.trim()) {
-                errorName.innerHTML = '<p>Product Name is required</p>';
-                event.preventDefault();
-            }
-            if (!desc.trim()) {
-                errorDescription.innerHTML = '<p>Description is required</p>';
-                event.preventDefault();
-            }
-
-            if (!pricevalue.trim()) {
-                errorPrice.innerHTML = '<p>Price is required</p>';
-                event.preventDefault();
-            }
-
-            if (!stockvalue.trim()) {
-                errorStock.innerHTML = '<p>Stock is required</p>';
-                event.preventDefault();
-            }
-
-            if (!cat.trim()) {
-                errorCategory.innerHTML = '<p>Category is required</p>';
-                event.preventDefault();
-            }
-
-            if (!imgArr.trim()) {
-                errorImage.innerHTML = '<p>Image is required</p>';
-                event.preventDefault();
-            }
-        });
+        );
     </script>
-   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
 
     <script>
         const imageInput = document.getElementById("Image");
@@ -363,89 +465,89 @@
             }
         });
 
-        async function resetPreview(files, inputEvent = false){
+        async function resetPreview(files, inputEvent = false) {
             await [...files].forEach((file, index) => {
-                    if (file.type.startsWith('image/')) { // Check if it's an image
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                            const imgContainer = document.createElement("div");
-                            imgContainer.classList.add("image-container");
+                if (file.type.startsWith('image/')) { // Check if it's an image
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const imgContainer = document.createElement("div");
+                        imgContainer.classList.add("image-container");
 
-                            const img = document.createElement("img");
-                            img.src = reader.result;
-                            img.classList.add("preview-image");
-                            img.onload = () => {
-                                if (img.width > 150 || img.height > 150) {
-                                    if (img.width > img.height) {
-                                        img.style.width = "150px";
-                                        img.style.height = "auto";
-                                    } else {
-                                        img.style.height = "150px";
-                                        img.style.width = "auto";
-                                    }
+                        const img = document.createElement("img");
+                        img.src = reader.result;
+                        img.classList.add("preview-image");
+                        img.onload = () => {
+                            if (img.width > 150 || img.height > 150) {
+                                if (img.width > img.height) {
+                                    img.style.width = "150px";
+                                    img.style.height = "auto";
+                                } else {
+                                    img.style.height = "150px";
+                                    img.style.width = "auto";
                                 }
-                            };
-
-                            let urlIndex;
-                            if (inputEvent) {
-                                urlIndex = imageUrls.push(file) - 1;
-                            } else {
-                                urlIndex = index;
                             }
-                             
-                            updateImageInputFiles();
-                            imgContainer.dataset.index = urlIndex;
-
-                            const editIcon = document.createElement("i");
-                            editIcon.classList.add("fas", "fa-edit", "edit-icon");
-                            editIcon.setAttribute("aria-hidden", "true");
-                            const submitBtn = document.createElement("button");
-                            submitBtn.classList.add("d-none");
-                            editIcon.addEventListener("click", (event) => {
-                                submitBtn.classList.remove('d-none')
-                                // Check if cropper already exists
-                                if (!img.dataset.cropperInitialized) {
-                                    const cropper = createCropper(img, file);
-                                    submitBtn.addEventListener('click', (e) => {
-                                        e.preventDefault();
-                                        cropper(urlIndex);
-                                    });
-                                    img.dataset.cropperInitialized = true;
-                                }
-                            });
-
-                            const actionDiv = document.createElement('div');
-                            actionDiv.classList.add("d-flex", "justify-content-between");
-                            const deleteIcon = document.createElement("i");
-                            deleteIcon.classList.add("fas", "fa-trash", "delete-icon");
-                            deleteIcon.setAttribute("aria-hidden", "true");
-                            submitBtn.type = "button";
-                            submitBtn.textContent = "Crop"
-                            submitBtn.style.backgroundColor = "black";
-                            submitBtn.style.color = "white";
-                            submitBtn.style.borderRadius = "5px";
-
-
-                            deleteIcon.addEventListener("click", (event) => {
-                                const urlIndex = parseInt(imgContainer.dataset.index);
-                                if (!isNaN(urlIndex)) {
-                                    imageUrls.splice(urlIndex, 1);
-                                    imgContainer.remove();
-                                    updateImageInputFiles();
-                                }
-                            })
-
-                            imgContainer.appendChild(img);
-                            imgContainer.appendChild(editIcon);
-                            actionDiv.appendChild(deleteIcon);
-                            actionDiv.appendChild(submitBtn);
-                            imgContainer.appendChild(actionDiv);
-
-                            previewContainer.appendChild(imgContainer);
                         };
-                        reader.readAsDataURL(file);
-                    }
-                });
+
+                        let urlIndex;
+                        if (inputEvent) {
+                            urlIndex = imageUrls.push(file) - 1;
+                        } else {
+                            urlIndex = index;
+                        }
+
+                        updateImageInputFiles();
+                        imgContainer.dataset.index = urlIndex;
+
+                        const editIcon = document.createElement("i");
+                        editIcon.classList.add("fas", "fa-edit", "edit-icon");
+                        editIcon.setAttribute("aria-hidden", "true");
+                        const submitBtn = document.createElement("button");
+                        submitBtn.classList.add("d-none");
+                        editIcon.addEventListener("click", (event) => {
+                            submitBtn.classList.remove('d-none')
+                            // Check if cropper already exists
+                            if (!img.dataset.cropperInitialized) {
+                                const cropper = createCropper(img, file);
+                                submitBtn.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    cropper(urlIndex);
+                                });
+                                img.dataset.cropperInitialized = true;
+                            }
+                        });
+
+                        const actionDiv = document.createElement('div');
+                        actionDiv.classList.add("d-flex", "justify-content-between");
+                        const deleteIcon = document.createElement("i");
+                        deleteIcon.classList.add("fas", "fa-trash", "delete-icon");
+                        deleteIcon.setAttribute("aria-hidden", "true");
+                        submitBtn.type = "button";
+                        submitBtn.textContent = "Crop"
+                        submitBtn.style.backgroundColor = "black";
+                        submitBtn.style.color = "white";
+                        submitBtn.style.borderRadius = "5px";
+
+
+                        deleteIcon.addEventListener("click", (event) => {
+                            const urlIndex = parseInt(imgContainer.dataset.index);
+                            if (!isNaN(urlIndex)) {
+                                imageUrls.splice(urlIndex, 1);
+                                imgContainer.remove();
+                                updateImageInputFiles();
+                            }
+                        })
+
+                        imgContainer.appendChild(img);
+                        imgContainer.appendChild(editIcon);
+                        actionDiv.appendChild(deleteIcon);
+                        actionDiv.appendChild(submitBtn);
+                        imgContainer.appendChild(actionDiv);
+
+                        previewContainer.appendChild(imgContainer);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
         }
         function updateImageInputFiles() {
             imageInput.value = "";
