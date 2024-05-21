@@ -370,12 +370,13 @@
         closeModal();
       });
     });
-    let activeCoupon = document.getElementById("couponCode").value;
-
+    
     function placeOrder(sum) {
       const selectedPaymentMethod = document.querySelector(
         'input[name="payment_method"]:checked'
       ).value;
+      let activeCoupon = document.getElementById("couponCode").value;
+      console.log(activeCoupon,"VishnupriyaCoupon");
 
       const totalSum = sum;
       const selectedAddress =

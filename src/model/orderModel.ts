@@ -75,8 +75,6 @@ const orderSchema = new mongoose.Schema<IOrder>({
   fixedShippingCharge:{
     type: Number,
   },
- 
-  
 });
 
 const Orderdb = mongoose.model<IOrder>("orderdb", orderSchema);

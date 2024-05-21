@@ -14,8 +14,6 @@ import path from "path";
 import ejs from "ejs";
 import puppeteer from "puppeteer-core";
 
-
-
 export async function checkout(req: Request, res: Response) {
   try {
     const user = req.session.userId;
@@ -61,7 +59,7 @@ export async function checkout(req: Request, res: Response) {
         )
       );
     }, 0);
-    
+
     res.status(200).render("user/checkout", {
       address,
       shipping,
@@ -79,12 +77,10 @@ export async function checkout(req: Request, res: Response) {
   }
 }
 
-
 export async function addAddress(req: Request, res: Response) {
   try {
     const user = req.session.userId;
     const cart = await CartDb.findOne({ userId: user }).populate("products");
-
     res.status(200).render("user/addaddress", { user, cart });
   } catch (error) {
     console.error(error);
@@ -97,7 +93,6 @@ export async function showAddress(req: Request, res: Response) {
     let user = req.session.userId;
     const address = await Addressdb.find({ userId: user });
     const cart = await CartDb.findOne({ userId: user }).populate("products");
-
     res.status(200).render("user/showaddress", { address, user, cart });
   } catch (error) {
     console.error(error);
@@ -123,12 +118,10 @@ export async function editAddress(req: Request, res: Response) {
 export async function checkAddress(req: Request, res: Response): Promise<void> {
   try {
     const address = await Addressdb.findOne({ userId: req.session.userId });
-
     if (!address) {
       res.status(404).json({ message: "No address found" });
       return;
     }
-
     res.json(address);
   } catch (error) {
     console.error("Error fetching address:", error);
@@ -139,31 +132,25 @@ export async function checkAddress(req: Request, res: Response): Promise<void> {
 export async function placeOrder(req: Request, res: Response): Promise<void> {
   try {
     const { paymentMethod, address, price, activeCoupon } = req.body;
- 
     const priceWithoutCurrency = price.replace(/[^\d.]/g, "");
-    const totalsum = Number(priceWithoutCurrency);
+    let totalsum = Number(priceWithoutCurrency);
     (req.session as any).sum = totalsum;
-
     if (!paymentMethod || !address) {
       throw new Error("Payment method and address are required.");
     }
-
     if (paymentMethod === "Razorpay") {
       var instance = new Razorpay({
         key_id: process.env.RZP_KEY_ID as string,
         key_secret: process.env.RZP_KEY_SECRET as string,
       });
-
       (req.session as any).paymentMethod = paymentMethod;
       (req.session as any).address = address;
-
       var order = await instance.orders.create({
         amount: totalsum * 100,
         currency: "INR",
         receipt: "order_rcptid_11",
       });
       let user = req.session.userId;
-
       const userId = await userDb.findById(user);
       const currentDate = new Date();
       const cartItems = await CartDb.aggregate([
@@ -185,17 +172,16 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
           $unwind: "$productsDetails",
         },
       ]);
-      const orderItems = cartItems.map((element) => {
-        let orgPrice;
-        let offerApplied;
+      let orgPrice;
+      let offerApplied;
+      const orderItems: any = cartItems.map((element) => {
         if (element.productsDetails.offerApplied === true) {
-          orgPrice = Math.round(
+          orgPrice = Math.ceil(
             element.productsDetails.offerPrice * element.products.quantity
           );
-
           offerApplied = true;
         } else {
-          orgPrice = Math.round(
+          orgPrice = Math.ceil(
             element.productsDetails.price * element.products.quantity
           );
           offerApplied = false;
@@ -219,13 +205,27 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
         };
         return orderItem;
       });
+      let couponAmount = 0;
+      let couponApplied: boolean = false;
+      if (activeCoupon) {
+        const usedCoupon = await CouponDb.findOne({ couponCode: activeCoupon });
+        if (usedCoupon) {
+          let discountPercentage = usedCoupon.coupondiscount;
+          couponAmount = Math.ceil(
+            (req.session as any).sum * (discountPercentage / 100)
+          );
+          couponApplied = true;
+        }
+      }
 
       const shippingCharge = 60;
       const newOrder = new Orderdb({
         userId: userId,
         orderDetails: orderItems,
-        fixedShippingCharge: shippingCharge,
         totalsum: (req.session as any).sum,
+        couponApplied: couponApplied,
+        couponDiscount: couponAmount,
+        fixedShippingCharge: shippingCharge,
       });
 
       await newOrder.save();
@@ -235,7 +235,7 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
       delete (req.session as any).paymentMethod;
 
       await clearUserCart(req.session.userId);
-      res.json({ order, newOrder });
+      res.status(200).json({ order, newOrder, message: "successfully" });
       return;
     }
 
@@ -265,11 +265,9 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
       ]);
 
       const usedCoupon = await CouponDb.findOne({ couponCode: activeCoupon });
-      console.log(usedCoupon, "usedCoupon");
       let couponAmount = 0;
       if (usedCoupon) {
         couponAmount = usedCoupon.coupondiscount;
-        console.log(couponAmount, "couponAmount");
       }
 
       const orderItems = cartItems.map((element) => {
@@ -304,16 +302,27 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
           orderDate: currentDate,
           paymentStatus: "Completed",
         };
-
         return orderItem;
       });
+      let couponApplied: boolean = false;
+      if (usedCoupon) {
+        const usedCoupon = await CouponDb.findOne({ couponCode: activeCoupon });
+        if (usedCoupon) {
+          let discountPercentage = usedCoupon.coupondiscount;
+          couponAmount = Math.ceil(
+            (req.session as any).sum * (discountPercentage / 100)
+          );
+          couponApplied = true;
+        }
+      }
+
       const shippingCharge = 60;
       const newOrder = new Orderdb({
         userId: userId,
         orderDetails: orderItems,
         totalsum: (req.session as any).sum,
         couponDiscount: couponAmount,
-        couponApplied: true,
+        couponApplied: couponApplied,
         fixedShippingCharge: shippingCharge,
       });
       await newOrder.save();
@@ -383,7 +392,6 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
         let couponAmount = 0;
         if (usedCoupon) {
           couponAmount = usedCoupon.coupondiscount;
-          console.log(couponAmount, "couponAmount");
         }
 
         const orderItems = cartItems.map((element) => {
@@ -418,16 +426,31 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
             orderDate: currentDate,
             paymentStatus: "Completed",
           };
-
           return orderItem;
         });
+
+        let couponApplied: boolean = false;
+        if (activeCoupon) {
+          const usedCoupon = await CouponDb.findOne({
+            couponCode: activeCoupon,
+          });
+          console.log(usedCoupon, "usedCoupon");
+          if (usedCoupon) {
+            let discountPercentage = usedCoupon.coupondiscount;
+            couponAmount = Math.ceil(
+              (req.session as any).sum * (discountPercentage / 100)
+            );
+            couponApplied = true;
+          }
+        }
+
         const shippingCharge = 60;
         const newOrder = new Orderdb({
           userId: userId,
           orderDetails: orderItems,
           totalsum: (req.session as any).sum,
           couponDiscount: couponAmount,
-          couponApplied: true,
+          couponApplied: couponApplied,
           fixedShippingCharge: shippingCharge,
         });
         await newOrder.save();
@@ -530,12 +553,17 @@ async function decreaseProductStock(productId: any, quantity: number) {
 export async function cancelOrder(req: Request, res: Response) {
   console.log("wertyu");
   const orderId = req.body.orderId;
-  const singleOrderId = req.body.singleOrderId
-  console.log(orderId,singleOrderId, "orderId","singleOrderId");
+  const singleOrderId = req.body.singleOrderId;
+  console.log(orderId, singleOrderId, "orderId", "singleOrderId");
   try {
     const order = await Orderdb.findOneAndUpdate(
-      { "orderDetails._id": singleOrderId, _id: orderId  },
-      { $set: { "orderDetails.$.orderStatus": "Cancelled", "orderDetails.$.paymentStatus": "Cancelled" } },
+      { "orderDetails._id": singleOrderId, _id: orderId },
+      {
+        $set: {
+          "orderDetails.$.orderStatus": "Cancelled",
+          "orderDetails.$.paymentStatus": "Cancelled",
+        },
+      },
       { projection: { "orderDetails.$": 1 } }
     );
 
@@ -597,6 +625,7 @@ export async function ordersList(req: Request, res: Response) {
       { $unwind: "$orderDetails" },
       { $sort: { "orderDetails.orderDate": -1 } },
     ]);
+    
     res.render("user/ordersList", { orders, user, cart, coupon });
   } catch (error) {
     console.error(error);
@@ -611,10 +640,9 @@ export async function orderInfo(req: Request, res: Response) {
     const proid = req.params.id;
     const details = await Orderdb.findOne(
       { "orderDetails._id": new mongoose.Types.ObjectId(proid) },
-      { "orderDetails.$": 1, _id: 1, userId: 1 }
+      { "orderDetails.$": 1, _id: 1, userId: 1, couponDiscount: 1,totalsum: 1 }
     );
-    console.log(details,"details");
-    
+
     res.render("user/orderInfo", { details, user, cart });
   } catch (error) {
     console.error(error);
@@ -771,7 +799,7 @@ export async function retryPaymentVerify(
         { $set: { "orderDetails.$.paymentStatus": "completed" } }
       );
       // console.log(updatedOrder,'12345678');
-      
+
       res.json({
         success: true,
         orderId: newOrderId,
