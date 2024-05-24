@@ -158,6 +158,7 @@
             Apply
           </button>
         </div>
+        <p style="color: red; display: none;">dfghjk</p>
         <div style="padding-top: 15px">
           <label for="couponCode" class="block text-sm font-medium text-gray-700">Available coupons..!!</label>
           <select class="border-2 w-50 rounded-md shadow-sm" style="height: 35px">
@@ -181,7 +182,7 @@
           </p>
         </div>
         <div class="flex items-center justify-between">
-          <p class="text-sm font-medium text-gray-700">Discount</p>
+          <p class="text-sm font-medium text-gray-700">Coupon discount</p>
           <p class="font-semibold text-gray-700" id="CouponDiscount">₹0
           </p>
         </div>
@@ -362,11 +363,8 @@
     const selectButtons = document.querySelectorAll(".select-address-button");
     selectButtons.forEach(function (button) {
       button.addEventListener("click", function () {
-        // Get the selected address from the button's parent element
         const selectedAddress = button.previousElementSibling.textContent.trim();
-        // Show the selected address
         showSelectedAddress(selectedAddress);
-        // Close the modal
         closeModal();
       });
     });
@@ -421,7 +419,6 @@
               activeCoupon: activeCoupon,
             })
             .then(function (response) {
-              console.log(response, "qwertyui");
               if (response.data?.order) {
                 var options = {
                   key: "rzp_test_wV96XGA4SLLOo7",
@@ -453,17 +450,11 @@
               }
 
               if (paymentMethod === cod) {
-                // if(response.success){
-                //   window.location.href = "/successpage";
-                // }else{
-                //   toastr.error(response.message, 'Total price above Rs 1000 should not be allowed for COD!');
-                // }
                 if (response?.data?.message) {
                   window.location.href = "/successpage";
                   return;
                 }
               }
-
               if (paymentMethod === wallet) {
                 if (response?.data?.message) {
                   window.location.href = "/successpage";

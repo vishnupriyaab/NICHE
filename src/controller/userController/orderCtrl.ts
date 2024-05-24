@@ -551,10 +551,8 @@ async function decreaseProductStock(productId: any, quantity: number) {
 }
 
 export async function cancelOrder(req: Request, res: Response) {
-  console.log("wertyu");
   const orderId = req.body.orderId;
   const singleOrderId = req.body.singleOrderId;
-  console.log(orderId, singleOrderId, "orderId", "singleOrderId");
   try {
     const order = await Orderdb.findOneAndUpdate(
       { "orderDetails._id": singleOrderId, _id: orderId },
@@ -564,7 +562,7 @@ export async function cancelOrder(req: Request, res: Response) {
           "orderDetails.$.paymentStatus": "Cancelled",
         },
       },
-      { projection: { "orderDetails.$": 1 } }
+      { projection: { "orderDetails.$": 1, totalsum: 1 } }
     );
 
     const productsss = await productDb.findOneAndUpdate(
@@ -580,8 +578,13 @@ export async function cancelOrder(req: Request, res: Response) {
       if (!user) {
         throw new Error("User not found");
       }
-      const amount = order.orderDetails[0].price;
 
+      let amount;
+      if (order.orderDetails.length === 1) {
+        amount = order.totalsum;
+      } else {
+        amount = order.orderDetails[0].price;
+      }
       const wallet = await Walletdb.updateOne(
         { userId: req.session.userId },
         {
@@ -625,7 +628,7 @@ export async function ordersList(req: Request, res: Response) {
       { $unwind: "$orderDetails" },
       { $sort: { "orderDetails.orderDate": -1 } },
     ]);
-    
+
     res.render("user/ordersList", { orders, user, cart, coupon });
   } catch (error) {
     console.error(error);
@@ -640,7 +643,7 @@ export async function orderInfo(req: Request, res: Response) {
     const proid = req.params.id;
     const details = await Orderdb.findOne(
       { "orderDetails._id": new mongoose.Types.ObjectId(proid) },
-      { "orderDetails.$": 1, _id: 1, userId: 1, couponDiscount: 1,totalsum: 1 }
+      { "orderDetails.$": 1, _id: 1, userId: 1, couponDiscount: 1, totalsum: 1 }
     );
 
     res.render("user/orderInfo", { details, user, cart });
